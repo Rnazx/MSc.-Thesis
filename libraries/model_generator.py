@@ -27,6 +27,7 @@ kappa = Symbol('kappa')
 zet = Symbol('zeta')
 E51 = Symbol('E_51')
 Rk = Symbol('R_k')
+kalpha = Symbol('K_alpha')
 
 # Defining the general parameters
 u = Symbol('u')
@@ -48,13 +49,12 @@ kms = 1e+5*cm
 Myr = 1e+6*(365*24*60*60)
 # Defining the expressions
 cs = (gamma*boltz*T/(mu*mh))**Rational(1/2)
-# Ralpha = alphak*h/eta
-# Romega = -q*omega*h**2/eta
+
 
 ###############################################################################################
 ###########################Function to generate the model###########################################
 #######################################################################################
-def model_gen(model_no, let, tbool = True):
+def model_gen(model_no, let, tbool = True, alphareg = 1):
     cm = 1
     kpc = 3.086e+21*cm
     kms = 1e+5*cm
@@ -82,6 +82,7 @@ def model_gen(model_no, let, tbool = True):
             usn = ((4*pi/3)*l*lsn**3*cs**2*nu)**Fraction(1, 3)
             u = simplify(usn)
             h = simplify(h)
+            mach = 1
             
         else:
             h = Symbol('h')
@@ -93,36 +94,50 @@ def model_gen(model_no, let, tbool = True):
             if model_no == 4:
                 h = simplify((zet*(usn)/(omega))**(1/(1-diff(log(u), h)*h)))
             else:
-                h = simplify((zet*(usn**2)/(3*pi*G*sigmatot))**Fraction(153,103))#(1/(1-2*diff(log(u), h)*h)))
+                h = simplify((zet*(usn**2)/(3*pi*G*sigmatot))**(1/(1-2*diff(log(u), h)*h)))
             l, lsn, n = choose_lreg(h, model_no)
             nu = (delta*sigmasfr)/(2*h*mstar)
             u = simplify(((4*pi/3)*l*lsn**3*cs**2*(nu))**Fraction(1, 3))
-        if model_no ==2 or tbool:
-            taue = simplify(l/u)
+            mach = u/cs
+        taue = simplify(l/u)
+        if model_no ==2: taur = taue
+        else : taur = simplify(6.8*Myr*(1/4)*(nu*kpc**3*Myr/50)**(-1)*(E51)**Fraction(-16, 51) * (n/0.1)**Fraction(19, 17)*(cs/(kms*10)))# does not work if model no = 2
+        if model_no ==2 or tbool == False:
             tau = taue
         else :
-            taur = simplify(6.8*Myr*(1/4)*(nu*kpc**3*Myr/50)**(-1)*(E51)**Fraction(-16, 51) * (n/0.1)**Fraction(19, 17)*(cs/(kms*10)))
             tau = taur
-        return [h, l ,u, tau, nu, n, cs]
-    h, l, u, tau, nu, n, cs = find_hlut(model_no, let)
+        return [h, l ,u, tau, nu, n, cs, mach, taue, taur]
+    h, l, u, tau, nu, n, cs, mach, taue, taur = find_hlut(model_no, let)
     rho = sigma/(2*h)
     Beq = u*(4*pi*rho)**Rational(1/2)
-    biso = (Beq*(xio**(1/2)))
+    biso = (Beq*(xio**(1/2)))/mach
     biso = simplify(biso)
     biso = biso.powsimp(force=True)
 
-    bani = biso*(Rational(2/3)*q*omega*tau*(1))**Rational(1/2)#+(q*omega*tau)/2
+    bani = biso*(Rational(2/3)*q*omega*tau*(1+(q*omega*tau)/2))**Rational(1/2)#
     bani = simplify(bani)
     bani = bani.powsimp(force=True)
 
     Rk = Symbol('R_k')
-    Dk = -(9*calpha*q*(h**2)*(omega**2))/u**2
+    eta = (1/3)*tau*u**2
+    alphak1 = calpha*tau**2*u**2*omega/h
+    alphak2 = calpha*tau*u**2/h
+    alphak3 = kalpha*u
+    if alphareg == 1:
+        alphak = alphak1
+    elif alphareg == 2:
+        alphak = alphak2
+    else :
+        alphak = alphak3
+    Ralpha = alphak*h/eta
+    Romega = -q*omega*h**2/eta
+    Dk = Ralpha*Romega
     Dc = -(pi**5)/32
     rho = sigma/(2*h)
     Beq = (4*pi*rho)**Rational(1/2)*u
-    Bbar = (pi*Beq*l*(Rk*((Dk/Dc)))**Rational(1/2))/h
+    Bbar = (pi*Beq*l*(Rk*(Dk/Dc-1))**Rational(1/2))/h
     Bbar = simplify(Bbar)
-    Bbar = Bbar.powsimp(force=True)
+    #Bbar = Bbar.powsimp(force=True)
 
     tanpb = -((pi**2)*tau*(u**2))/(12*q*omega*(h**2))
     tanpb = simplify(tanpb)
@@ -131,7 +146,7 @@ def model_gen(model_no, let, tbool = True):
 
     tanpbm = 1/(1+q*omega*tau)
 
-    quantities = [ h, l, u, tau, biso, bani, Bbar, tanpb,tanpbm, nu, n, cs ]
+    quantities = [ h, l, u, tau, biso, bani, Bbar, tanpb,tanpbm, nu, n, cs, alphak, Dk, Dc, omega*tau,  kalpha*h/(calpha*tau*u), alphak1, alphak2, alphak3,  taue, taur]
 
     return quantities
 
