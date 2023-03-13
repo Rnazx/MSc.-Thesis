@@ -136,9 +136,9 @@ kpc_r_Chemin = kpc_r_Chemin_orig * kpc_D_M31_Plot / kpc_D_M31_Chemin  #correct t
 kpc_r_SFR = kpc_r_SFR_TB10 * kpc_D_M31_Plot / kpc_D_M31_TB10  #correct to distance used for our plots
 
 #Select which data to use for sigma, q and omega
-kpc_r_f = kpc_r_Chemin
-Msunpc2_SigmaHI_f = Msunpc2_SigmaHI_Chemin
-kms_vcirc_f = kms_vcirc_Chemin
+kpc_r_f = kpc_r_cl
+Msunpc2_SigmaHI_f = Msunpc2_SigmaHI
+kms_vcirc_f = kms_vcirc
 
 rad_data = [kpc_r_cl, kpc_r_Chemin, kpc_r_SFR, kpc_r_molfrac]
 kpc_r = rad_data[np.argmin(np.array([d.size for d in rad_data]))]
