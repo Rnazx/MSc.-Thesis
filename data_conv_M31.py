@@ -136,9 +136,17 @@ kpc_r_Chemin = kpc_r_Chemin_orig * kpc_D_M31_Plot / kpc_D_M31_Chemin  #correct t
 kpc_r_SFR = kpc_r_SFR_TB10 * kpc_D_M31_Plot / kpc_D_M31_TB10  #correct to distance used for our plots
 
 #Select which data to use for sigma, q and omega
-kpc_r_f = kpc_r_cl
-Msunpc2_SigmaHI_f = Msunpc2_SigmaHI
-kms_vcirc_f = kms_vcirc
+chemin_flag = False
+
+if chemin_flag:
+      kpc_r_f = kpc_r_Chemin
+      Msunpc2_SigmaHI_f = Msunpc2_SigmaHI_Chemin
+      kms_vcirc_f = kms_vcirc_Chemin
+else:
+      kpc_r_f = kpc_r_cl
+      Msunpc2_SigmaHI_f = Msunpc2_SigmaHI
+      kms_vcirc_f = kms_vcirc
+     
 
 rad_data = [kpc_r_cl, kpc_r_Chemin, kpc_r_SFR, kpc_r_molfrac]
 kpc_r = rad_data[np.argmin(np.array([d.size for d in rad_data]))]
@@ -153,7 +161,8 @@ dat_omega = griddata(kpc_r_f, dat_omega, kpc_r, method='linear', fill_value=nan,
 
 dat_sigmasfr = griddata(kpc_r_SFR, Msunpc2Gyr_Sigma_SFR*g_Msun/((10**9*365*24*60*60)*(pcm)**2), kpc_r, method='linear', fill_value=nan, rescale=False)
 molfrac = griddata(kpc_r_molfrac, MolFrac, kpc_r, method='linear', fill_value=nan, rescale=False)
-
+# plt.plot(kpc_r, dat_sigmasfr)
+# plt.show()
 
 data  = kpc_r, dat_sigmatot, dat_sigma, dat_q, dat_omega, dat_sigmasfr, molfrac
 #kpc_r, dat_sigmatot, dat_sigma, dat_q, dat_omega, dat_sigmasfr, molfrac
