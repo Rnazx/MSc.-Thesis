@@ -8,7 +8,7 @@ from matplotlib.ticker import FormatStrFormatter
 import sys
 
 current_directory = str(os.getcwd())
-
+print('code works!')
 #conversion factors
 pc_kpc = 1e3		#number of pc in one kpc
 cm_km = 1e5		#number of cm in one km

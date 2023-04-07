@@ -83,22 +83,7 @@ taue = simplify(l/u)
 taur = simplify(6.8*Myr_s*(1/4)*(nu*kpc_cm**3*Myr_s/50)**(-1)*(E51)**Fraction(-16, 51) * (n/0.1)**Fraction(19, 17)*(cs/(cm_km*10)))
 
 
-Rk = Symbol('R_k')
-eta = (1/3)*tau*u**2
-alphak1 = calpha*tau**2*u**2*omega/h
-alphak2 = calpha*tau*u**2/h
-alphak3 = kalpha*u
-
-alphareg = int(sys.argv[1])
-
-if alphareg == 1:
-    alphak = alphak1
-elif alphareg == 2:
-    alphak = alphak2
-else :
-    alphak = alphak3
-
-turb_expr = hg, rho, nu, u, l, taue, taur, alphak
+turb_expr = hg, rho, nu, u, l, taue, taur
 
 
 with open('turb_exp.pickle', 'wb') as f:

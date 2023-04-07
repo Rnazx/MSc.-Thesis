@@ -63,8 +63,21 @@ h = Symbol('h')
 ##############################################################################################################
 
 with open('turb_exp.pickle', 'rb') as f:
-     hg, rho, nu, u, l, taue, taur, alphak = pickle.load(f)
+     hg, rho, nu, u, l, taue, taur = pickle.load(f)
 
+
+alphak1 = calpha*tau**2*u**2*omega/h
+alphak2 = calpha*tau*u**2/h
+alphak3 = kalpha*u
+
+alphareg = int(sys.argv[1])
+
+if alphareg == 1:
+    alphak = alphak1
+elif alphareg == 2:
+    alphak = alphak2
+else :
+    alphak = alphak3
 
 Beq = bet*u*(4*pi*rho)**Rational(1/2)
 biso = (Beq*(xio**(1/2)))/mach
@@ -94,7 +107,7 @@ tanpB = simplify(tanpB)
 
 tanpb = 1/(1+q*omega*tau)
 
-mag_expr = biso, bani, Bbar, tanpb, tanpB, Beq, eta
+mag_expr = biso, bani, Bbar, tanpb, tanpB, Beq, eta, alphak
 
 
 with open('mag_exp.pickle', 'wb') as f:

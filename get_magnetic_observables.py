@@ -6,6 +6,7 @@ import pickle
 import os
 from matplotlib.ticker import FormatStrFormatter
 import sys
+import subprocess
 
 current_directory = str(os.getcwd())
 
@@ -34,14 +35,12 @@ os.chdir(current_directory +'\data')
 with open('zip_data.pickle', 'rb') as f:
      data_pass = pickle.load(f)
 
-
 #extracting the expressions
 os.chdir(current_directory + '\expressions')
+subprocess.run(["python", "turbulence_expressions.py"])
+
 with open('turb_exp.pickle', 'rb') as f:
      hg, rho, nu, u, l, taue, taur, alphak = pickle.load(f)
-
-with open('mag_exp.pickle', 'rb') as f:
-     biso, bani, Bbar, tanpb, tanpB, Beq, eta = pickle.load(f)
 
 
 os.chdir(current_directory)
@@ -59,6 +58,28 @@ for i in range(len(tau_f)):
      if taue_f[i]<taur_f[i]: tau_f[i] = taue_f[i]
      else: tau_f[i] = taur_f[i]
 
+omega = Symbol('\Omega')
+kalpha = Symbol('K_alpha')
+calpha = Symbol('C_alpha')
+
+omt = datamaker(omega, data_pass, h_f, tau_f)*tau_f
+kah = datamaker(kalpha/calpha, data_pass, h_f, tau_f)*(h_f/(tau_f*u_f))
+
+alphareg = 1
+
+for i in range(len(omt)):
+     if np.min(1, kah[i]) >= omt[i]:
+          alphareg = 1
+     elif np.min(omt[i], kah[i]) >= 1:
+          alphareg = 2
+     else:
+          alphareg = 3
+
+os.chdir(current_directory + '\expressions')
+subprocess.run(["python", "magnetic_expressions.py", str(alphareg)])
+
+with open('mag_exp.pickle', 'rb') as f:
+     biso, bani, Bbar, tanpb, tanpB, Beq, eta = pickle.load(f)
 
 biso_f = datamaker(biso, data_pass, h_f, tau_f)
 bani_f = datamaker(bani, data_pass, h_f, tau_f)
