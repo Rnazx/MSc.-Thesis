@@ -30,6 +30,8 @@ kpc_cm = 3.086e+21  #number of ccentimeters in one parsec
 Myr_s = 1e+6*(365*24*60*60) #megayears to seconds
 
 #data extraction for galaxy
+subprocess.run(["python", "zipped_data.py"])
+
 os.chdir(current_directory +'\data')
 
 with open('zip_data.pickle', 'rb') as f:
@@ -38,10 +40,14 @@ with open('zip_data.pickle', 'rb') as f:
 #extracting the expressions
 os.chdir(current_directory + '\expressions')
 subprocess.run(["python", "turbulence_expressions.py"])
+subprocess.run(["python", "magnetic_expressions.py"])
+
 
 with open('turb_exp.pickle', 'rb') as f:
-     hg, rho, nu, u, l, taue, taur, alphak = pickle.load(f)
+     hg, rho, nu, u, l, taue, taur, alphak1, alphak2, alphak3 = pickle.load(f)
 
+with open('mag_exp.pickle', 'rb') as f:
+     biso, bani, Bbar, tanpb, tanpB, Beq, eta = pickle.load(f)
 
 os.chdir(current_directory)
 from helper_functions import datamaker, root_finder
@@ -65,32 +71,31 @@ calpha = Symbol('C_alpha')
 omt = datamaker(omega, data_pass, h_f, tau_f)*tau_f
 kah = datamaker(kalpha/calpha, data_pass, h_f, tau_f)*(h_f/(tau_f*u_f))
 
-alphareg = 1
+alphak_f = []
 
 for i in range(len(omt)):
-     if np.min(1, kah[i]) >= omt[i]:
-          alphareg = 1
-     elif np.min(omt[i], kah[i]) >= 1:
-          alphareg = 2
+     if min(1, kah[i]) >= omt[i]:
+          alpha_k = alphak1         
+     elif min(omt[i], kah[i]) >= 1:
+          alpha_k = alphak2
      else:
-          alphareg = 3
+          alpha_k = alphak3
+     alphak_f.append(datamaker(alpha_k, [data_pass[i]], np.array([h_f[i]]), np.array([tau_f[i]]))[0])
 
-os.chdir(current_directory + '\expressions')
-subprocess.run(["python", "magnetic_expressions.py", str(alphareg)])
+alphak_f = np.array(alphak_f)
 
-with open('mag_exp.pickle', 'rb') as f:
-     biso, bani, Bbar, tanpb, tanpB, Beq, eta = pickle.load(f)
+
+
 
 biso_f = datamaker(biso, data_pass, h_f, tau_f)
 bani_f = datamaker(bani, data_pass, h_f, tau_f)
 
-Bbar_f = datamaker(Bbar, data_pass, h_f, tau_f)
-Bbar_f = np.float64(Bbar_f*(np.float64(Bbar_f*Bbar_f>0)))
+Bbar_f = datamaker(Bbar, data_pass, h_f, tau_f, alphak_f)
 
 tanpB_f = datamaker(tanpB, data_pass, h_f, tau_f)
 tanpb_f = datamaker(tanpb, data_pass, h_f, tau_f)
 
-mag_obs = h_f, l_f, u_f, tau_f, biso_f, bani_f, Bbar_f, tanpB_f, tanpb_f
+mag_obs = h_f, l_f, u_f, alphak_f, tau_f, biso_f, bani_f, Bbar_f, tanpB_f, tanpb_f
 
 os.chdir(current_directory)
 

@@ -52,6 +52,7 @@ zet = Symbol('zeta')
 psi = Symbol('psi')
 kalpha = Symbol('K_alpha')
 bet = Symbol('beta')
+alphak = Symbol('alpha_k')
 
 # Defining the general parameters
 u = Symbol('u')
@@ -85,15 +86,16 @@ def exp_analytical_data(express, data_pass):
 
 ############################################################################################################################
 
-def datamaker(quan, data_pass, h_f, tau_f = None):
+def datamaker(quan, data_pass, h_f, tau_f = None, alphak_f = None):
     quan_val = exp_analytical_data(quan, data_pass)
     if tau_f is None: 
         tau_f = np.ones(len(h_f))
-    if retrieve_name(quan) == 'Bbar':
-        Bbar_in = np.array([quan_val[i].evalf(subs= {h : hf, tau : tauf} ) for i, (hf, tauf) in enumerate(zip(h_f, tau_f))])
-        return np.float64(Bbar_in*(np.float64(Bbar_in*Bbar_in>0)))
-    else: 
+    if alphak_f is None:
         return  np.array([np.float64( quan_val[i].evalf(subs= {h : hf, tau : tauf} )) for i, (hf, tauf) in enumerate(zip(h_f, tau_f))])
+    else: 
+        Bbar_in = np.array([quan_val[i].evalf(subs= {h : hf, tau : tauf, alphak : alphakf} ) for i, (hf, tauf, alphakf) in enumerate(zip(h_f, tau_f, alphak_f))])
+        return np.float64(Bbar_in*(np.float64(Bbar_in*Bbar_in>0)))
+        
     
 ##############################################################################################################################################
 

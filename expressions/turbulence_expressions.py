@@ -53,6 +53,8 @@ zet = Symbol('zeta')
 psi = Symbol('psi')
 kalpha = Symbol('K_alpha')
 bet = Symbol('beta')
+alphak = Symbol('alpha_k')
+
 
 # Defining the general parameters
 u = Symbol('u')
@@ -82,8 +84,12 @@ n = rho/((14/11)*mh)
 taue = simplify(l/u)
 taur = simplify(6.8*Myr_s*(1/4)*(nu*kpc_cm**3*Myr_s/50)**(-1)*(E51)**Fraction(-16, 51) * (n/0.1)**Fraction(19, 17)*(cs/(cm_km*10)))
 
+alphak1 = calpha*tau**2*u**2*omega/h
+alphak2 = calpha*tau*u**2/h
+alphak3 = kalpha*u
 
-turb_expr = hg, rho, nu, u, l, taue, taur
+
+turb_expr = hg, rho, nu, u, l, taue, taur, alphak1, alphak2, alphak3
 
 
 with open('turb_exp.pickle', 'wb') as f:
