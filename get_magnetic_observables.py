@@ -50,9 +50,9 @@ with open('mag_exp.pickle', 'rb') as f:
      biso, bani, Bbar, tanpb, tanpB, Beq, eta = pickle.load(f)
 
 os.chdir(current_directory)
-from helper_functions import datamaker, root_finder
+from helper_functions import datamaker, root_finder, exp_analytical_data
 
-h_f = root_finder(hg, data_pass)
+h_f = root_finder(exp_analytical_data(hg, data_pass))
 
 l_f = datamaker(l, data_pass, h_f)
 u_f = datamaker(u, data_pass, h_f)

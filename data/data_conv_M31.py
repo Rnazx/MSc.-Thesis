@@ -1,11 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from sympy import *
-from fractions import Fraction
 import pickle
-import os
 import sys
-from matplotlib.ticker import FormatStrFormatter
 
 
 from scipy.interpolate import griddata
@@ -46,8 +43,6 @@ kpc_xmid_M31 = kpc_xmid_M31_Fletcher * kpc_D_M31_Plot / kpc_D_M31_Fletcher
 arcmin_xbnd_M31 = kpc_xbnd_M31 / kpc_D_M31_Plot * deg_rad * arcmin_deg
 arcmin_xmid_M31 = kpc_xmid_M31 / kpc_D_M31_Plot * deg_rad * arcmin_deg
 
-print('arcmin_xbnd_M31',arcmin_xbnd_M31)
-print('arcmin_xmid_M31',arcmin_xmid_M31)
 
 length, breadth = [5, 2.5]
 
@@ -136,9 +131,10 @@ kpc_r_Chemin = kpc_r_Chemin_orig * kpc_D_M31_Plot / kpc_D_M31_Chemin  #correct t
 kpc_r_SFR = kpc_r_SFR_TB10 * kpc_D_M31_Plot / kpc_D_M31_TB10  #correct to distance used for our plots
 
 #Select which data to use for sigma, q and omega
-chemin_flag = False
+chemin_flag = bool(int(sys.argv[1]))
 
 if chemin_flag:
+      print(chemin_flag)
       kpc_r_f = kpc_r_Chemin
       Msunpc2_SigmaHI_f = Msunpc2_SigmaHI_Chemin
       kms_vcirc_f = kms_vcirc_Chemin

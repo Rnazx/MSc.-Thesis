@@ -1,8 +1,7 @@
 import numpy as np
-import matplotlib.pyplot as plt
 from sympy import *
-from matplotlib.ticker import FormatStrFormatter
 import inspect
+from scipy.optimize import curve_fit, fsolve
 
 ###############################################################################################
 pc_kpc = 1e3		#number of pc in one kpc
@@ -62,6 +61,10 @@ h = Symbol('h')
 
 cs = (gamma*boltz*T/(mu*mh))**Rational(1/2)
 
+
+def power_law(x, a, b):
+    return a*np.power(x, b)
+
 def list_transpose(x):
     array = np.array(x)
     transposed_array = array.T
@@ -75,18 +78,18 @@ def retrieve_name(var):
 
 def exp_analytical_data(express, data_pass):
 
-    const = [(gamma, 1.5), (boltz, 1.3807e-16), (mh, 1.67e-24), (mu, 14/11), (mach, 1), (G, 6.67e-8),
+    const = [(gamma, 1.5), (boltz, 1.3807e-16), (mh, 1.67e-24), (mach, 1), (G, 6.67e-8),
             (cl, 3/4), (xio, 0.4), (mstar, 0.85*g_Msun), (delta, 8e-3), (E51, 1), (kalpha, 1)]
   
     express = express.subs(const).simplify(force=True) 
 
-    exp = np.array([express.evalf(subs={ sigmatot:sigt, sigma: sig, sigmasfr: sigsfr, q:qs, omega: oms, zet:zets, T:t, psi:ps, bet :b, calpha: ca, Rk: rk}) for sigt,sig, sigsfr,qs, oms, zets, t, ps, b, ca, rk in data_pass])
+    exp = np.array([express.evalf(subs={ sigmatot:sigt, sigma: sig, sigmasfr: sigsfr, q:qs, omega: oms, zet:zets, T:t, psi:ps, bet :b, calpha: ca, Rk: rk, mu: m}) for sigt,sig, sigsfr,qs, oms, zets, t, ps, b, ca, rk, m in data_pass])
     
     return exp
 
 ############################################################################################################################
 
-def datamaker(quan, data_pass, h_f, tau_f = None, alphak_f = None):
+def datamaker(quan, data_pass, h_f, tau_f = None, alphak_f = None, scal_rel = False):
     quan_val = exp_analytical_data(quan, data_pass)
     if tau_f is None: 
         tau_f = np.ones(len(h_f))
@@ -99,13 +102,10 @@ def datamaker(quan, data_pass, h_f, tau_f = None, alphak_f = None):
     
 ##############################################################################################################################################
 
-def root_finder(h_exp, data_pass):
-    h_val = exp_analytical_data(h_exp, data_pass)
-
+def root_finder(h_val):
     h_f = []
     for hv in h_val:
         func = lambda x : np.array([np.float64((h-hv).evalf(subs={h : i})) for i in x])
-        from scipy.optimize import fsolve
         h_initial_guess = 7e+25
         h_solution = fsolve(func, h_initial_guess)
         h_f.append(h_solution[0])
@@ -114,52 +114,33 @@ def root_finder(h_exp, data_pass):
     return h_f
 
 #####################################################################################################
-def getmean(i,x,y):
-    good = np.where((x>kpc_xbnd_M31[i-1]) & (x<=kpc_xbnd_M31[i]))
-    xtemp = x[good]
-    ytemp = y[good]
-    meanval = np.mean(ytemp)
-    return xtemp,meanval
+def scal_helper(express, data_pass, observable = zet, _range = np.linspace(1,5000,50)):
 
-def makefig(fn,x,y,xr,yr,xt,yt,l_leg,x2=[],y2=[],lab1='',lab2='',y1e=[],y2e=[],y3=[],nticks=30):
-    fig, ax1 = plt.subplots(figsize=(length, breadth))
-    ax1.set_xlim(xr)
-    ax1.set_ylim(yr)
-    plt.errorbar(x2,y2,yerr=y2e,ecolor='k',elinewidth=1,capsize=1,c='tab:blue',mfc='k',mec='k',barsabove=True,label=lab2,marker='D',markersize=1.2)
-    plt.plot(x,y,marker='o',markersize=1.2,c='tab:orange',mfc='k',mec='k',label=lab1)
-    for i in range(len(kpc_xbnd_M31)):
-        plt.plot([kpc_xbnd_M31[i],kpc_xbnd_M31[i]],[0,10*yr[1]],linestyle='dotted',linewidth=1,c='k')
-        #plot average values within each bin
-        if i>0:
-            xtemp,meanval = getmean(i,x,y)
-            plt.plot([xtemp[0],xtemp[-1]],[meanval,meanval],c='tab:orange',alpha=0.5)
-            if(y2!=[]):
-                x2temp,meanval2 = getmean(i,x2,y2)
-                plt.plot([x2temp[0],x2temp[-1]],[meanval2,meanval2],c='tab:blue',alpha=0.5)
-    if(y3!=[]):
-        plt.plot(kpc_xmid_M31,y3,marker='*',mfc='yellow',mec='tab:green',mew=1,linewidth=0,label='Van Eck et al. (2015)')  
-    if l_leg:
-        handles,labels = ax1.get_legend_handles_labels()
-        #change order for legend
-        if(y3!=[]):
-            if(y2!=[]):
-                handles = [handles[0],handles[2],handles[1]]
-                labels = [labels[0],labels[2],labels[1]]
-        leg= ax1.legend(handles, labels,loc='best',handlelength=4,ncol=1,prop={'size':leg_textsize,'family':'Times New Roman'},fancybox=True,framealpha=0.9,handletextpad=0.7,columnspacing=0.7)
-    #
-    minor_ticks_x=  np.arange(xr[0],xr[1]+1, 1)	
-    minor_ticks_y=  np.arange(yr[0],yr[1]+yr[1]/nticks, yr[1]/nticks)	
-    ax1.tick_params(axis='both', which='minor', labelsize=axis_textsize, colors='k', length=3 , width=1   )
-    ax1.tick_params(axis='both', which='major', labelsize=axis_textsize, colors='k', length=5 , width=1.25)
-    ax1.set_xticks(minor_ticks_x,minor=True)
-    ax1.set_yticks(minor_ticks_y,minor=True)
-    #
-    ax1.set_xlabel(xtit   ,size=axis_textsize)
-    ax1.set_xticklabels(ax1.get_xticks(),fontname = "Times New Roman", fontsize=axis_textsize)
-    plt.gca().xaxis.set_major_formatter(FormatStrFormatter('%g'))	
-        
-    ax1.set_ylabel(ytit,size=axis_textsize)
-    ax1.set_yticklabels(ax1.get_yticks(),fontname = "Times New Roman", fontsize=axis_textsize)
-    plt.gca().yaxis.set_major_formatter(FormatStrFormatter('%g'))	
-    
-    plt.savefig(fn, format='png', bbox_inches='tight', dpi= 300)
+    const = [(gamma, 1.5), (boltz, 1.3807e-16), (mh, 1.67e-24), (mach, 1), (G, 6.67e-8),
+            (cl, 3/4), (xio, 0.4), (mstar, 0.85*g_Msun), (delta, 8e-3), (E51, 1), (kalpha, 1)]
+  
+    express = express.subs(const).simplify(force=True)
+    sigt,sig, sigsfr,qs, oms, zets, t, ps, b, ca, rk, m = data_pass[0]
+    val_subs = { sigmatot:sigt, sigma: sig, sigmasfr: sigsfr, q:qs, omega: oms, zet:zets, T:t, psi:ps, bet :b, calpha: ca, Rk: rk, mu: m}
+    try:
+        val_subs.pop(observable)
+        obs_val = _range#(val_subs.pop(observable))*_range
+    except ValueError:
+        print('Observable does not exist!')
+    exp = express.evalf(subs = val_subs)
+    return obs_val, np.array([exp.evalf(subs = {observable:o}) for o in obs_val])
+
+
+def scal_finder(h_exp, tau_exp, quan_exp, observable, data_pass, _range = np.linspace(1,5000,50)):
+    obs_val, h_val = scal_helper(h_exp, data_pass, observable, _range)
+    h_scal = root_finder(h_val)
+    obs_val, tau_val = scal_helper(tau_exp, data_pass, observable, _range)
+    tau_scal = np.array([np.float64( tau_val[i].evalf(subs= {h : hf} )) for i, hf in enumerate(h_scal)]) 
+
+    obs_val, quan_val = scal_helper(quan_exp, data_pass, observable, _range)
+    quan_f = np.array([np.float64( quan_val[i].evalf(subs= {h : hf, tau : tauf} )) for i, (hf, tauf) in enumerate(zip(h_scal, tau_scal))])
+
+    pg, cov = curve_fit(f=power_law, xdata=obs_val, ydata=quan_f, p0=[0, 0], bounds=(-np.inf, np.inf))
+
+    return quan_f, round(pg[1],3)
+
