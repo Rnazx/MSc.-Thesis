@@ -89,7 +89,7 @@ def exp_analytical_data(express, data_pass):
 
 ############################################################################################################################
 
-def datamaker(quan, data_pass, h_f, tau_f = None, alphak_f = None, scal_rel = False):
+def datamaker(quan, data_pass, h_f, tau_f = None, alphak_f = None):
     quan_val = exp_analytical_data(quan, data_pass)
     if tau_f is None: 
         tau_f = np.ones(len(h_f))
@@ -133,12 +133,14 @@ def scal_helper(express, data_pass, observable = zet, _range = np.linspace(1,500
 
 def scal_finder(h_exp, tau_exp, quan_exp, observable, data_pass, _range = np.linspace(1,5000,50)):
     obs_val, h_val = scal_helper(h_exp, data_pass, observable, _range)
+    print(h_val)
     h_scal = root_finder(h_val)
-    obs_val, tau_val = scal_helper(tau_exp, data_pass, observable, _range)
-    tau_scal = np.array([np.float64( tau_val[i].evalf(subs= {h : hf} )) for i, hf in enumerate(h_scal)]) 
+    #obs_val, tau_val = scal_helper(tau_exp, data_pass, observable, _range)
+    #tau_scal = np.array([np.float64( tau_val[i].evalf(subs= {h : hf} )) for i, hf in enumerate(h_scal)]) 
 
     obs_val, quan_val = scal_helper(quan_exp, data_pass, observable, _range)
-    quan_f = np.array([np.float64( quan_val[i].evalf(subs= {h : hf, tau : tauf} )) for i, (hf, tauf) in enumerate(zip(h_scal, tau_scal))])
+    quan_f = np.array([np.float64( quan_val[i].evalf(subs= {h : hf} )) for i, hf in enumerate(h_scal)])
+    #quan_f = np.array([np.float64( quan_val[i].evalf(subs= {h : hf, tau : tauf} )) for i, (hf, tauf) in enumerate(zip(h_scal, tau_scal))])
 
     pg, cov = curve_fit(f=power_law, xdata=obs_val, ydata=quan_f, p0=[0, 0], bounds=(-np.inf, np.inf))
 
