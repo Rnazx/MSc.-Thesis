@@ -82,7 +82,7 @@ hsup = zet*(u**2)/(3*pi*G*sigmatot)
 rho = sigma/(2*h)
 n = rho/((14/11)*mh)
 taue = simplify(l/u)
-taur = simplify(6.8*Myr_s*(1/4)*(nu*kpc_cm**3*Myr_s/50)**(-1)*(E51)**Fraction(-16, 51) * (n/0.1)**Fraction(19, 17)*(cs/(cm_km*10)))
+taur = simplify(6.8*Myr_s*(1/4)*(nu*kpc_cm**3*Myr_s/50)**(-1)*(E51)**Fraction(-16, 17) * (n/0.1)**Fraction(19, 17)*(cs/(cm_km*10)))
 
 alphak1 = calpha*tau**2*u**2*omega/h
 alphak2 = calpha*tau*u**2/h
