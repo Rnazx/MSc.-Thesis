@@ -72,14 +72,14 @@ os.chdir(current_directory)
 
 zet = p(0)*np.ones(r)
 psi = p(1)*np.ones(r)
-b = p(2)*np.ones(r)
+f = p(2)*np.ones(r)
 
 T = T_tb#1e+4*np.ones(r)
 ca = p(3)*np.ones(r)
 rk = p(4)*np.ones(r)
 mu = p(9)*np.ones(r)
 
-data_pass = list(zip(dat_sigmatot, dat_sigma, dat_sigmasfr, dat_q, dat_omega, zet, T, psi, b, ca, rk, mu))
+data_pass = list(zip(dat_sigmatot, dat_sigma, dat_sigmasfr, dat_q, dat_omega, zet, T, psi, f, ca, rk, mu))
 os.chdir(current_directory +'\data')
 
 with open('zip_data.pickle', 'wb') as f:

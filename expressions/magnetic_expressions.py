@@ -65,16 +65,16 @@ h = Symbol('h')
 
 with open('turb_exp.pickle', 'rb') as f:
      hg, rho, nu, u, l, taue, taur, alphak1, alphak2, alphak3 = pickle.load(f)
-
+cs = (gamma*boltz*T/(mu*mh))**Rational(1/2)
 
 
 Beq = bet*u*(4*pi*rho)**Rational(1/2)
-biso = (Beq*(xio**(1/2)))/mach
+biso = (Beq*(xio**(1/2)))/Max(1,u/cs)
 biso = simplify(biso)
 biso = biso.powsimp(force=True)
 
 
-bani = biso*(Rational(1/3)*2*q*omega*tau*(1+0*(q*omega*tau)/2))**Rational(1/2)  #+ (Uo*tau/l)*(1+1/(1+q*omega*tau)**2)
+bani = biso*(Rational(1/3)*2*q*omega*tau*(1+(q*omega*tau)/2))**Rational(1/2)  #+ (Uo*tau/l)*(1+1/(1+q*omega*tau)**2)
 bani = simplify(bani)
 bani = bani.powsimp(force=True)
 
