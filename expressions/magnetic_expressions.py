@@ -5,26 +5,8 @@ from fractions import Fraction
 import pickle
 import sys
 
-pc_kpc = 1e3		#number of pc in one kpc
-cm_km = 1e5		#number of cm in one km
-s_day = 24*3600		#number of seconds in one day
-s_min = 60		#number of seconds in one hour
-s_hr = 3600		#number of seconds in one hour
-cm_Rsun = 6.957e10	#solar radius in cm
-g_Msun = 1.989e33	#solar mass in g
-cgs_G = 6.674e-8 
-cms_c = 2.998e10
-g_mH = 1.6736e-24
-g_me = 9.10938e-28
-cgs_h = 6.626e-27
-deg_rad = 180e0/np.pi
-arcmin_deg = 60e0
-arcsec_deg = 3600e0
-kpc_cm = 3.086e+21  #number of ccentimeters in one parsec
-Myr_s = 1e+6*(365*24*60*60) #megayears to seconds
 
-
-##################defining symbols#######################################
+################## defining symbols#######################################
 # Defining the Observables
 q = Symbol('q')
 omega = Symbol('\Omega')
@@ -54,6 +36,7 @@ psi = Symbol('psi')
 kalpha = Symbol('K_alpha')
 bet = Symbol('beta')
 alphak = Symbol('alpha_k')
+Gamma = Symbol('Gamma')
 
 # Defining the general parameters
 u = Symbol('u')
@@ -62,9 +45,8 @@ l = Symbol('l')
 h = Symbol('h')
 
 ##############################################################################################################
-
 with open('turb_exp.pickle', 'rb') as f:
-     hg, rho, nu, u, l, taue, taur, alphak1, alphak2, alphak3 = pickle.load(f)
+    hg, rho, nu, u, l, taue, taur, alphak1, alphak2, alphak3 = pickle.load(f)
 cs = (gamma*boltz*T/(mu*mh))**Rational(1/2)
 
 
@@ -74,7 +56,8 @@ biso = simplify(biso)
 biso = biso.powsimp(force=True)
 
 
-bani = biso*(Rational(1/3)*2*q*omega*tau*(1+(q*omega*tau)/2))**Rational(1/2)  #+ (Uo*tau/l)*(1+1/(1+q*omega*tau)**2)
+bani = biso*(Rational(1/3)*2*q*omega*tau*(1+(q*omega*tau)/2)
+             )**Rational(1/2)  # + (Uo*tau/l)*(1+1/(1+q*omega*tau)**2)
 bani = simplify(bani)
 bani = bani.powsimp(force=True)
 
@@ -87,7 +70,7 @@ Dk = Ralpha*Romega
 Dc = -(pi**5)/32
 Bbar = (pi*Beq*l*(Rk*(Dk/Dc-1))**(0.5))/h
 Bbar = simplify(Bbar)
-#Bbar = Bbar.powsimp(force=True)
+# Bbar = Bbar.powsimp(force=True)
 
 tanpB = -((pi**2)*tau*(u**2))/(12*q*omega*(h**2))
 tanpB = simplify(tanpB)
