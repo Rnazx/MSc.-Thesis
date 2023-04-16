@@ -1,0 +1,3 @@
+chem_or_claude= Claude
+incl_moldat= Yes
+force_kennicut_scmidt= Yes, sigmadata
