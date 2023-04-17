@@ -86,7 +86,7 @@ T = T_tb  # 1e+4*np.ones(r)
 ca = params[r'C_\alpha']*np.ones(r)
 rk = params['R_\kappa']*np.ones(r)
 mu = params['mu']*np.ones(r)
-data_pass = list(zip(dat_sigmatot, dat_sigma, dat_sigmasfr,
+data_pass = kpc_r, list(zip(dat_sigmatot, dat_sigma, dat_sigmasfr,
                  dat_q, dat_omega, zet, T, psi, bet, ca, rk, mu))
 
 

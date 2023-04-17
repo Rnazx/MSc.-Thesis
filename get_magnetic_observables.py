@@ -14,7 +14,7 @@ subprocess.run(["python", "zipped_data.py"])
 os.chdir(current_directory + '\data')
 
 with open('zip_data.pickle', 'rb') as f:
-    data_pass = pickle.load(f)
+    kpc_r, data_pass = pickle.load(f)
 
 # extracting the expressions
 os.chdir(current_directory + '\expressions')
@@ -26,11 +26,11 @@ with open('turb_exp.pickle', 'rb') as f:
     hg, rho, nu, u, l, taue, taur, alphak1, alphak2, alphak3 = pickle.load(f)
 
 with open('mag_exp.pickle', 'rb') as f:
-    biso, bani, Bbar, tanpb, tanpB, Beq, eta = pickle.load(f)
+    biso, bani, Bbar, tanpb, tanpB, Beq, eta, cs = pickle.load(f)
 
 os.chdir(current_directory)
 
-
+cs_f = exp_analytical_data(cs, data_pass).astype(np.float64)
 
 h_f = root_finder(exp_analytical_data(hg, data_pass))
 
@@ -70,7 +70,7 @@ Bbar_f = datamaker(Bbar, data_pass, h_f, tau_f, alphak_f)
 tanpB_f = datamaker(tanpB, data_pass, h_f, tau_f)
 tanpb_f = datamaker(tanpb, data_pass, h_f, tau_f)
 
-mag_obs = h_f, l_f, u_f, alphak_f, tau_f, biso_f, bani_f, Bbar_f, tanpB_f, tanpb_f
+mag_obs = kpc_r, h_f, l_f, u_f, cs_f, alphak_f, tau_f, biso_f, bani_f, Bbar_f, tanpB_f, tanpb_f
 
 os.chdir(current_directory)
 
