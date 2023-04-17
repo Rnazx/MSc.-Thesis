@@ -8,9 +8,7 @@ import sys
 from scipy.interpolate import griddata
 
 
-kpc = 1e+3
-kpcm = 3.086e+21
-pcm = kpcm/1e+3
+
 pc_kpc = 1e3  # number of pc in one kpc
 cm_km = 1e5  # number of cm in one km
 s_day = 24*3600  # number of seconds in one day
@@ -26,6 +24,9 @@ cgs_h = 6.626e-27
 deg_rad = 180e0/np.pi
 arcmin_deg = 60e0
 arcsec_deg = 3600e0
+cm_kpc = 3.086e+21  # number of centimeters in one parsec
+cm_pc = cm_kpc/1e+3
+s_Myr = 1e+6*(365*24*60*60)  # megayears to seconds
 
 kpc_D_M31_Plot = 780e0  # distance to M31 used for plots (see Beck+2019)
 
@@ -149,46 +150,47 @@ kpc_r_Chemin = kpc_r_Chemin_orig * kpc_D_M31_Plot / \
 kpc_r_SFR = kpc_r_SFR_TB10 * kpc_D_M31_Plot / \
     kpc_D_M31_TB10  # correct to distance used for our plots
 
-# Select which data to use for sigma, q and omega
-chemin_flag = bool(int(sys.argv[1]))
+if __name__ == '__main__':
+    # Select which data to use for sigma, q and omega
+    chemin_flag = bool(int(sys.argv[1]))
 
-if chemin_flag:
-    print(chemin_flag)
-    kpc_r_f = kpc_r_Chemin
-    Msunpc2_SigmaHI_f = Msunpc2_SigmaHI_Chemin
-    kms_vcirc_f = kms_vcirc_Chemin
-else:
-    kpc_r_f = kpc_r_cl
-    Msunpc2_SigmaHI_f = Msunpc2_SigmaHI
-    kms_vcirc_f = kms_vcirc
+    if chemin_flag:
+        print(chemin_flag)
+        kpc_r_f = kpc_r_Chemin
+        Msunpc2_SigmaHI_f = Msunpc2_SigmaHI_Chemin
+        kms_vcirc_f = kms_vcirc_Chemin
+    else:
+        kpc_r_f = kpc_r_cl
+        Msunpc2_SigmaHI_f = Msunpc2_SigmaHI
+        kms_vcirc_f = kms_vcirc
 
-argr = np.argwhere(kpc_r_f>0)
-kpc_r_f = kpc_r_f[argr].flatten()
-Msunpc2_SigmaHI_f = Msunpc2_SigmaHI_f[argr].flatten()
-kms_vcirc_f = kms_vcirc_f[argr].flatten()
-rad_data = [kpc_r_cl, kpc_r_Chemin, kpc_r_SFR, kpc_r_molfrac]
-kpc_r = rad_data[np.argmin(np.array([d.size for d in rad_data]))]
+    argr = np.argwhere(kpc_r_f>0)
+    kpc_r_f = kpc_r_f[argr].flatten()
+    Msunpc2_SigmaHI_f = Msunpc2_SigmaHI_f[argr].flatten()
+    kms_vcirc_f = kms_vcirc_f[argr].flatten()
+    rad_data = [kpc_r_cl, kpc_r_Chemin, kpc_r_SFR, kpc_r_molfrac]
+    kpc_r = rad_data[np.argmin(np.array([d.size for d in rad_data]))]
 
-dat_sigmatot = griddata(kpc_r_cl, Msunpc2_SigmaTot*g_Msun/(pcm)
+    dat_sigmatot = griddata(kpc_r_cl, Msunpc2_SigmaTot*g_Msun/(cm_pc)
+                            ** 2, kpc_r, method='linear', fill_value=nan, rescale=False)
+    dat_sigma = griddata(kpc_r_f, Msunpc2_SigmaHI_f*g_Msun/(cm_pc)
                         ** 2, kpc_r, method='linear', fill_value=nan, rescale=False)
-dat_sigma = griddata(kpc_r_f, Msunpc2_SigmaHI_f*g_Msun/(pcm)
-                     ** 2, kpc_r, method='linear', fill_value=nan, rescale=False)
-kmskpc_Om = kms_vcirc_f/kpc_r_f
-dat_omega = kmskpc_Om*1e+5/kpcm
-dat_q = -1 * kpc_r_f / kmskpc_Om * np.gradient(kmskpc_Om)/np.gradient(kpc_r_f)
-dat_q = griddata(kpc_r_f, dat_q, kpc_r, method='linear',
-                 fill_value=nan, rescale=False)
-dat_omega = griddata(kpc_r_f, dat_omega, kpc_r,
-                     method='linear', fill_value=nan, rescale=False)
+    kmskpc_Om = kms_vcirc_f/kpc_r_f
+    dat_omega = kmskpc_Om*cm_km/cm_kpc
+    dat_q = -1 * kpc_r_f / kmskpc_Om * np.gradient(kmskpc_Om)/np.gradient(kpc_r_f)
+    dat_q = griddata(kpc_r_f, dat_q, kpc_r, method='linear',
+                    fill_value=nan, rescale=False)
+    dat_omega = griddata(kpc_r_f, dat_omega, kpc_r,
+                        method='linear', fill_value=nan, rescale=False)
 
-dat_sigmasfr = griddata(kpc_r_SFR, Msunpc2Gyr_Sigma_SFR*g_Msun/((10**9*365*24*60*60)
-                        * (pcm)**2), kpc_r, method='linear', fill_value=nan, rescale=False)
-molfrac = griddata(kpc_r_molfrac, MolFrac, kpc_r,
-                   method='linear', fill_value=nan, rescale=False)
-# plt.plot(kpc_r, dat_sigmasfr)
-# plt.show()
+    dat_sigmasfr = griddata(kpc_r_SFR, Msunpc2Gyr_Sigma_SFR*g_Msun/((10**9*365*24*60*60)
+                            * (cm_pc)**2), kpc_r, method='linear', fill_value=nan, rescale=False)
+    molfrac = griddata(kpc_r_molfrac, MolFrac, kpc_r,
+                    method='linear', fill_value=nan, rescale=False)
+    # plt.plot(kpc_r, dat_sigmasfr)
+    # plt.show()
 
-data = kpc_r, dat_sigmatot, dat_sigma, dat_q, dat_omega, dat_sigmasfr, molfrac
-# kpc_r, dat_sigmatot, dat_sigma, dat_q, dat_omega, dat_sigmasfr, molfrac
-with open('data_m31.pickle', 'wb') as f:
-    pickle.dump(data, f)
+    data = kpc_r, dat_sigmatot, dat_sigma, dat_q, dat_omega, dat_sigmasfr, molfrac
+    # kpc_r, dat_sigmatot, dat_sigma, dat_q, dat_omega, dat_sigmasfr, molfrac
+    with open('data_m31.pickle', 'wb') as f:
+        pickle.dump(data, f)

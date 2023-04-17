@@ -62,7 +62,7 @@ const = [(boltz, cgs_kB), (mh, g_mH), (G, cgs_G), (gamma, gval),
 
 
 def power_law(x, a, b):
-    return a*np.power(x, b)
+    return a*np.power(x, b) 
 
 
 def list_transpose(x):
@@ -154,7 +154,8 @@ def scal_finder(h_exp, quan_exp, observable, data_pass, tau_exp=None, alpha_exp=
     else:
         alphak_scal = None
     quan_f = scal_dat(quan_exp, data_pass, h_scal, tau_scal, alphak_scal)
-    # pg, cov = curve_fit(f=power_law, xdata=obs_val, ydata=quan_f, p0=[0, 0], bounds=(-np.inf, np.inf))
+    # pg, cov = curve_fit(f=power_law, xdata=obs_val, ydata=quan_f, p0=np.asarray([10**5,-1]))
+    # perr = np.sqrt(np.diag(cov))
     pg = np.mean(
         obs_val*(np.gradient(np.log(np.abs(quan_f)))/np.gradient(obs_val)))
-    return obs_val, quan_f, pg
+    return obs_val, quan_f, pg #[1], perr[1]

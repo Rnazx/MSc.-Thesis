@@ -51,7 +51,7 @@ with open('parameter_file.in', 'r') as FH:
             params[par_name] = np.float64(num) / np.float64(denom)
 ########################################################################################################################
 
-#subprocess.run(["python", "get_magnetic_observables.py"])
+subprocess.run(["python", "get_magnetic_observables.py"])
 
 
 #####################################################################################################################
@@ -142,7 +142,7 @@ dat_u_warp = griddata(kpc_radius, np.sqrt(3)*kms_sigmaLOS_warp, kpc_r, method='l
 
 os.chdir(current_directory)
 
-from get_magnetic_observables import omt, kah, taue_f, taur_f
+#from get_magnetic_observables import omt, kah, taue_f, taur_f
 
 pB = np.arctan(-tanpB_f)
 pbb = np.arctan(tanpb_f)
@@ -179,8 +179,8 @@ plt.rcParams["legend.loc"] = 'upper right'
 os.chdir(current_directory+'\plots')
 
 from matplotlib.backends.backend_pdf import PdfPages
-PDF = PdfPages('ca_'+str(params[r'C_\alpha'])+'rk_'+str(params[r'R_\kappa'])+'z_'+str(
-     params[r'\zeta'])+'psi_'+str(params[r'\psi'])+'f_'+str(params[r'\beta'])+'.pdf')#('plots_model'+str(model_no)+let+'t_vary_'+'ca_'+str(ca)+'rk_'+str(rk)+'z_'+str(z.mean())+'.pdf')
+# PDF = PdfPages('ca_'+str(params[r'C_\alpha'])+'rk_'+str(params[r'R_\kappa'])+'z_'+str(
+#      params[r'\zeta'])+'psi_'+str(params[r'\psi'])+'f_'+str(params[r'\beta'])+'.pdf')#('plots_model'+str(model_no)+let+'t_vary_'+'ca_'+str(ca)+'rk_'+str(rk)+'z_'+str(z.mean())+'.pdf')
 fig, ax = plt.subplots(nrows=2, ncols=2, figsize=(10, 10), tight_layout=True)
 i = 0
 j = 0
@@ -276,50 +276,50 @@ ax[i][j].xaxis.set_ticks(np.arange(6, 20, 2))
 ax[i][j].xaxis.set_major_formatter(FormatStrFormatter('%g'))
 ax[i][j].set_ylabel(r'Pitch angle (deg)', fontsize=fs)
 ax[i][j].legend(fontsize = lfs)
-PDF.savefig(fig)
-fig, ax = plt.subplots(nrows=2, ncols=2, figsize=(10, 10), tight_layout=True)
-i = 0
-j=0
-ax[i][j].axhline(y=1, color='g', linestyle='-', label=r'1')
-ax[i][j].plot(kpc_r, omt, marker='o', markersize=m,
-              c='tab:orange', mfc='k', mec='k', label=r'$\Omega\tau$')
-ax[i][j].plot(kpc_r, kah, marker='o',
-              markersize=m, c='tab:blue', mfc='k', mec='k', label=r'$\frac{K_\alpha h}{C_\alpha \tau u}$')
+# PDF.savefig(fig)
+# fig, ax = plt.subplots(nrows=2, ncols=2, figsize=(10, 10), tight_layout=True)
+# i = 0
+# j=0
+# ax[i][j].axhline(y=1, color='g', linestyle='-', label=r'1')
+# ax[i][j].plot(kpc_r, omt, marker='o', markersize=m,
+#               c='tab:orange', mfc='k', mec='k', label=r'$\Omega\tau$')
+# ax[i][j].plot(kpc_r, kah, marker='o',
+#               markersize=m, c='tab:blue', mfc='k', mec='k', label=r'$\frac{K_\alpha h}{C_\alpha \tau u}$')
 
-ax[i][j].set_xlabel('Radius(kpc)', fontsize=fs)
-ax[i][j].set_ylabel(r'Condition for $\alpha_k$ (Myr)', fontsize=fs)
-ax[i][j].legend(fontsize = lfs)
+# ax[i][j].set_xlabel('Radius(kpc)', fontsize=fs)
+# ax[i][j].set_ylabel(r'Condition for $\alpha_k$ (Myr)', fontsize=fs)
+# ax[i][j].legend(fontsize = lfs)
 
-j = 1
-ax[i][j].plot(kpc_r, taue_f/s_Myr, c='b', markersize=m,
-              linestyle='-', marker='o', mfc='k', mec='k', label=r'$\tau^e$')
-ax[i][j].plot(kpc_r, taur_f/s_Myr, c='g',
-              markersize=m, linestyle='-', marker='o', mfc='k', mec='k', label=r'$\tau^r$')
-ax[i][j].plot(kpc_r, h_f/(u_f*s_Myr), c='y', markersize=m,
-              linestyle='-', marker='o', mfc='k', mec='k', label=r'$h/u$')
+# j = 1
+# ax[i][j].plot(kpc_r, taue_f/s_Myr, c='b', markersize=m,
+#               linestyle='-', marker='o', mfc='k', mec='k', label=r'$\tau^e$')
+# ax[i][j].plot(kpc_r, taur_f/s_Myr, c='g',
+#               markersize=m, linestyle='-', marker='o', mfc='k', mec='k', label=r'$\tau^r$')
+# ax[i][j].plot(kpc_r, h_f/(u_f*s_Myr), c='y', markersize=m,
+#               linestyle='-', marker='o', mfc='k', mec='k', label=r'$h/u$')
 
-ax[i][j].set_xlabel('Radius(kpc)', fontsize=fs)
-ax[i][j].set_ylabel(r'Correlation Time $\tau$ (Myr)', fontsize=fs)
-ax[i][j].legend(fontsize = lfs)
+# ax[i][j].set_xlabel('Radius(kpc)', fontsize=fs)
+# ax[i][j].set_ylabel(r'Correlation Time $\tau$ (Myr)', fontsize=fs)
+# ax[i][j].legend(fontsize = lfs)
 
-i = 1
-ax[i][j].plot(kpc_r, dkdc_f, markersize=m, linestyle='-',
-              marker='o', mfc='k', mec='k', label=r'$D_k/D_c$')
-ax[i][j].plot(kpc_r, 1*np.ones(len(kpc_r)))
-ax[i][j].set_xlabel('Radius(kpc)', fontsize=fs)
-ax[i][j].set_ylabel(r'$D_k/D_c$',  fontsize=fs)
-ax[i][j].legend(fontsize = lfs)
+# i = 1
+# ax[i][j].plot(kpc_r, dkdc_f, markersize=m, linestyle='-',
+#               marker='o', mfc='k', mec='k', label=r'$D_k/D_c$')
+# ax[i][j].plot(kpc_r, 1*np.ones(len(kpc_r)))
+# ax[i][j].set_xlabel('Radius(kpc)', fontsize=fs)
+# ax[i][j].set_ylabel(r'$D_k/D_c$',  fontsize=fs)
+# ax[i][j].legend(fontsize = lfs)
 
-j = 0
-ax[i][j].plot(kpc_r, (((np.pi**2)*(tau_f*(u_f**2))/3*(np.sqrt(dkdc_f)-1)/(4*h_f**2))**(-1))/
-              (s_Myr*1e+3), c='g', markersize=m, linestyle='-', marker='o', mfc='k', mec='k', label=r'$\gamma$')
-ax[i][j].set_xlabel('Radius(kpc)', fontsize=fs)
-ax[i][j].set_ylabel(r'local e-folding time $\gamma$ (Gyr)', fontsize=fs)
-ax[i][j].legend(fontsize = lfs)
-#fig.suptitle(r'$T_{avg} = $ '+str(T_tb.mean()), fontsize=15)
-PDF.savefig(fig)
-PDF.close()
+# j = 0
+# ax[i][j].plot(kpc_r, (((np.pi**2)*(tau_f*(u_f**2))/3*(np.sqrt(dkdc_f)-1)/(4*h_f**2))**(-1))/
+#               (s_Myr*1e+3), c='g', markersize=m, linestyle='-', marker='o', mfc='k', mec='k', label=r'$\gamma$')
+# ax[i][j].set_xlabel('Radius(kpc)', fontsize=fs)
+# ax[i][j].set_ylabel(r'local e-folding time $\gamma$ (Gyr)', fontsize=fs)
+# ax[i][j].legend(fontsize = lfs)
+# #fig.suptitle(r'$T_{avg} = $ '+str(T_tb.mean()), fontsize=15)
+# PDF.savefig(fig)
+# PDF.close()
 
 # plt.savefig('ca_'+str(params[r'C_\alpha'])+'rk_'+str(params[r'R_\kappa'])+'z_'+str(
 #     params[r'\zeta'])+'psi_'+str(params[r'\psi'])+'f_'+str(params[r'\beta'])+'.png')
-#plt.show()
+plt.show()
