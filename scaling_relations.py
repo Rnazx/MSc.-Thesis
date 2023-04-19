@@ -30,10 +30,10 @@ os.chdir(current_directory + '\expressions')
 import magnetic_expressions as m
 import turbulence_expressions as t
 
-observable = T
-quantity = t.hsub
+observable = sigma
+quantity = m.Bbar
 
-zr, quan_f, coeff= scal_finder(t.hsub, quantity, observable, data_pass, t.taue, t.alphak1, np.linspace(1,5000,100))
+zr, quan_f, coeff= scal_finder(t.hsup, quantity, observable, data_pass, t.taue, t.alphak1, np.linspace(1,5000,100))
 # coeff = np.mean(
 #         zr[1:]*(np.gradient(np.log(np.abs(quan_f[1:])))/np.gradient(zr[1:])))
 print(coeff)
