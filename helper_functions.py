@@ -142,7 +142,7 @@ def scal_finder(h_exp, quan_exp, observable, data_pass, tau_exp=None, alpha_exp=
         else:
             Bbar_in = np.array([quan_val[i].evalf(subs={h: hf, tau: tauf, alphak: alphakf}) for i, (
                 hf, tauf, alphakf) in enumerate(zip(h_f, tau_f, alphak_f))])
-            return np.float64(Bbar_in*(np.float64(Bbar_in*Bbar_in > 0)))
+            return np.float64(np.abs(Bbar_in))
     obs_val, h_val = scal_helper(h_exp, data_pass, observable, _range)
     h_scal = root_finder(h_val, 7e+20)
     if tau_exp is not None:
