@@ -51,7 +51,7 @@ with open('parameter_file.in', 'r') as FH:
             params[par_name] = np.float64(num) / np.float64(denom)
 ########################################################################################################################
 
-subprocess.run(["python", "get_magnetic_observables.py"])
+#subprocess.run(["python", "get_magnetic_observables.py"])
 
 
 #####################################################################################################################
@@ -98,7 +98,9 @@ current_directory = str(os.getcwd())
 with open('mag_observables.pickle', 'rb') as f:
     kpc_r, h_f, l_f, u_f, cs_f, alphak_f, tau_f, biso_f, bani_f, Bbar_f, tanpB_f, tanpb_f = pickle.load(
         f)
-
+with open('errors_quan.pickle', 'rb') as f:
+    h_err, l_err, u_err, cs_err, alphak_err, tau_err, biso_err, bani_err, Bbar_err, tanpB_err, tanpb_err = pickle.load(
+        f)
 os.chdir(current_directory + '\data')
 
 with open('zip_data.pickle', 'rb') as f:
@@ -145,7 +147,9 @@ os.chdir(current_directory)
 #from get_magnetic_observables import omt, kah, taue_f, taur_f
 
 pB = np.arctan(-tanpB_f)
+pB_err = -tanpB_err/(1+tanpB_f**2)
 pbb = np.arctan(tanpb_f)
+pbb_err = tanpb_err/(1+tanpb_f**2)
 pbo = (1/2)*((1+(2*Bbar_f*bani_f*np.cos(pbb-pB))/
               (bani_f**2+Bbar_f**2))*np.arctan((Bbar_f*np.sin(pB) + bani_f*np.sin(pbb))/
                                                ((Bbar_f*np.cos(pB)) + bani_f*np.cos(pbb)))
@@ -165,6 +169,14 @@ interval = 1e+3
 pog = np.array([quad(pogen, -interval, interval, args=(Bbar_f[i], pbb[i], pB[i], brms),
                points=[-interval*brms, interval*brms])[0] for i in range(len(kpc_r))])
 
+G_scal_Bbartot = np.sqrt(biso_f**2 + bani_f**2 + Bbar_f**2)
+G_scal_Bbarreg = Bbar_f
+G_scal_Bbarord = np.sqrt(bani_f**2 + Bbar_f**2)
+print(h_err, l_err, u_err, cs_err, alphak_err, tau_err, biso_err, bani_err, Bbar_err, tanpB_err, tanpb_err)
+G_scal_Bbartot_err = (biso_err*biso_f + bani_err*bani_f + Bbar_err*Bbar_f)/G_scal_Bbartot
+G_scal_Bbarreg_err = Bbar_err
+G_scal_Bbarord_err = (bani_err*bani_f + Bbar_err*Bbar_f)/G_scal_Bbarord
+
 ####################################################################################################################################################
 m = 2
 fs = 15
@@ -175,6 +187,7 @@ matplotlib.ticker.AutoMinorLocator(n=None)
 plt.rcParams["xtick.minor.visible"] =  True
 plt.rcParams["ytick.minor.visible"] =  True
 plt.rcParams["legend.loc"] = 'upper right'
+plt.rcParams["errorbar.capsize"] = 2
 
 os.chdir(current_directory+'\plots')
 
@@ -184,11 +197,12 @@ from matplotlib.backends.backend_pdf import PdfPages
 fig, ax = plt.subplots(nrows=2, ncols=2, figsize=(10, 10), tight_layout=True)
 i = 0
 j = 0
-ax[i][j].plot(kpc_r, h_f*pc_kpc/cm_kpc, c='r', linestyle='-', mfc='k',
+#print(l_err*pc_kpc/cm_kpc)
+ax[i][j].errorbar(kpc_r, h_f*pc_kpc/cm_kpc, h_err*pc_kpc/cm_kpc,ecolor = 'y', c='r', linestyle='-', mfc='k',
               mec='k', markersize=m, marker='o', label=r' $h$(pc)')
 ax[i][j].plot(kpc_dat_r, pc_dat_h, c='b', linestyle='--', mfc='k', mec='k',
               markersize=m, marker='o', label=r'Data from Chamandy et.al.(16) $h(pc)$')
-ax[i][j].plot(kpc_r, l_f*pc_kpc/cm_kpc, c='g',
+ax[i][j].errorbar(kpc_r, l_f*pc_kpc/cm_kpc,l_err*pc_kpc/cm_kpc, c='g',
               linestyle='-', mfc='k', mec='k', markersize=m, marker='o', label=r'Correlation length l(pc)')
 # ax[i][j].plot(kpc_r, datamaker(lsn , data_pass, h_f, tau_f)*pc_kpc/cm_kpc,c = 'y',linestyle='--',mfc='k',mec='k', marker='o')
 ax[i][j].xaxis.set_ticks(np.arange(6, 20, 2))
@@ -198,7 +212,7 @@ ax[i][j].set_ylabel(r'Length scale (pc)', fontsize=fs)
 ax[i][j].legend(fontsize = lfs)
 
 j = 1
-ax[i][j].plot(kpc_r, u_f/cm_km, color='y', marker='o', mfc='k',
+ax[i][j].errorbar(kpc_r, u_f/cm_km, u_err/cm_km, color='y', marker='o', mfc='k',
               mec='k', markersize=m, label=r'$u$')
 ax[i][j].plot(kpc_r, alphak_f/cm_km, color='b', marker='o',
               mfc='k', mec='k', markersize=m, label=r'$\alpha_k$')
@@ -208,10 +222,10 @@ ax[i][j].plot(kpc_r, alphasat_f/cm_km, color='m', marker='o',
               mfc='k', mec='k', markersize=m, label=r'$\alpha_{sat}$')
 
 
-ax[i][j].plot(kpc_r, np.sqrt(u_f**2 + cs_f**2) /
-              cm_km, color='r', marker='o', mfc='k', mec='k', markersize=m, label=r'$\sqrt{u^2+c_s^2}$')
-ax[i][j].plot(kpc_r, cs_f /
-              cm_km, color='g', linestyle='--', label=r'$c_s$')
+# ax[i][j].plot(kpc_r, np.sqrt(u_f**2 + cs_f**2) /
+#               cm_km, color='r', marker='o', mfc='k', mec='k', markersize=m, label=r'$\sqrt{u^2+c_s^2}$')
+ax[i][j].errorbar(kpc_r, cs_f /
+              cm_km, cs_err /cm_km, color='g', linestyle='--', label=r'$c_s$')
 ax[i][j].plot(kpc_r, dat_u/cm_km, marker='o', markersize=m,
               c='tab:orange', mfc='k', mec='k', linestyle='--', label='data')
 ax[i][j].plot(kpc_r, dat_u_warp/cm_km, marker='o', markersize=m,
@@ -224,22 +238,20 @@ ax[i][j].set_ylabel(r'Turbulence parameters (km/s)',  fontsize=fs)
 ax[i][j].legend(fontsize=8)
 
 i = 1
-G_scal_Bbartot = np.sqrt(biso_f**2 + bani_f**2 + Bbar_f**2)
-G_scal_Bbarreg = Bbar_f
-G_scal_Bbarord = np.sqrt(bani_f**2 + Bbar_f**2)
+
 ax[i][j].plot(mrange, G_dat_Btot, c='b', linestyle='--', marker='o', mfc='k',
               mec='k', markersize=m)#, label='Average Binned data $B_{tot}$ ($\mu G$)')
-ax[i][j].plot(kpc_r, G_scal_Bbartot*1e+6, c='b', linestyle='-', marker='o', mfc='k', mec='k',
+ax[i][j].errorbar(kpc_r, G_scal_Bbartot*1e+6,G_scal_Bbartot_err*1e+6, c='b', linestyle='-', marker='o', mfc='k', mec='k',
               markersize=m, label=r' $B_{tot}=\sqrt{\bar{B}^2+b_{iso}^2+b_{ani}^2}$')
 
 ax[i][j].plot(mrange, G_dat_Breg, c='r', linestyle='--', marker='o', mfc='k',
               mec='k', markersize=m)#, label='Average Binned data $B_{reg}$ ($\mu G$)')
-ax[i][j].plot(kpc_r, G_scal_Bbarreg*1e+6, c='r', linestyle='-', marker='o',
+ax[i][j].errorbar(kpc_r, G_scal_Bbarreg*1e+6,G_scal_Bbarreg_err*1e+6, c='r', linestyle='-', marker='o',
               mfc='k', mec='k', markersize=m, label=r' $B_{reg} = \bar{B}$')
 
 ax[i][j].plot(mrange, G_dat_Bord, c='y', linestyle='--', marker='o', mfc='k',
               mec='k', markersize=m)#, label='Average Binned data $B_{ord}$ ($\mu G$)')
-ax[i][j].plot(kpc_r, G_scal_Bbarord*1e+6, c='y', linestyle='-', marker='o', mfc='k',
+ax[i][j].errorbar(kpc_r, G_scal_Bbarord*1e+6,G_scal_Bbarord_err*1e+6, c='y', linestyle='-', marker='o', mfc='k',
               mec='k', markersize=m, label=r' $B_{ord} = \sqrt{\bar{B}^2+b_{ani}^2}$')
 
 ax[i][j].set_xlabel(r'Radius ($kpc$)', fontsize=fs)
@@ -265,7 +277,7 @@ ax[i][j].errorbar(rmrange, 180*RM_dat_pb/np.pi, yerr=180*err_RM_dat_pb/np.pi, ms
 ax[i][j].errorbar(rmrange, 180*RM_dat_po/np.pi, yerr=180*err_RM_dat_po/np.pi, ms=2, mew=2, capsize=2,
                   c='y', linestyle='--', marker='o', mfc='k', mec='k')#, label=r'Data $p_{o}$ (ordered field)(RM)')
 
-ax[i][j].plot(kpc_r, 180*pB/np.pi, c='r', linestyle='-', marker='o',
+ax[i][j].errorbar(kpc_r, 180*pB/np.pi,180*pB_err/np.pi, c='r', linestyle='-', marker='o',
               markersize=m, mfc='k', mec='k', label=r' $p_{B}$ (mean field)')
 # ax[i][j].plot(kpc_r, 180*pbb/np.pi,c = 'r',linestyle='--', marker='o',label = r' $p_{b}$ (anisotropic field)')
 ax[i][j].plot(kpc_r, 180*pog/np.pi, c='y', linestyle='-', mfc='k', markersize=m,
