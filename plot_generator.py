@@ -1,15 +1,13 @@
 import matplotlib
-from helper_functions import datamaker, exp_analytical_data
+from helper_functions import datamaker
 from scipy.integrate import quad
 from scipy.interpolate import griddata
 import numpy as np
 import matplotlib.pyplot as plt
 from sympy import *
-from fractions import Fraction
 import pickle
 import os
 from matplotlib.ticker import FormatStrFormatter
-import subprocess
 
 # Defining the Observables
 q = Symbol('q')
@@ -83,7 +81,6 @@ pc_dat_h = np.array([316.4, 371.9, 437.1, 513.7])
 pc_kpc = 1e3  # number of pc in one kpc
 cm_km = 1e5  # number of cm in one km
 cm_kpc = 3.086e+21  # number of centimeters in one parsec
-cm_kpc = 3.086e+21  # number of ccentimeters in one parsec
 s_Myr = 1e+6*(365*24*60*60)  # megayears to seconds
 deg_rad = 180e0/np.pi
 arcmin_deg = 60e0
@@ -172,7 +169,7 @@ pog = np.array([quad(pogen, -interval, interval, args=(Bbar_f[i], pbb[i], pB[i],
 G_scal_Bbartot = np.sqrt(biso_f**2 + bani_f**2 + Bbar_f**2)
 G_scal_Bbarreg = Bbar_f
 G_scal_Bbarord = np.sqrt(bani_f**2 + Bbar_f**2)
-print(h_err, l_err, u_err, cs_err, alphak_err, tau_err, biso_err, bani_err, Bbar_err, tanpB_err, tanpb_err)
+
 G_scal_Bbartot_err = (biso_err*biso_f + bani_err*bani_f + Bbar_err*Bbar_f)/G_scal_Bbartot
 G_scal_Bbarreg_err = Bbar_err
 G_scal_Bbarord_err = (bani_err*bani_f + Bbar_err*Bbar_f)/G_scal_Bbarord
@@ -181,6 +178,12 @@ G_scal_Bbarord_err = (bani_err*bani_f + Bbar_err*Bbar_f)/G_scal_Bbarord
 m = 2
 fs = 15
 lfs = 10
+leg_textsize = 10
+axis_textsize = 10
+rc = {"font.family" : "serif", 
+      "mathtext.fontset" : "stix"}
+plt.rcParams.update(rc)
+plt.rcParams["font.serif"] = ["Times New Roman"] + plt.rcParams["font.serif"]
 matplotlib.rc('xtick', labelsize=fs)
 matplotlib.rc('ytick', labelsize=fs)
 matplotlib.ticker.AutoMinorLocator(n=None)
@@ -198,18 +201,23 @@ fig, ax = plt.subplots(nrows=2, ncols=2, figsize=(10, 10), tight_layout=True)
 i = 0
 j = 0
 #print(l_err*pc_kpc/cm_kpc)
-ax[i][j].errorbar(kpc_r, h_f*pc_kpc/cm_kpc, h_err*pc_kpc/cm_kpc,ecolor = 'y', c='r', linestyle='-', mfc='k',
+ax[i][j].plot(kpc_r, h_f*pc_kpc/cm_kpc, c='r', linestyle='-', mfc='k',
               mec='k', markersize=m, marker='o', label=r' $h$(pc)')
 ax[i][j].plot(kpc_dat_r, pc_dat_h, c='b', linestyle='--', mfc='k', mec='k',
               markersize=m, marker='o', label=r'Data from Chamandy et.al.(16) $h(pc)$')
-ax[i][j].errorbar(kpc_r, l_f*pc_kpc/cm_kpc,l_err*pc_kpc/cm_kpc, c='g',
+ax[i][j].plot(kpc_r, l_f*pc_kpc/cm_kpc, c='g',
               linestyle='-', mfc='k', mec='k', markersize=m, marker='o', label=r'Correlation length l(pc)')
 # ax[i][j].plot(kpc_r, datamaker(lsn , data_pass, h_f, tau_f)*pc_kpc/cm_kpc,c = 'y',linestyle='--',mfc='k',mec='k', marker='o')
 ax[i][j].xaxis.set_ticks(np.arange(6, 20, 2))
 ax[i][j].xaxis.set_major_formatter(FormatStrFormatter('%g'))
 ax[i][j].set_xlabel(r'Radius (kpc)', fontsize=fs)
 ax[i][j].set_ylabel(r'Length scale (pc)', fontsize=fs)
-ax[i][j].legend(fontsize = lfs)
+ax[i][j].fill_between(kpc_r, (h_f+h_err)*pc_kpc/cm_kpc,(h_f-h_err)*pc_kpc/cm_kpc, alpha=0.2, edgecolor='none', facecolor='red')
+ax[i][j].fill_between(kpc_r, (l_f+l_err)*pc_kpc/cm_kpc,(l_f-l_err)*pc_kpc/cm_kpc,  alpha=0.2, edgecolor='none', facecolor='green')
+ax[i][j].tick_params(axis='both', which='minor', labelsize=axis_textsize, colors='k', length=3 , width=1   )
+ax[i][j].tick_params(axis='both', which='major', labelsize=axis_textsize, colors='k', length=5 , width=1.25)
+
+ax[i][j].legend(fontsize = lfs,frameon=False,handlelength=4,ncol=1,prop={'size':leg_textsize,'family':'Times New Roman'},fancybox=True,framealpha=0.9,handletextpad=0.7,columnspacing=0.7)
 
 j = 1
 ax[i][j].errorbar(kpc_r, u_f/cm_km, u_err/cm_km, color='y', marker='o', mfc='k',
