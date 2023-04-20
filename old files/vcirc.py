@@ -6,6 +6,7 @@ import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FormatStrFormatter
+import os
 #from astropy import units as u
 #from astropy.constants import c,m_p,m_e,h
 
@@ -44,7 +45,7 @@ print('arcmin_xbnd_M31',arcmin_xbnd_M31)
 print('arcmin_xmid_M31',arcmin_xmid_M31)
 
 length, breadth = [5, 2.5]
-
+os.chdir(r'C:\Users\riona\Desktop\MSc.-Thesis\old files\data_plots')
 #Specifiy text size in legend
 leg_textsize = 10
 axis_textsize = 10
