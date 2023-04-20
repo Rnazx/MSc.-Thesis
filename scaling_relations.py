@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 from sympy import *
 import pickle
 import os
-from matplotlib.ticker import FormatStrFormatter
 import sys
 current_directory = str(os.getcwd())
 
@@ -50,4 +49,4 @@ plt.ylabel(r'$u(km/s)$', size='large')
 plt.legend()
 # plt.savefig('t_'+str(t[0])+'.png')
 
-#plt.show()
+plt.show()

@@ -29,7 +29,7 @@ with open('zip_data.pickle', 'rb') as f:
     kpc_r, data_pass = pickle.load(f)
 r = kpc_r.size
 
-observables = [q ,omega ,sigma,sigmatot ,T]
+observables = [q ,omega ,sigma,sigmatot,sigmasfr,T]
 quantities = [hg, l, u, cs, alphak1, taue, biso, bani, Bbar, tanpB, tanpb]
 
 exps = []
