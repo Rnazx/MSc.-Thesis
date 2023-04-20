@@ -38,17 +38,17 @@ err_omega = griddata(kpc_r_Chemin, err_omega, kpc_r,
                     method='linear', fill_value=nan, rescale=False)
 
 
-relerr_q = 0.01*np.ones(r)#err_q/np.abs(dat_q)
+relerr_q = err_q/np.abs(dat_q)
 relerr_omega = err_omega/np.abs(dat_omega)
 relerr_sigma = 0.01*np.ones(r)
 relerr_sigmatot = 0.01*np.ones(r)
-#relerr_sigmasfr = 0.01*np.ones(r)
+relerr_sigmasfr = 0.01*np.ones(r)
 
 err_T = (0.005*kpc_r + 0.1)*1e+4 #from Tabatabaei+13b equation ??
 relerr_T = err_T/np.abs(T_tb)
-rel_err = np.array([relerr_q, relerr_omega, relerr_sigma, relerr_sigmatot, relerr_T])
+rel_err = np.array([relerr_q, relerr_omega, relerr_sigma, relerr_sigmatot,relerr_sigmasfr, relerr_T])
 exps = np.load('scal_exponents.npy')
-relerr_quan = np.matmul(np.abs(exps),rel_err)
+relerr_quan = np.sqrt(np.matmul(exps**2,rel_err**2))
 err_quantities = model_f[1:]*relerr_quan
 
 os.chdir(current_directory)
