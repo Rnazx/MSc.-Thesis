@@ -1,7 +1,7 @@
 import numpy as np
 from sympy import *
 import inspect
-from scipy.optimize import curve_fit, fsolve
+from scipy.optimize import curve_fit, fsolve, root
 
 
 ############################################################################################################################
@@ -107,12 +107,16 @@ def datamaker(quan, data_pass, h_f, tau_f=None, alphak_f=None):
 def root_finder(h_val, h_init=7e+25):
     h_f = []
     for hv in h_val:
-        def func(x): return np.array(
+        def func(x): 
+            #print(x)
+            return np.array(
             [np.float64((h-hv).evalf(subs={h: i})) for i in x])
-        h_solution = fsolve(func, h_init)
+        def dfunc(x): 
+            return np.array(
+            [np.float64(diff((h-hv), h).evalf(subs={h: i})) for i in x])
+        h_solution = fsolve(func, h_init, fprime=dfunc )
         h_f.append(h_solution[0])
     h_f = np.array(h_f)
-
     return h_f
 
 #####################################################################################################
@@ -124,8 +128,8 @@ def scal_helper(express, data_pass, observable=zet, _range=np.linspace(1, 5000, 
     val_subs = {sigmatot: sigt, sigma: sig, sigmasfr: sigsfr, q: qs,
                 omega: oms, zet: zets, T: t, psi: ps, bet: b, calpha: ca, Rk: rk, mu: m}
     try:
-        val_subs.pop(observable)
-        obs_val = _range#(val_subs.pop(observable))*_range
+        #val_subs.pop(observable)
+        obs_val = (val_subs.pop(observable))*_range
     except ValueError:
         print('Observable does not exist!')
     exp = express.evalf(subs=val_subs)
@@ -141,10 +145,10 @@ def scal_finder(h_exp, quan_exp, observable, data_pass, tau_exp=None, alpha_exp=
             return np.array([np.float64(quan_val[i].evalf(subs={h: hf, tau: tauf})) for i, (hf, tauf) in enumerate(zip(h_f, tau_f))])
         else:
             Bbar_in = np.array([quan_val[i].evalf(subs={h: hf, tau: tauf, alphak: alphakf}) for i, (
-                hf, tauf, alphakf) in enumerate(zip(h_f, tau_f, alphak_f))])
+            hf, tauf, alphakf) in enumerate(zip(h_f, tau_f, alphak_f))])
             return np.float64(np.abs(Bbar_in))
     obs_val, h_val = scal_helper(h_exp, data_pass, observable, _range)
-    h_scal = root_finder(h_val, 7e+20)
+    h_scal = root_finder(h_val, 7e+27)
     if tau_exp is not None:
         tau_scal = scal_dat(tau_exp, data_pass, h_scal)
     else:
@@ -157,5 +161,5 @@ def scal_finder(h_exp, quan_exp, observable, data_pass, tau_exp=None, alpha_exp=
     # pg, cov = curve_fit(f=power_law, xdata=obs_val, ydata=quan_f, p0=np.asarray([10**5,-1]))
     # perr = np.sqrt(np.diag(cov))
     pg = np.mean(
-        obs_val*(np.gradient(np.log(np.abs(quan_f)))/np.gradient(obs_val)))
+        np.gradient(np.log(np.abs(quan_f)))/np.gradient(np.log(obs_val)))
     return obs_val, quan_f, pg #[1], perr[1]
