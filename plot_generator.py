@@ -170,9 +170,9 @@ G_scal_Bbartot = np.sqrt(biso_f**2 + bani_f**2 + Bbar_f**2)
 G_scal_Bbarreg = Bbar_f
 G_scal_Bbarord = np.sqrt(bani_f**2 + Bbar_f**2)
 
-G_scal_Bbartot_err = (biso_err*biso_f + bani_err*bani_f + Bbar_err*Bbar_f)/G_scal_Bbartot
+G_scal_Bbartot_err = np.sqrt((biso_err*biso_f )**2+ (bani_err*bani_f)**2 + (Bbar_err*Bbar_f)**2)/G_scal_Bbartot
 G_scal_Bbarreg_err = Bbar_err
-G_scal_Bbarord_err = (bani_err*bani_f + Bbar_err*Bbar_f)/G_scal_Bbarord
+G_scal_Bbarord_err = np.sqrt((bani_err*bani_f)**2 + (Bbar_err*Bbar_f)**2)/G_scal_Bbarord
 
 ####################################################################################################################################################
 m = 2
