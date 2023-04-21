@@ -15,6 +15,7 @@ sigma = Symbol('\Sigma')
 sigmatot = Symbol('Sigma_tot')
 sigmasfr = Symbol('Sigma_SFR')
 T = Symbol('T')
+zet = Symbol('zeta')
 
 os.chdir(current_directory + '\data')
 sys.path.append(current_directory + '\expressions')
@@ -29,8 +30,8 @@ os.chdir(current_directory + '\expressions')
 import magnetic_expressions as m
 import turbulence_expressions as t
 
-observable = sigma
-quantity = m.Bbar
+observable = zet
+quantity = t.u
 
 zr, quan_f, coeff= scal_finder(t.hsup, quantity, observable, data_pass, t.taue, t.alphak1, np.linspace(1,5000,100))
 # coeff = np.mean(
