@@ -72,8 +72,10 @@ rho = sigma/(2*h)
 n = rho/(mu*mh)
 lsn = psi*0.14*cm_kpc*(E51)**Fraction(16, 51) * \
     (n/0.1)**Fraction(-19, 51)*(cs/(cm_km*10))**Fraction(-1, 3)
+# lsn = psi*h
 l = ((Gamma-1)/Gamma)*cl*lsn
 l = simplify(l)
+
 nu = (delta*sigmasfr)/(2*h*mstar)
 u = simplify(((4*pi/3)*l*lsn**3*cs**2*nu)**Fraction(1, 3))
 

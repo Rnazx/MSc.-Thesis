@@ -18,8 +18,8 @@ with open('zip_data.pickle', 'rb') as f:
 
 # extracting the expressions
 os.chdir(current_directory + '\expressions')
-# subprocess.run(["python", "turbulence_expressions.py"])
-# subprocess.run(["python", "magnetic_expressions.py"])
+subprocess.run(["python", "turbulence_expressions.py"])
+subprocess.run(["python", "magnetic_expressions.py"])
 
 
 with open('turb_exp.pickle', 'rb') as f:
@@ -31,7 +31,7 @@ with open('mag_exp.pickle', 'rb') as f:
 os.chdir(current_directory)
 
 cs_f = exp_analytical_data(cs, data_pass).astype(np.float64)
-
+print(exp_analytical_data(hg, data_pass))
 h_f = root_finder(exp_analytical_data(hg, data_pass))
 
 l_f = datamaker(l, data_pass, h_f)

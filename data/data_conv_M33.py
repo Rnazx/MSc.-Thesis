@@ -179,14 +179,24 @@ dat_q = griddata(kpc_r_kam, dat_q, kpc_r, method='linear', fill_value=nan, resca
 
 dat_sigmasfr = griddata(kpc_r_SFR, dat_sigmasfr, kpc_r, method='linear', fill_value=nan, rescale=False)
 
-molbool = True
-if molbool:
-    dat_sigma += dat_sigmah2
+# molbool = True
+# if molbool:
+#     dat_sigma += dat_sigmah2
 
 dat_sigmatot = dat_sigma + dat_sigmastar
+molfrac = dat_sigmah2/(dat_sigmah2 + dat_sigma)
 
+data  = kpc_r, dat_sigmatot, dat_sigma, dat_q, dat_omega, dat_sigmasfr, molfrac
 
-data  = kpc_r, dat_sigmatot, dat_sigma, dat_q, dat_omega, dat_sigmasfr
+nan_max = np.argmax([np.sum(np.isnan(d)) for d in data])
+nan_max_data = data[nan_max]
+nan_mask = ~np.isnan(nan_max_data)
+
+nandeleted_data = []
+for i,d in enumerate(data):
+    nandeleted_data.append(d[nan_mask])
+
+nandeleted_data = tuple(nandeleted_data)
+
 with open('data_m33.pickle', 'wb') as f:
-    pickle.dump(data, f)
-print(kpc_r.size)
+    pickle.dump(nandeleted_data, f)

@@ -148,7 +148,7 @@ def scal_finder(h_exp, quan_exp, observable, data_pass, tau_exp=None, alpha_exp=
             hf, tauf, alphakf) in enumerate(zip(h_f, tau_f, alphak_f))])
             return np.float64(np.abs(Bbar_in))
     obs_val, h_val = scal_helper(h_exp, data_pass, observable, _range)
-    h_scal = root_finder(h_val, 7e+27)
+    h_scal = root_finder(h_val, 7e+20)
     if tau_exp is not None:
         tau_scal = scal_dat(tau_exp, data_pass, h_scal)
     else:

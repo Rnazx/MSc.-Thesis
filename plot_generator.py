@@ -163,7 +163,7 @@ def pogen(b, B, pb, pB, s):
 brms = np.sqrt(np.average(bani_f**2))
 brms
 interval = 1e+3
-pog = np.array([quad(pogen, -interval, interval, args=(Bbar_f[i], pbb[i], pB[i], brms),
+pog = np.array([quad(pogen, -interval, interval, args=(Bbar_f[i], pbb[i], pB[i], bani_f[i]),
                points=[-interval*brms, interval*brms])[0] for i in range(len(kpc_r))])
 
 G_scal_Bbartot = np.sqrt(biso_f**2 + bani_f**2 + Bbar_f**2)
