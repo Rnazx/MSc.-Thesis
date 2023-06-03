@@ -9,7 +9,7 @@ import subprocess
 current_directory = str(os.getcwd())
 
 # data extraction for galaxy
-subprocess.run(["python", "zipped_data.py"])
+# subprocess.run(["python", "zipped_data.py"])
 
 os.chdir(current_directory + '\data')
 
@@ -18,8 +18,8 @@ with open('zip_data.pickle', 'rb') as f:
 
 # extracting the expressions
 os.chdir(current_directory + '\expressions')
-subprocess.run(["python", "turbulence_expressions.py"])
-subprocess.run(["python", "magnetic_expressions.py"])
+# subprocess.run(["python", "turbulence_expressions.py"])
+# subprocess.run(["python", "magnetic_expressions.py"])
 
 
 with open('turb_exp.pickle', 'rb') as f:
@@ -31,9 +31,14 @@ with open('mag_exp.pickle', 'rb') as f:
 os.chdir(current_directory)
 
 cs_f = exp_analytical_data(cs, data_pass).astype(np.float64)
-print(exp_analytical_data(hg, data_pass))
-h_f = root_finder(exp_analytical_data(hg, data_pass))
-
+#print(exp_analytical_data(hg, data_pass))
+try:
+    h_f = root_finder(exp_analytical_data(hg, data_pass), 1e+15)
+    print('Root found succesfully')
+except:
+    print('*************************************************************************************')
+    print('Please change the value of the initial guess')
+    print('*************************************************************************************')
 l_f = datamaker(l, data_pass, h_f)
 u_f = datamaker(u, data_pass, h_f)
 taue_f = datamaker(taue, data_pass, h_f)
@@ -46,33 +51,33 @@ calpha = Symbol('C_alpha')
 
 omt = datamaker(omega, data_pass, h_f, tau_f)*tau_f
 kah = datamaker(kalpha/calpha, data_pass, h_f, tau_f)*(h_f/(tau_f*u_f))
-if __name__ == '__main__':
-    alphak_f = []
 
-    for i in range(len(omt)):
-        if min(1, kah[i]) >= omt[i]:
-            alpha_k = alphak1
-        elif min(omt[i], kah[i]) >= 1:
-            alpha_k = alphak2
-        else:
-            alpha_k = alphak3
-        alphak_f.append(datamaker(alpha_k, [data_pass[i]], np.array(
-            [h_f[i]]), np.array([tau_f[i]]))[0])
+alphak_f = []
 
-    alphak_f = np.array(alphak_f)
+for i in range(len(omt)):
+    if min(1, kah[i]) >= omt[i]:
+        alpha_k = alphak1
+    elif min(omt[i], kah[i]) >= 1:
+        alpha_k = alphak2
+    else:
+        alpha_k = alphak3
+    alphak_f.append(datamaker(alpha_k, [data_pass[i]], np.array(
+        [h_f[i]]), np.array([tau_f[i]]))[0])
+
+alphak_f = np.array(alphak_f)
 
 
-    biso_f = datamaker(biso, data_pass, h_f, tau_f)
-    bani_f = datamaker(bani, data_pass, h_f, tau_f)
+biso_f = datamaker(biso, data_pass, h_f, tau_f)
+bani_f = datamaker(bani, data_pass, h_f, tau_f)
 
-    Bbar_f = datamaker(Bbar, data_pass, h_f, tau_f, alphak_f)
+Bbar_f = datamaker(Bbar, data_pass, h_f, tau_f, alphak_f)
 
-    tanpB_f = datamaker(tanpB, data_pass, h_f, tau_f)
-    tanpb_f = datamaker(tanpb, data_pass, h_f, tau_f)
+tanpB_f = datamaker(tanpB, data_pass, h_f, tau_f)
+tanpb_f = datamaker(tanpb, data_pass, h_f, tau_f)
 
-    mag_obs = kpc_r, h_f, l_f, u_f, cs_f, alphak_f, tau_f, biso_f, bani_f, Bbar_f, tanpB_f, tanpb_f
+mag_obs = kpc_r, h_f, l_f, u_f, cs_f, alphak_f, tau_f, biso_f, bani_f, Bbar_f, tanpB_f, tanpb_f
 
-    os.chdir(current_directory)
+os.chdir(current_directory)
 
-    with open('mag_observables.pickle', 'wb') as f:
-        pickle.dump(mag_obs, f)
+with open('mag_observables.pickle', 'wb') as f:
+    pickle.dump(mag_obs, f)

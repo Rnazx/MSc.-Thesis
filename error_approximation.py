@@ -47,7 +47,7 @@ relerr_sigmasfr = 0.01*np.ones(r)
 err_T = (0.005*kpc_r + 0.1)*1e+4 #from Tabatabaei+13b equation ??
 relerr_T = err_T/np.abs(T_tb)
 rel_err = np.array([relerr_q, relerr_omega, relerr_sigma, relerr_sigmatot,relerr_sigmasfr, relerr_T])
-exps = np.load('scal_exponents.npy')
+exps = np.load('scal_exponents_model1.npy')
 relerr_quan = np.sqrt(np.matmul(exps**2,rel_err**2))
 err_quantities = model_f[1:]*relerr_quan
 
@@ -55,7 +55,7 @@ os.chdir(current_directory)
 #print(err_quantities)
 with open('errors_quan.pickle', 'wb') as f:
     pickle.dump(err_quantities, f)
-
+print('Found the errors from the scaling relations')
 # plt.errorbar(kpc_r, u_f/cm_km, err_h/cm_km, c='r', linestyle='-',ms=2, mew=2, capsize=2,
 #                   ecolor = 'y', marker='o', mfc='k', mec='k', label=r' $h$(pc)')
 

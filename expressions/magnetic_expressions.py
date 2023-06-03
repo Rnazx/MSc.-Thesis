@@ -84,3 +84,4 @@ mag_expr = biso, bani, Bbar, tanpb, tanpB, Beq, eta, cs
 
 with open('mag_exp.pickle', 'wb') as f:
     pickle.dump(mag_expr, f)
+print('Solved the magnetic expressions')

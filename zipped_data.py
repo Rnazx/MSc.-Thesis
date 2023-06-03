@@ -45,9 +45,9 @@ if switch['chem_or_claude'] is 'Chemin':
 else:
     c_or_cl = 0
 
-subprocess.run(["python", "data_conv_M33.py", str(int(c_or_cl))])
+subprocess.run(["python", "data_conv_M31.py", str(int(c_or_cl))])
 
-with open('data_m33.pickle', 'rb') as f:
+with open('data_m31.pickle', 'rb') as f:
     data = pickle.load(f)
 
 kpc_r, dat_sigmatot, dat_sigmaHI, dat_q, dat_omega, dat_sigmasfr, molfrac = data

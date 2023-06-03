@@ -136,7 +136,7 @@ def scal_helper(express, data_pass, observable=zet, _range=np.linspace(1, 5000, 
     return obs_val, np.array([exp.evalf(subs={observable: o}) for o in obs_val])
 
 
-def scal_finder(h_exp, quan_exp, observable, data_pass, tau_exp=None, alpha_exp=None, _range=np.linspace(1, 5000, 200)):
+def scal_finder(h_exp, quan_exp, observable, data_pass, tau_exp=None, alpha_exp=None, _range=np.linspace(1, 5000, 200), init_h=7e+20):
     def scal_dat(quan, data_pass, h_f, tau_f=None, alphak_f=None):
         quan_val = scal_helper(quan, data_pass, observable, _range)[1]
         if tau_f is None:
@@ -148,7 +148,7 @@ def scal_finder(h_exp, quan_exp, observable, data_pass, tau_exp=None, alpha_exp=
             hf, tauf, alphakf) in enumerate(zip(h_f, tau_f, alphak_f))])
             return np.float64(np.abs(Bbar_in))
     obs_val, h_val = scal_helper(h_exp, data_pass, observable, _range)
-    h_scal = root_finder(h_val, 7e+20)
+    h_scal = root_finder(h_val, init_h)
     if tau_exp is not None:
         tau_scal = scal_dat(tau_exp, data_pass, h_scal)
     else:

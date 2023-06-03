@@ -70,14 +70,19 @@ cs = (gamma*boltz*T/(mu*mh))**Rational(1/2)
 
 rho = sigma/(2*h)
 n = rho/(mu*mh)
-lsn = psi*0.14*cm_kpc*(E51)**Fraction(16, 51) * \
-    (n/0.1)**Fraction(-19, 51)*(cs/(cm_km*10))**Fraction(-1, 3)
-# lsn = psi*h
-l = ((Gamma-1)/Gamma)*cl*lsn
+#model 2
+lsn = psi*cl*h
+l = lsn
+#model 3
+# lsn = psi*0.14*cm_kpc*(E51)**Fraction(16, 51) * \
+#     (n/0.1)**Fraction(-19, 51)*(cs/(cm_km*10))**Fraction(-1, 3)
+# l = ((Gamma-1)/Gamma)*cl*lsn
+
 l = simplify(l)
 
 nu = (delta*sigmasfr)/(2*h*mstar)
-u = simplify(((4*pi/3)*l*lsn**3*cs**2*nu)**Fraction(1, 3))
+# u = simplify(((4*pi/3)*l*lsn**3*cs**2*nu)**Fraction(1, 3))
+u = cs
 
 hg = zet*(u**2 + cs**2)/(3*pi*G*sigmatot)
 hsub = zet*(cs**2)/(3*pi*G*sigmatot)
@@ -99,3 +104,5 @@ turb_expr = hg, rho, nu, u, l, taue, taur, alphak1, alphak2, alphak3
 
 with open('turb_exp.pickle', 'wb') as f:
     pickle.dump(turb_expr, f)
+
+print('Solved the turbulence expressions')
