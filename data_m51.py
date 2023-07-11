@@ -7,7 +7,6 @@ import pandas as pd
 
 current_directory=r'D:\Documents\Gayathri_college\MSc project\data\m51'
 
-
 #REQUIRED FUNCTIONS
 ###########################################################################################################################################
 #importing data from csv file to np array
