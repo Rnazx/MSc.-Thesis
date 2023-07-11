@@ -6,8 +6,7 @@ import pickle
 import os
 import sys
 from matplotlib.ticker import FormatStrFormatter
-
-
+import math as m
 from scipy.interpolate import griddata
 
 
@@ -48,9 +47,6 @@ kpc_xmid_M33 = kpc_xmid_M33_Tabatabaei * kpc_D_M33_Plot / kpc_D_M33_Tabatabaei
 arcmin_xbnd_M33 = kpc_xbnd_M33 / kpc_D_M33_Plot * deg_rad * arcmin_deg
 arcmin_xmid_M33 = kpc_xmid_M33 / kpc_D_M33_Plot * deg_rad * arcmin_deg
 
-print('arcmin_xbnd_M33',arcmin_xbnd_M33)
-print('arcmin_xmid_M33',arcmin_xmid_M33)
-
 length, breadth = [5, 2.5]
 
 #Specifiy text size in legend
@@ -61,10 +57,12 @@ rc = {"font.family" : "serif",
 plt.rcParams.update(rc)
 plt.rcParams["font.serif"] = ["Times New Roman"] + plt.rcParams["font.serif"]
 
-
 ### M33
 
 ##HI data from Koch+2018a (MNRAS 479, 2505) and Kam+2017 (ApJ 154:41)
+
+##################################################################################################################################################################################
+##################################################################################################################################################################################
 
 # Radius for circular velocity data from Kam+17, Tab. 4 (Tilted-ring model)
 arcmin_r_Kam = np.array([2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70, 72, 74, 76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96])
@@ -75,9 +73,10 @@ kms_vcirc_Kam = np.array([42.0, 58.8, 69.4, 79.3, 86.7, 91.4, 94.2, 96.5, 99.8, 
 # Vcirc_error from Kam+17, Tab. 4 (Tilted-ring model)
 kms_vcirc_error_Kam = np.array([2.4, 1.5, 0.4, 4.0, 1.8, 3.1, 4.8, 5.5, 3.9, 1.7, 0.4, 0.7, 1.7, 2.2, 3.0, 4.0, 4.0, 4.8, 2.2, 2.5, 6.5, 8.1, 8.2, 8.9, 9.6, 7.7, 5.1, 3.2, 1.4, 1.8, 2.4, 0.8, 1.5, 0.5, 2.9, 2.2, 2.5, 8.1, 9.8, 8.5, 26.6, 34.6, 27.4, 33.4, 35.2, 27.4, 39.1, 26.7])
 
+##################################################################################################################################################################################
+
 # Radius for circular velocity data from Koch+18a, Tab. C1 (DISKFIT) (correction in Koch+18b table 1 gives identical radius values -- ??)
 arcsec_r_Koch = np.array([9, 27, 45, 63, 81, 99, 117, 135, 153, 171, 189, 207, 225, 243, 261, 279, 297, 315, 333, 351, 369, 387, 405, 423, 441, 459, 477, 495, 513, 531, 549, 567, 585, 603, 621, 639, 657, 675, 693, 711, 729, 747, 765, 783, 801, 819, 837, 855, 873, 891, 909, 927, 945, 963, 981, 999, 1017, 1035, 1053, 1071, 1089, 1107, 1125, 1143, 1161, 1179, 1197, 1215, 1233, 1251, 1269, 1287, 1305, 1323, 1341, 1359, 1377, 1395, 1413, 1431, 1449, 1467, 1485, 1503, 1521, 1539, 1557, 1575, 1593, 1611, 1629, 1647, 1665, 1683, 1701, 1719, 1737, 1755, 1773, 1791, 1809, 1827])
-
 
 # Vcirc from Koch+18a, Tab. C1 (DISKFIT) -- identical to corrected version in Tab. 1 of Koch+18b  (??)
 kms_vcirc_Koch = np.array([1.58, 11.88, 22.71, 30.53, 29.95, 34.20, 36.76, 44.61, 47.80, 51.67, 52.73, 53.24, 55.30, 57.58, 58.70, 59.47, 60.30, 64.32, 67.66, 69.07, 72.05, 75.89, 74.09, 73.44, 77.06, 77.06, 77.82, 79.01, 80.96, 80.34, 80.35, 82.90, 86.23, 86.92, 86.13, 87.43, 87.89, 87.82, 91.08, 90.37, 88.22, 90.67, 92.32, 93.31, 94.15, 93.40, 94.02, 94.91, 95.57, 95.15, 93.19, 94.52, 95.00, 95.72, 96.89, 98.58, 98.09, 99.87, 99.10, 99.01, 97.58, 98.60, 99.61, 99.61, 102.02, 101.84, 102.76, 102.66, 102.57, 104.08, 103.24, 103.17, 103.33, 103.41, 103.91, 102.91, 105.50, 104.05, 106.03, 104.89, 106.68, 105.53, 105.80, 104.03, 105.58, 105.69, 106.32, 105.97, 105.58, 106.18, 106.08, 106.24, 106.39, 106.47, 107.19, 105.88, 106.58, 106.09, 106.30, 107.23, 104.01, 104.50])
@@ -85,16 +84,17 @@ kms_vcirc_Koch = np.array([1.58, 11.88, 22.71, 30.53, 29.95, 34.20, 36.76, 44.61
 # Vcirc_error from Koch+18a, Tab. C1 (DISKFIT) -- identical to corrected version in Tab. 1 of Koch+18b (??)
 kms_vcirc_error_Koch = np.array([6.24, 5.26, 5.25, 5.12, 4.47, 4.03, 3.99, 3.79, 3.49, 3.08, 2.96, 3.06, 3.22, 3.30, 3.42, 3.50, 3.59, 3.78, 3.75, 4.03, 4.49, 4.82, 4.91, 3.29, 2.76, 2.80, 2.60, 2.48, 2.59, 2.50, 2.65, 2.66, 2.66, 2.59, 2.63, 2.57, 2.63, 2.35, 2.44, 2.25, 2.09, 2.36, 2.48, 2.26, 2.15, 2.37, 2.44, 2.50, 2.48, 2.22, 2.46, 2.63, 2.77, 2.90, 2.81, 2.73, 2.61, 2.53, 2.41, 2.40, 2.21, 2.26, 2.22, 2.49, 2.40, 2.52, 2.38, 2.62, 2.68, 2.58, 2.39, 2.42, 2.50, 2.64, 2.56, 2.63, 2.47, 2.47, 2.47, 2.57, 2.48, 2.36, 2.33, 2.23, 2.23, 2.26, 2.17, 2.32, 2.20, 2.26, 2.28, 2.36, 2.37, 2.43, 2.44, 2.58, 2.52, 2.56, 2.35, 2.61, 2.82, 2.59])
 
+##################################################################################################################################################################################
+##################################################################################################################################################################################
+
 ## HI velocity dispersion
 
 # HI velocity dispersion from Kam+17 Tab. 8
 # Entries that are listed as 0._ in the original work are probably typos. They should read 10._ ; this has been corrected in the following data.
 kms_sigmaLOS_Kam = np.array([10.7, 9.5, 9.3, 9.6, 10.0, 10.1, 9.1, 8.2, 8.0, 8.4, 7.9, 8.0, 7.6, 7.6, 8.0, 8.9, 9.8, 10.2, 10.3, 10.5, 9.5, 8.8, 9.1, 9.0, 8.5, 8.2, 8.3, 7.6, 7.7, 6.8, 7.4, 7.5, 6.7, 6.6, 6.4, 8.0, 8.2, 6.5, 6.5, 7.4, 6.5, 5.6, 6.1, 5.7, 5.7, 5.6, 6.4, 7.5])
 
-# HI velocity dispersion from Koch+18a Fig 16 
-# kms_sigmaLOS = np.array([])
-
-#kms_sigmaLOS = np.array([])
+##################################################################################################################################################################################
+##################################################################################################################################################################################
 
 ## HI Surface density
 
@@ -104,11 +104,10 @@ Msunpc2_SigmaHI_Kam = np.array([7.89, 7.73, 8.26, 8.52, 8.23, 7.66, 8.00, 8.61, 
 # HI surface density of disc (from Van Eck+2015, Tab. 2 -- also used in Chamandy+2016)
 Msunpc2_SigmaHI_Vaneck = np.array([11.3, 9.43])
 
-# HI surface density from Koch+18a Fig. 6
-#Msunpc2_SigmaHI_Koch = np.array([])
+##################################################################################################################################################################################
+##################################################################################################################################################################################
 
-# Total surface density of disc (from Kam+15/Kam+17): See script data/M33/Sigma_Star.py
-
+# Total surface density of disc/stellar surface density (from Kam+15/Kam+17): See script data/M33/Sigma_Star.py
 ## SFR surface density data from Verley+2009, A&A 493,453, Fig. 13 (SFR S.D. according to 5 different tracers: 24\mu m, H\alpha, FUV, FIR, TIR)
 
 # Radius, Verley+09 assumes a distance of 840 kpc
@@ -120,74 +119,96 @@ Msunpc2Gyr_Sigma_SFR = np.array([21.11, 15.96, 15.01, 13.25, 12.46, 13.27, 12.47
 # Values used in Van Eck+15/Chamandy+16
 Msunpc2Gyr_Sigma_SFR_Vaneck = np.array([9.64, 3.99])
 
+##################################################################################################################################################################################
+##################################################################################################################################################################################
 
 ## Molecular gas surface density (using Gratier+10, A&A 522,A3, Fig. 8 -- from Dexter)
 
 # Radius for molecular gas surface density (assumes distance of 840 kpc, Gratier+10, Tab. 1)
 kpc_r_SigmaH2 = np.array([0.2671, 0.7504, 1.257, 1.752, 2.259, 2.754, 3.249, 3.756, 4.251, 4.758, 5.253, 5.748, 6.243, 6.750, 7.245, 7.752, 8.247])	
+
 # Molecular gas surface density
 Msunpc2_SigmaH2 = np.array([9.557, 8.997, 4.844, 4.844, 4.700, 2.569, 1.871, 2.346, 0.9629, 1.022, 0.4735, 0.2791, 0.4197, 0.3554, 0.3056, 0.1436, 0.1094])
 
 # H2 surface density of disc (from Van Eck+2015, Tab. 2)
 Msunpc2_SigmaH2_Vaneck = np.array([1.90, 1.28])
 
+##################################################################################################################################################################################
+##################################################################################################################################################################################
+
+#stellar surface density 
 def s(kpc_x,Ups):
     mu = mu0 + 1.10857 * kpc_x / kpc_Rd
-    return Ups * 10**(-0.4 * (mu - C)) 
+    return Ups * 10**(-0.4 * (mu - C)) #eq 3 in sec 5.1
 
-MsunLsun_Ups = [0.72,0.52]  #see Kam+17 Sec 5.1
+MsunLsun_Ups = [0.72,0.52]  #see Kam+17 Sec 5.1. these are 2 upsilon vals taken in this paper
 C = 24.8
 mu0 = 18.01
 kpc_Rd = 1.82
-
 nR = 10001
 nU = len(MsunLsun_Ups)
 
 #Specify range 
 xr=[0,20]
 yr=[0,400]
- 
+
 kpc_xbnd_M33 = np.array([1,3,5])	#radial bins for magnetic field data (Tabatabaei+08)
 kpc_xmid_M33 = np.array([2,4])	#midpoints of radial bins for magnetic field data (Tabatabaei+08)
 
 Delta_kpc_R = xr[1]
 shift_kpc_R = 0
 
+#radius for Msunpc2_Sigma_star data. dont understand the definition
 kpc_R = np.arange(nR) / nR * Delta_kpc_R + shift_kpc_R
-
 Msunpc2_Sigma_star = np.zeros((nR,nU))
 
+#making 2D array sigma_star with 2 different upsilon vals
 for j in range(nU):
     Msunpc2_Sigma_star[:,j] = s(kpc_R,MsunLsun_Ups[j])
 
+
+#converting radius for vcirc from arcmin to kpc for Kam data
 kpc_r_kam = arcmin_r_Kam / arcmin_deg / deg_rad * kpc_D_M33_Kam
 
 rad_data = [kpc_r_kam, kpc_r_SFR, kpc_r_SigmaH2]
+#finding the radius list to interpolate
 kpc_r = rad_data[np.argmin(np.array([d.size for d in rad_data]))]
 
+#kpc_r- radius for which we wanna interpolate
 dat_sigmastar = griddata(kpc_R, Msunpc2_Sigma_star[:,0]*g_Msun/(pcm)**2, kpc_r, method='linear', fill_value=nan, rescale=False)
 dat_sigma = griddata(kpc_r_kam, Msunpc2_SigmaHI_Kam*g_Msun/(pcm)**2, kpc_r, method='linear', fill_value=nan, rescale=False)
 dat_sigmah2 = griddata(kpc_r_SigmaH2, Msunpc2_SigmaH2 *g_Msun/(pcm)**2, kpc_r, method='linear', fill_value=nan, rescale=False)
-
 dat_sigmasfr = Msunpc2Gyr_Sigma_SFR*g_Msun/((10**9*365*24*60*60)*(pcm)**2)
+
+#correction for inclination angle, chosen angle = 56 deg 
+#numerator has the chosen value 
+dat_sigmastar = dat_sigmastar*(m.cos(m.radians(56))/m.cos(m.radians(52))) 
+dat_sigma=dat_sigma*(m.cos(m.radians(56))/m.cos(m.radians(52))) 
+dat_sigmah2 = dat_sigmah2*(m.cos(m.radians(56))/m.cos(m.radians(52)))
+dat_sigmasfr=dat_sigmasfr*(m.cos(m.radians(56))/m.cos(m.radians(54)))
+
+#defining omega and changing units
 kmskpc_Om = kms_vcirc_Kam /kpc_r_kam
 dat_omega = kmskpc_Om*1e+5/kpcm
+
+#calculating q
 dat_q = -1 * kpc_r_kam/ kmskpc_Om * np.gradient(kmskpc_Om)/np.gradient(kpc_r_kam)
+
+#interpolation of q,omega, sigmasfr
 dat_omega = griddata(kpc_r_kam, dat_omega, kpc_r, method='linear', fill_value=nan, rescale=False)
 dat_q = griddata(kpc_r_kam, dat_q, kpc_r, method='linear', fill_value=nan, rescale=False)
-
-
 dat_sigmasfr = griddata(kpc_r_SFR, dat_sigmasfr, kpc_r, method='linear', fill_value=nan, rescale=False)
 
-# molbool = True
-# if molbool:
-#     dat_sigma += dat_sigmah2
+#correction for inclination angle, chosen angle = 56 deg
+dat_omega=dat_omega*(m.cos(m.radians(56))/m.cos(m.radians(52)))
+dat_q=dat_q*(m.cos(m.radians(56))/m.cos(m.radians(52)))
 
-dat_sigmatot = dat_sigma + dat_sigmastar
-molfrac = dat_sigmah2/(dat_sigmah2 + dat_sigma)
+dat_sigmatot = dat_sigma + dat_sigmastar #defining total surface density
+molfrac = dat_sigmah2/(dat_sigmah2 + dat_sigma) #defining molecular fraction
 
 data  = kpc_r, dat_sigmatot, dat_sigma, dat_q, dat_omega, dat_sigmasfr, molfrac
 
+#to remove nan values for points whr interpolation is impossible
 nan_max = np.argmax([np.sum(np.isnan(d)) for d in data])
 nan_max_data = data[nan_max]
 nan_mask = ~np.isnan(nan_max_data)
@@ -200,3 +221,26 @@ nandeleted_data = tuple(nandeleted_data)
 
 with open('data_m33.pickle', 'wb') as f:
     pickle.dump(nandeleted_data, f)
+
+###################################################################################################################################################################
+
+# import csv
+# import os.path as osp
+
+# # Combine the data using the zip function
+# # data = zip(kpc_r_kam, kms_vcirc_Kam, kms_vcirc_error_Kam, arcsec_r_Koch, kms_vcirc_Koch, kms_vcirc_error_Koch)
+# data = zip(kpc_r_kam, dat_sigma,dat_sigmah2)
+
+# file_name='sigma_gas_M33.csv'
+# # Specify the CSV file path
+# csv_file_path = r'D:\Documents\Gayathri_college\MSc project\data\m33\{}'.format(file_name)
+
+# # Write the data to the CSV file
+# with open(csv_file_path, 'w', newline='') as csv_file:
+#     writer = csv.writer(csv_file)
+#     writer.writerow(['r kpc', 'sigma HI','sigma H2'])  # Write header row
+#     writer.writerows(data)  # Write data rows
+
+# print("CSV file created successfully.")
+
+###################################################################################################################################################################
