@@ -47,8 +47,8 @@ else:
     c_or_cl = 0
 
 #choose "data_conv_M33.py" or "data_conv_M31.py" in the next two lines to choose the galaxy
-subprocess.run(["python", "data_conv_M33.py", str(int(c_or_cl))])
-with open('data_m33.pickle', 'rb') as f:
+subprocess.run(["python", "data_conv_M31.py", str(int(c_or_cl))])
+with open('data_m31.pickle', 'rb') as f:
     data = pickle.load(f)
 
 kpc_r, dat_sigmatot, dat_sigmaHI, dat_q, dat_omega, dat_sigmasfr, molfrac = data
