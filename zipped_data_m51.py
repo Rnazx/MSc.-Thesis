@@ -38,33 +38,25 @@ with open(current_directory+'\switches.in', 'r') as FH:
 
 print('Succesfully read the parameters and switches')
 
-
-# data extraction for galaxy
-os.chdir(current_directory + '\data')
-if switch['chem_or_claude'] == 'Chemin':
-    c_or_cl = 1 #these values are chosen in switches.in file
-else:
-    c_or_cl = 0
-
 #choose "data_conv_M33.py" or "data_conv_M31.py" in the next two lines to choose the galaxy
-subprocess.run(["python", current_directory+"\data\data_conv_M31.py", str(int(c_or_cl))]) #
-with open('data_m31.pickle', 'rb') as f:
+subprocess.run(["python", current_directory+"\data\data_m51.py"]) #, str(int(c_or_cl)
+with open('data_M51.pickle', 'rb') as f:
     data = pickle.load(f)
 
-kpc_r, dat_sigmatot, dat_sigmaHI, dat_q, dat_omega, dat_sigmasfr, molfrac = data
+kpc_r,dat_sigmatot,dat_sigmaHI,dat_sigmaH2,dat_sigmagas, dat_q, dat_omega, dat_sigmasfr,dat_sigmasfr_fuv,temp,vel_disp = data
+
 r = kpc_r.size  # common radius of the interpolated data
 
-
-dat_sigmaH2 = dat_sigmaHI*(1/(1-molfrac))
-
-T_tb = (0.017*kpc_r + 0.5)*1e+4
-
-if switch['incl_moldat'] == 'Yes':
+#this is if total gas density is isnt available
+#not used for M51 data
+#adds HI and H2 data based on switch 
+if switch['incl_moldat'] == 'Yes': #this is set to 'YES' in switches.in file
     dat_sigma = dat_sigmaHI + dat_sigmaH2
 else:
     dat_sigma = dat_sigmaHI
 
-dat_sigma = params['mu']*dat_sigma
+#finding total gas density
+dat_sigmagas = params['mu']*dat_sigma #mu= 14/11 set in parameters.in file
 
 #to apply kennicut-schmidt relation
 ks_exp = params['ks_exp']
@@ -77,22 +69,35 @@ if ks_split[0] == 'Yes':
     else:
         dat_sigmasfr = ks_const*(dat_sigma)**(ks_exp)
 
-# os.chdir(current_directory)
+#to switch between fuv and h_alpha data
+#sfr_list={'h_alpha':0,'FUV':1}
+sfr_val=0
+if sfr_val==0: #choosing H_alpha data
+    del list(data)[8]
+else: #chose FUV data
+    del list(data)[7]
+
 
 #changes based on galaxy and quality of fit
 zet = params['\zeta']*np.ones(r)
 psi = params['\psi']*np.ones(r)
 bet = params[r'\beta']*np.ones(r)
 
-T = T_tb  # 1e+4*np.ones(r)
+T = temp  #obtained from paper
 ca = params[r'C_\alpha']*np.ones(r)
 rk = params['R_\kappa']*np.ones(r)
 mu = params['mu']*np.ones(r)
+
 # zip function makes array of corresponding elements of each array passed into it
 data_pass = kpc_r, list(zip(dat_sigmatot, dat_sigma, dat_sigmasfr,
                  dat_q, dat_omega, zet, T, psi, bet, ca, rk, mu))
 
-os.chdir(current_directory + '\data')
-print('Succesfully zipped the data and the parameters')
 
+with open(current_directory+'\data\zip_data.pickle', 'wb') as f:
+    pickle.dump(data_pass, f)
+
+with open('zip_data_M51.pickle', 'wb') as f:
+    pickle.dump(data_pass, f)
+
+print('Succesfully zipped the data and the parameters, and made pickle file')
 
