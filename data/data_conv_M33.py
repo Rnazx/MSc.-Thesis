@@ -222,6 +222,7 @@ nandeleted_data = tuple(nandeleted_data)
 with open('data_m33.pickle', 'wb') as f:
     pickle.dump(nandeleted_data, f)
 
+#used to create csv files of data lists used in this code
 ###################################################################################################################################################################
 
 # import csv
