@@ -3,7 +3,7 @@ from sympy import *
 import inspect
 from scipy.optimize import curve_fit, fsolve, root
 
-
+current_directory=r'D:\Documents\Gayathri_college\MSc project\codes\MSc.-Thesis'
 ############################################################################################################################
 # Defining the Observables
 q = Symbol('q')
@@ -53,7 +53,7 @@ g_mH = 1.6736e-24  # mass of hydrogen atom in grams
 cgs_kB = 1.3807e-16  # boltzmann constant in cgs units
 
 gval, clval, xioval, mstarval, deltaval, e51val, kaval, Gammaval = tuple(
-    np.genfromtxt('constants.in', delimiter='=', dtype=np.float64)[:, -1])
+    np.genfromtxt(current_directory+'\constants.in', delimiter='=', dtype=np.float64)[:, -1])
 
 const = [(boltz, cgs_kB), (mh, g_mH), (G, cgs_G), (gamma, gval),
          (cl, clval), (xio, xioval), (mstar, mstarval*g_Msun), (delta, deltaval), (E51, e51val), (kalpha, kaval), (Gamma, Gammaval)]

@@ -6,21 +6,15 @@ import os
 
 import subprocess
 
-current_directory = str(os.getcwd())
-
-# data extraction for galaxy
-# subprocess.run(["python", "zipped_data.py"])
+current_directory = r'D:\Documents\Gayathri_college\MSc project\codes\MSc.-Thesis'
 
 os.chdir(current_directory + '\data')
 
-with open('zip_data.pickle', 'rb') as f:
-    kpc_r, data_pass = pickle.load(f)
+with open('zip_data_M51.pickle', 'rb') as f: #change name of pickle file to be used here
+    kpc_r, data_pass = pickle.load(f) 
 
 # extracting the expressions
 os.chdir(current_directory + '\expressions')
-# subprocess.run(["python", "turbulence_expressions.py"])
-# subprocess.run(["python", "magnetic_expressions.py"])
-
 
 with open('turb_exp.pickle', 'rb') as f:
     hg, rho, nu, u, l, taue, taur, alphak1, alphak2, alphak3 = pickle.load(f)
@@ -79,5 +73,5 @@ mag_obs = kpc_r, h_f, l_f, u_f, cs_f, alphak_f, tau_f, biso_f, bani_f, Bbar_f, t
 
 os.chdir(current_directory)
 
-with open('mag_observables.pickle', 'wb') as f:
+with open('mag_observables_m51.pickle', 'wb') as f:
     pickle.dump(mag_obs, f)
