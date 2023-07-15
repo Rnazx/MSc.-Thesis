@@ -92,10 +92,6 @@ mu = params['mu']*np.ones(r)
 data_pass = kpc_r, list(zip(dat_sigmatot, dat_sigma, dat_sigmasfr,
                  dat_q, dat_omega, zet, T, psi, bet, ca, rk, mu))
 
-
-with open(current_directory+'\data\zip_data.pickle', 'wb') as f:
-    pickle.dump(data_pass, f)
-
 with open('zip_data_M51.pickle', 'wb') as f:
     pickle.dump(data_pass, f)
 
