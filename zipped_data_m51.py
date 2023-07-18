@@ -39,8 +39,11 @@ with open(current_directory+'\switches.in', 'r') as FH:
 print('Succesfully read the parameters and switches')
 
 #choose "data_conv_M33.py" or "data_conv_M31.py" in the next two lines to choose the galaxy
-subprocess.run(["python", current_directory+"\data\data_m51.py"]) #, str(int(c_or_cl)
-with open('data_M51.pickle', 'rb') as f:
+#runs data_m51.py file before next line of code
+# subprocess.run(["python", current_directory+"\data\data_m51.py"]) #, str(int(c_or_cl) #for M51
+subprocess.run(["python", current_directory+"\data\data_6946.py"]) #, str(int(c_or_cl) #for 6946
+
+with open(current_directory+ '\data\data_6946.pickle', 'rb') as f:
     data = pickle.load(f)
 
 kpc_r,dat_sigmatot,dat_sigmaHI,dat_sigmaH2,dat_sigmagas, dat_q, dat_omega, dat_sigmasfr,dat_sigmasfr_fuv,temp,vel_disp = data
@@ -69,7 +72,7 @@ if ks_split[0] == 'Yes':
     else:
         dat_sigmasfr = ks_const*(dat_sigma)**(ks_exp)
 
-#galaxy specific (for M51)
+#galaxy specific (for M51 and ngc6946)
 ######################################################################################################################
 #to switch between fuv and h_alpha data for sfr
 #sfr_list={'h_alpha':0,'FUV':1}
@@ -93,9 +96,8 @@ mu = params['mu']*np.ones(r)
 # zip function makes array of corresponding elements of each array passed into it
 data_pass = kpc_r, list(zip(dat_sigmatot, dat_sigma, dat_sigmasfr,
                  dat_q, dat_omega, zet, T, psi, bet, ca, rk, mu))
-for i in data_pass[1]:
-    print(i)
-with open('zip_data_M51.pickle', 'wb') as f:
+
+with open(current_directory+ '\data\zip_data_6946.pickle', 'wb') as f:
     pickle.dump(data_pass, f)
 
 print('Succesfully zipped the data and the parameters, and made pickle file')

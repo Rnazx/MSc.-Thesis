@@ -4,8 +4,9 @@ from fractions import Fraction
 import pickle
 from scipy.interpolate import griddata
 import pandas as pd
+import math as m
 # current_directory=r'D:\Documents\Gayathri_college\MSc project\codes\data'
-current_directory=r'D:\Documents\Gayathri_college\MSc project\codes\MSc.-Thesis\data\M51 data'
+current_directory=r'D:\Documents\Gayathri_college\MSc project\codes\MSc.-Thesis\data\6946 data'
 
 #REQUIRED FUNCTIONS
 ###########################################################################################################################################
@@ -23,8 +24,8 @@ def interpolation(list1,list2,standard):
     return extrapolated_data
 ###########################################################################################################################################
     
-file_names=['smdf','HI m51..','H2 m51.','HI+H2 m51.','q_valuesM51sofue+18','omega_sofue+18',
-            'SFR_Halpha24 m51.','SFR_FUV24 m51.','temperature','CO vel dispersion schuster.']
+file_names=['smdf','HI 6946','H2 6946','HI+H2 6946','q_values6946sofue+18','omega_sofue+18',
+            'SFR_Halpha24 6946','SFR_FUV24 6946','electron temp','velocity disp.']
 dataframe_list=file_reader(file_names)
 
 #to obtain radius data from every df
@@ -33,7 +34,12 @@ radius_list=[np.array(dataframe_list[i]['r']) for i in range(len(dataframe_list)
 #obtain arrays of quantities
 col_names=['smdf','sigma_HI','sigma_H2','sigma_gas','q','omega',
            'sigma_sfr','sigma_sfr_fuv','temp','vel disp']
-quant_list=[np.array(dataframe_list[i][col_names[i]]) for i in range(len(dataframe_list))]
+#inclination correction for quantities
+inclinations=[20,20,20,20,20,20,20,20,39,38]
+i_6946=30
+quant_list=[np.array(dataframe_list[i][col_names[i]])*(m.cos(m.radians(i_6946))/m.cos(m.radians(inclinations[i]))) 
+                     for i in range(len(dataframe_list))] #corrected for different inclination angles
+
 
 #to load errors if any given in the dat files
 #this assumes that in all files, the error columns are named as 'quant_error'
@@ -46,7 +52,7 @@ for i in dataframe_list:
 
 #find array with least length and correct it for radius
 array_with_least_length = min(radius_list, key=len) #this shows that temp data has least number of points
-corrected_radius=array_with_least_length*(8.5/7.6) #using known correction for temperature data
+corrected_radius=array_with_least_length*(7.72/8.2) #using known correction listed in overleaf file
 
 #interpolating the data and appending the common radius list 
 #interpolated arrays has an _ip ending
@@ -66,7 +72,7 @@ nandeleted_data = tuple(nandeleted_data)
 #storing that in a pickle file
 #nandeleted_data follows same order of arrays as M31 and M33 data
 code_directory=r'D:\Documents\Gayathri_college\MSc project\codes\MSc.-Thesis\data'
-with open(code_directory+'\data_{}.pickle'.format('m51'), 'wb') as f:
+with open(code_directory+'\data_{}.pickle'.format('6946'), 'wb') as f:
     pickle.dump(nandeleted_data, f)
 
 

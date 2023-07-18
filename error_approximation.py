@@ -16,13 +16,11 @@ with open(current_directory+'\MSc.-Thesis\mag_observables.pickle', 'rb') as f:
     model_f = pickle.load(f)
 
 os.chdir(current_directory + '\MSc.-Thesis\data')
-with open('zip_data_m51.pickle', 'rb') as f:
+with open('zip_data_M51.pickle', 'rb') as f:
     kpc_r, data_pass = pickle.load(f)
 
 r = kpc_r.size
-print(kpc_r)
-for i in data_pass:
-    print(i)
+
 dat_sigmatot, dat_sigma, dat_sigmasfr, dat_q, dat_omega, zet, T_tb, psi, bet, ca, rk, mu = (
     np.array([data_pass[i][j] for i in range(r)]) for j in range(len(data_pass[0])))
 
@@ -42,7 +40,6 @@ err_omega = griddata(kpc_r_Chemin, err_omega, kpc_r,
 #for m51
 #################################################################################################################################
 
-
 relerr_q = err_q/np.abs(dat_q)
 relerr_omega = err_omega/np.abs(dat_omega)
 relerr_sigma = 0.01*np.ones(r)
@@ -61,10 +58,10 @@ os.chdir(current_directory)
 with open('errors_quan.pickle', 'wb') as f:
     pickle.dump(err_quantities, f)
 print('Found the errors from the scaling relations')
-# plt.errorbar(kpc_r, u_f/cm_km, err_h/cm_km, c='r', linestyle='-',ms=2, mew=2, capsize=2,
-#                   ecolor = 'y', marker='o', mfc='k', mec='k', label=r' $h$(pc)')
+# # plt.errorbar(kpc_r, u_f/cm_km, err_h/cm_km, c='r', linestyle='-',ms=2, mew=2, capsize=2,
+# #                   ecolor = 'y', marker='o', mfc='k', mec='k', label=r' $h$(pc)')
 
-# plt.xlabel(r'Radius (kpc)', fontsize=15)
-# plt.ylabel(r'Length scale (pc)', fontsize=15)
-# plt.legend(fontsize = 10)
-# plt.show()
+# # plt.xlabel(r'Radius (kpc)', fontsize=15)
+# # plt.ylabel(r'Length scale (pc)', fontsize=15)
+# # plt.legend(fontsize = 10)
+# # plt.show()
