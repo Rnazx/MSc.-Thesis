@@ -12,20 +12,22 @@ from helper_functions import scal_finder
 
 current_directory = str(os.getcwd())
 #kpc_r, h_f, l_f, u_f, cs_f, alphak_f, tau_f, biso_f, bani_f, Bbar_f, tanpB_f, tanpb_f
-with open('mag_observables.pickle', 'rb') as f:
-    model_f = pickle.load(
-        f)
+with open(current_directory+'\MSc.-Thesis\mag_observables.pickle', 'rb') as f:
+    model_f = pickle.load(f)
 
-os.chdir(current_directory + '\data')
-with open('zip_data.pickle', 'rb') as f:
+os.chdir(current_directory + '\MSc.-Thesis\data')
+with open('zip_data_m51.pickle', 'rb') as f:
     kpc_r, data_pass = pickle.load(f)
 
 r = kpc_r.size
-
+print(kpc_r)
+for i in data_pass:
+    print(i)
 dat_sigmatot, dat_sigma, dat_sigmasfr, dat_q, dat_omega, zet, T_tb, psi, bet, ca, rk, mu = (
     np.array([data_pass[i][j] for i in range(r)]) for j in range(len(data_pass[0])))
 
-
+#################################################################################################################################
+#galaxy specific data
 from data.data_conv_M31 import kpc_r_Chemin, kms_vcirc_error_Chemin, cm_km, cm_kpc, pc_kpc, kms_vcirc_Chemin
 
 kmskpc_Om = kms_vcirc_Chemin/kpc_r_Chemin
@@ -36,6 +38,9 @@ err_q = griddata(kpc_r_Chemin, err_q, kpc_r, method='linear',
                 fill_value=nan, rescale=False)
 err_omega = griddata(kpc_r_Chemin, err_omega, kpc_r,
                     method='linear', fill_value=nan, rescale=False)
+
+#for m51
+#################################################################################################################################
 
 
 relerr_q = err_q/np.abs(dat_q)

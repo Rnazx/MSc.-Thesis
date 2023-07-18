@@ -69,14 +69,16 @@ if ks_split[0] == 'Yes':
     else:
         dat_sigmasfr = ks_const*(dat_sigma)**(ks_exp)
 
-#to switch between fuv and h_alpha data
+#galaxy specific (for M51)
+######################################################################################################################
+#to switch between fuv and h_alpha data for sfr
 #sfr_list={'h_alpha':0,'FUV':1}
 sfr_val=0
 if sfr_val==0: #choosing H_alpha data
     del list(data)[8]
 else: #chose FUV data
     del list(data)[7]
-
+######################################################################################################################
 
 #changes based on galaxy and quality of fit
 zet = params['\zeta']*np.ones(r)
@@ -91,7 +93,8 @@ mu = params['mu']*np.ones(r)
 # zip function makes array of corresponding elements of each array passed into it
 data_pass = kpc_r, list(zip(dat_sigmatot, dat_sigma, dat_sigmasfr,
                  dat_q, dat_omega, zet, T, psi, bet, ca, rk, mu))
-
+for i in data_pass[1]:
+    print(i)
 with open('zip_data_M51.pickle', 'wb') as f:
     pickle.dump(data_pass, f)
 

@@ -70,9 +70,11 @@ cs = (gamma*boltz*T/(mu*mh))**Rational(1/2)
 
 rho = sigma/(2*h)
 n = rho/(mu*mh)
+
 #model 2
 lsn = psi*cl*h
 l = lsn
+
 #model 3
 # lsn = psi*0.14*cm_kpc*(E51)**Fraction(16, 51) * \
 #     (n/0.1)**Fraction(-19, 51)*(cs/(cm_km*10))**Fraction(-1, 3)

@@ -4,8 +4,8 @@ from fractions import Fraction
 import pickle
 from scipy.interpolate import griddata
 import pandas as pd
-
-current_directory=r'D:\Documents\Gayathri_college\MSc project\codes\data'
+# current_directory=r'D:\Documents\Gayathri_college\MSc project\codes\data'
+current_directory=r'D:\Documents\Gayathri_college\MSc project\codes\MSc.-Thesis\data\M51 data'
 
 #REQUIRED FUNCTIONS
 ###########################################################################################################################################
@@ -23,15 +23,26 @@ def interpolation(list1,list2,standard):
     return extrapolated_data
 ###########################################################################################################################################
     
-file_names=['smdf','HI m51..','H2 m51.','HI+H2 m51.','q_valuesM51sofue+18','omega_sofue+18','SFR_Halpha24 m51.','SFR_FUV24 m51.','temperature','CO vel dispersion schuster.']
+file_names=['smdf','HI m51..','H2 m51.','HI+H2 m51.','q_valuesM51sofue+18','omega_sofue+18',
+            'SFR_Halpha24 m51.','SFR_FUV24 m51.','temperature','CO vel dispersion schuster.']
 dataframe_list=file_reader(file_names)
 
 #to obtain radius data from every df
 radius_list=[np.array(dataframe_list[i]['r']) for i in range(len(dataframe_list))]
 
 #obtain arrays of quantities
-col_names=['smdf','sigma_HI','sigma_H2','sigma_gas','q','omega','sigma_sfr','sigma_sfr_fuv','temp','vel disp']
+col_names=['smdf','sigma_HI','sigma_H2','sigma_gas','q','omega',
+           'sigma_sfr','sigma_sfr_fuv','temp','vel disp']
 quant_list=[np.array(dataframe_list[i][col_names[i]]) for i in range(len(dataframe_list))]
+
+#to load errors if any given in the dat files
+#this assumes that in all files, the error columns are named as 'quant_error'
+error_list=[]
+for i in dataframe_list:
+    if 'quant_error' in i.columns:
+        error_list.append(np.array(i['quant_error']))
+    else:
+        continue
 
 #find array with least length and correct it for radius
 array_with_least_length = min(radius_list, key=len) #this shows that temp data has least number of points
