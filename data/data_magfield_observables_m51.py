@@ -28,7 +28,8 @@ err_M_dat_pb = np.array([1,4,4,1,]) * np.pi/180
 m_errdat_tanpb = 1/(np.cos(err_M_dat_pb))**2
 
 #radial ranges
-mrange_endps = np.array([1.2,2.4,3.6,4.8,6.0,7.2]) #lower limit of radial ranges where M is used, given in table 4, Beck+19
+#mrange_endps = np.array([1.2,2.4,3.6,4.8,6.0,7.2]) #lower limit of radial ranges where M is used, given in table 4, Beck+19
+mrange_endps = np.array([2.4,3.6,4.8,6.0,7.2]) #lower limit of radial ranges where M is used, given in table 4, Beck+19
 mrange = (mrange_endps[1:] + mrange_endps[:-1])/2 #average of each of the intervals given in above array. contains 1 less point than above array
 #rmrange = np.arange(7.5, 12, 1) #radial ranges where RM is used, given in table 4, Beck+19
 
