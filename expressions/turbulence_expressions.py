@@ -66,13 +66,12 @@ h = Symbol('h')
 ##############################################################################################################
 
 # Defining the expressions
-cs = (gamma*boltz*T/(mu*mh))**Rational(1/2)
-
-rho = sigma/(2*h)
-n = rho/(mu*mh)
+cs = (gamma*boltz*T/(mu*mh))**Rational(1/2) #sound speed, eq 36
+rho = sigma/(2*h) #gas density, eq 35
+n = rho/(mu*mh) #converting mass density rho to number density n, eq 22
 
 #model 2
-lsn = psi*cl*h
+lsn = psi*cl*h #lsn= driving scale of isolated SNe, psi=fixed parameter used since u isnt same as velocity dispersion
 l = lsn
 
 #model 3
@@ -84,18 +83,21 @@ l = simplify(l)
 
 nu = (delta*sigmasfr)/(2*h*mstar)
 # u = simplify(((4*pi/3)*l*lsn**3*cs**2*nu)**Fraction(1, 3))
-u = cs
+u = cs #assumption in models 1 and 2
 
+#scale height expressions 
 hg = zet*(u**2 + cs**2)/(3*pi*G*sigmatot)
 hsub = zet*(cs**2)/(3*pi*G*sigmatot)
 hsup = zet*(u**2)/(3*pi*G*sigmatot)
 
+
 rho = sigma/(2*h)
 n = rho/((14/11)*mh)
-taue = simplify(l/u)
+taue = simplify(l/u) #eq 30
 taur = simplify(6.8*s_Myr*(1/4)*(nu*cm_kpc**3*s_Myr/50)**(-1)*(E51)
-                ** Fraction(-16, 17) * (n/0.1)**Fraction(19, 17)*(cs/(cm_km*10)))
+                ** Fraction(-16, 17) * (n/0.1)**Fraction(19, 17)*(cs/(cm_km*10))) #eq 32
 
+#eq 11
 alphak1 = calpha*tau**2*u**2*omega/h
 alphak2 = calpha*tau*u**2/h
 alphak3 = kalpha*u
