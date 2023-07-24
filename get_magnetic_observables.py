@@ -10,7 +10,7 @@ current_directory = r'D:\Documents\Gayathri_college\MSc project\codes\MSc.-Thesi
 
 os.chdir(current_directory + '\data')
 
-with open('zip_data_M51.pickle', 'rb') as f: #change name of pickle file to be used here
+with open('zip_data_m51.pickle', 'rb') as f: #change name of pickle file to be used here
     kpc_r, data_pass = pickle.load(f) 
 
 # extracting the expressions
@@ -27,7 +27,7 @@ os.chdir(current_directory)
 cs_f = exp_analytical_data(cs, data_pass).astype(np.float64)
 #print(exp_analytical_data(hg, data_pass))
 try:
-    h_f = root_finder(exp_analytical_data(hg, data_pass), 1e+15)
+    h_f = root_finder(exp_analytical_data(hg, data_pass), 1e+20)
     print('Root found succesfully')
 except:
     print('*************************************************************************************')
@@ -36,8 +36,8 @@ except:
 l_f = datamaker(l, data_pass, h_f)
 u_f = datamaker(u, data_pass, h_f)
 taue_f = datamaker(taue, data_pass, h_f)
-taur_f = datamaker(taur, data_pass, h_f)
-tau_f = np.minimum(taue_f, taur_f)
+#taur_f = datamaker(taur, data_pass, h_f)
+tau_f = taue_f #np.minimum(taue_f, taur_f)
 
 omega = Symbol('\Omega')
 kalpha = Symbol('K_alpha')
@@ -67,6 +67,7 @@ bani_f = datamaker(bani, data_pass, h_f, tau_f)
 Bbar_f = datamaker(Bbar, data_pass, h_f, tau_f, alphak_f)
 
 tanpB_f = datamaker(tanpB, data_pass, h_f, tau_f)
+print(tanpB_f)
 tanpb_f = datamaker(tanpb, data_pass, h_f, tau_f)
 
 mag_obs = kpc_r, h_f, l_f, u_f, cs_f, alphak_f, tau_f, biso_f, bani_f, Bbar_f, tanpB_f, tanpb_f

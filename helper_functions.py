@@ -95,7 +95,7 @@ def datamaker(quan, data_pass, h_f, tau_f=None, alphak_f=None):
     if tau_f is None:
         tau_f = np.ones(len(h_f))
     if alphak_f is None:
-        return np.array([np.float64(quan_val[i].evalf(subs={h: hf, tau: tauf})) for i, (hf, tauf) in enumerate(zip(h_f, tau_f))])
+        return np.array([quan_val[i].evalf(subs={h: hf, tau: tauf}) for i, (hf, tauf) in enumerate(zip(h_f, tau_f))])
     else:
         Bbar_in = np.array([quan_val[i].evalf(subs={h: hf, tau: tauf, alphak: alphakf}) for i, (
             hf, tauf, alphakf) in enumerate(zip(h_f, tau_f, alphak_f))])

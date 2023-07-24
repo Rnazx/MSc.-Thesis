@@ -41,12 +41,12 @@ print('Succesfully read the parameters and switches')
 #choose "data_conv_M33.py" or "data_conv_M31.py" in the next two lines to choose the galaxy
 #runs data_m51.py file before next line of code
 # subprocess.run(["python", current_directory+"\data\data_m51.py"]) #, str(int(c_or_cl) #for M51
-subprocess.run(["python", current_directory+"\data\data_6946.py"]) #, str(int(c_or_cl) #for 6946
+subprocess.run(["python", current_directory+"\data\data_m51.py"]) #, str(int(c_or_cl) #for 6946
 
-with open(current_directory+ '\data\data_6946.pickle', 'rb') as f:
+with open(current_directory+ '\data\data_m51.pickle', 'rb') as f:
     data = pickle.load(f)
 
-kpc_r,dat_sigmatot,dat_sigmaHI,dat_sigmaH2,dat_sigmagas, dat_q, dat_omega, dat_sigmasfr,dat_sigmasfr_fuv,temp,vel_disp = data
+kpc_r,dat_sigmatot,dat_sigmaHI,dat_sigmaH2, dat_q, dat_omega, dat_sigmasfr,dat_sigmasfr_fuv,temp,vel_disp = data
 
 r = kpc_r.size  # common radius of the interpolated data
 
@@ -97,7 +97,7 @@ mu = params['mu']*np.ones(r)
 data_pass = kpc_r, list(zip(dat_sigmatot, dat_sigma, dat_sigmasfr,
                  dat_q, dat_omega, zet, T, psi, bet, ca, rk, mu))
 
-with open(current_directory+ '\data\zip_data_6946.pickle', 'wb') as f:
+with open(current_directory+ '\data\zip_data_m51.pickle', 'wb') as f:
     pickle.dump(data_pass, f)
 
 print('Succesfully zipped the data and the parameters, and made pickle file')

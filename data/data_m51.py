@@ -7,6 +7,25 @@ import pandas as pd
 # current_directory=r'D:\Documents\Gayathri_college\MSc project\codes\data'
 current_directory=r'D:\Documents\Gayathri_college\MSc project\codes\MSc.-Thesis\data\M51 data'
 
+pc_kpc = 1e3  # number of pc in one kpc
+cm_km = 1e5  # number of cm in one km
+s_day = 24*3600  # number of seconds in one day
+s_min = 60  # number of seconds in one hour
+s_hr = 3600  # number of seconds in one hour
+cm_Rsun = 6.957e10  # solar radius in cm
+g_Msun = 1.989e33  # solar mass in g
+cgs_G = 6.674e-8
+cms_c = 2.998e10
+g_mH = 1.6736e-24
+g_me = 9.10938e-28
+cgs_h = 6.626e-27
+deg_rad = 180e0/np.pi
+arcmin_deg = 60e0
+arcsec_deg = 3600e0
+cm_kpc = 3.086e+21  # number of centimeters in one parsec
+cm_pc = cm_kpc/1e+3
+s_Myr = 1e+6*(365*24*60*60)  # megayears to seconds
+
 #REQUIRED FUNCTIONS
 ###########################################################################################################################################
 #importing data from csv file to np array
@@ -23,7 +42,7 @@ def interpolation(list1,list2,standard):
     return extrapolated_data
 ###########################################################################################################################################
     
-file_names=['smdf','HI m51..','H2 m51.','HI+H2 m51.','q_valuesM51sofue+18','omega_sofue+18',
+file_names=['smdf','HI m51..','H2 m51.','q_valuesM51sofue+18','omega_sofue+18',
             'SFR_Halpha24 m51.','SFR_FUV24 m51.','temperature','CO vel dispersion schuster.']
 dataframe_list=file_reader(file_names)
 
@@ -31,9 +50,11 @@ dataframe_list=file_reader(file_names)
 radius_list=[np.array(dataframe_list[i]['r']) for i in range(len(dataframe_list))]
 
 #obtain arrays of quantities
-col_names=['smdf','sigma_HI','sigma_H2','sigma_gas','q','omega',
+col_names=['smdf','sigma_HI','sigma_H2','q','omega',
            'sigma_sfr','sigma_sfr_fuv','temp','vel disp']
-quant_list=[np.array(dataframe_list[i][col_names[i]]) for i in range(len(dataframe_list))]
+conv_factors=[(g_Msun/(cm_pc**2) ),g_Msun/(cm_pc**2),g_Msun/(cm_pc**2),1,
+              cm_km/cm_kpc,g_Msun/((s_Myr*10**(-6))*(cm_pc**2)),g_Msun/((s_Myr*10**(-6))*(cm_pc**2)),1,1]
+quant_list=[np.array(dataframe_list[i][col_names[i]])*conv_factors[i] for i in range(len(dataframe_list))]
 
 #to load errors if any given in the dat files
 #this assumes that in all files, the error columns are named as 'quant_error'
