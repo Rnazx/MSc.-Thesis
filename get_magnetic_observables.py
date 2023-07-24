@@ -4,14 +4,13 @@ from sympy import *
 import pickle
 import os
 
-import subprocess
-
-current_directory = r'D:\Documents\Gayathri_college\MSc project\codes\MSc.-Thesis'
-
+########################################################################################################
+current_directory = str(os.getcwd())
 os.chdir(current_directory + '\data')
 
-with open('zip_data_m51.pickle', 'rb') as f: #change name of pickle file to be used here
+with open('zip_data.pickle', 'rb') as f: #change name of pickle file to be used here
     kpc_r, data_pass = pickle.load(f) 
+########################################################################################################
 
 # extracting the expressions
 os.chdir(current_directory + '\expressions')
@@ -21,13 +20,13 @@ with open('turb_exp.pickle', 'rb') as f:
 
 with open('mag_exp.pickle', 'rb') as f:
     biso, bani, Bbar, tanpb, tanpB, Beq, eta, cs = pickle.load(f)
+########################################################################################################
 
 os.chdir(current_directory)
 
 cs_f = exp_analytical_data(cs, data_pass).astype(np.float64)
-#print(exp_analytical_data(hg, data_pass))
 try:
-    h_f = root_finder(exp_analytical_data(hg, data_pass), 1e+20)
+    h_f = root_finder(exp_analytical_data(hg, data_pass), 1e+27) #1e+15 is initial guess, can be changed if its not converging
     print('Root found succesfully')
 except:
     print('*************************************************************************************')
@@ -36,9 +35,9 @@ except:
 l_f = datamaker(l, data_pass, h_f)
 u_f = datamaker(u, data_pass, h_f)
 taue_f = datamaker(taue, data_pass, h_f)
-#taur_f = datamaker(taur, data_pass, h_f)
-tau_f = taue_f #np.minimum(taue_f, taur_f)
-
+taur_f = datamaker(taur, data_pass, h_f)
+tau_f = np.minimum(taue_f, taur_f)
+print(u_f, cs_f)
 omega = Symbol('\Omega')
 kalpha = Symbol('K_alpha')
 calpha = Symbol('C_alpha')
@@ -63,16 +62,11 @@ alphak_f = np.array(alphak_f)
 
 biso_f = datamaker(biso, data_pass, h_f, tau_f)
 bani_f = datamaker(bani, data_pass, h_f, tau_f)
-
 Bbar_f = datamaker(Bbar, data_pass, h_f, tau_f, alphak_f)
-
 tanpB_f = datamaker(tanpB, data_pass, h_f, tau_f)
-print(tanpB_f)
 tanpb_f = datamaker(tanpb, data_pass, h_f, tau_f)
 
 mag_obs = kpc_r, h_f, l_f, u_f, cs_f, alphak_f, tau_f, biso_f, bani_f, Bbar_f, tanpB_f, tanpb_f
-
-os.chdir(current_directory)
-
 with open('mag_observables_m51.pickle', 'wb') as f:
     pickle.dump(mag_obs, f)
+########################################################################################################

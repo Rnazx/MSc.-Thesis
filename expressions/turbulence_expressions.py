@@ -82,8 +82,8 @@ l = ((Gamma-1)/Gamma)*cl*lsn
 l = simplify(l)
 
 nu = (delta*sigmasfr)/(2*h*mstar)
-# u = simplify(((4*pi/3)*l*lsn**3*cs**2*nu)**Fraction(1, 3))
-u = cs #assumption in models 1 and 2
+u = simplify(((4*pi/3)*l*lsn**3*cs**2*nu)**Fraction(1, 3))
+#u = cs #assumption in models 1 and 2
 
 #scale height expressions 
 hg = zet*(u**2 + cs**2)/(3*pi*G*sigmatot)

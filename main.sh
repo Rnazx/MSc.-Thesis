@@ -5,7 +5,7 @@ python magnetic_expressions.py
 
 cd ..
 #Change the data into the preffered format for Sympy
-python zipped_data.py
+python zipped_data_edited.py
 #Find the root and solve for all quantities
 python get_magnetic_observables.py
 
@@ -13,4 +13,4 @@ python get_magnetic_observables.py
 #python scale_exponents.py
 
 #Error aprroximation
-python error_approximation.py
+#python error_approximation.py

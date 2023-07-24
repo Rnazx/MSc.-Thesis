@@ -187,10 +187,13 @@ if __name__ == '__main__':
                             * (cm_pc)**2), kpc_r, method='linear', fill_value=nan, rescale=False)
     molfrac = griddata(kpc_r_molfrac, MolFrac, kpc_r,
                     method='linear', fill_value=nan, rescale=False)
+    dat_sigmaH2 = dat_sigma*(1/(1-molfrac))
+    T = (0.017*kpc_r + 0.5)*1e+4  #obtained from paper
+
     # plt.plot(kpc_r, dat_sigmasfr)
     # plt.show()
 
-    data = kpc_r, dat_sigmatot, dat_sigma, dat_q, dat_omega, dat_sigmasfr, molfrac
+    data = kpc_r, dat_sigmatot, dat_sigma,dat_sigmaH2, dat_q, dat_omega, dat_sigmasfr, T
     # kpc_r, dat_sigmatot, dat_sigma, dat_q, dat_omega, dat_sigmasfr, molfrac
     with open('data_m31.pickle', 'wb') as f:
         pickle.dump(data, f)
