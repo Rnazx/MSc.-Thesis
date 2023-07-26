@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from sympy import *
 from fractions import Fraction
 import pickle
-import sys
+import os
 
 pc_kpc = 1e3  # number of pc in one kpc
 cm_km = 1e5  # number of cm in one km
@@ -82,8 +82,8 @@ l = ((Gamma-1)/Gamma)*cl*lsn
 l = simplify(l)
 
 nu = (delta*sigmasfr)/(2*h*mstar)
-u = simplify(((4*pi/3)*l*lsn**3*cs**2*nu)**Fraction(1, 3))
-#u = cs #assumption in models 1 and 2
+u = simplify(((4*pi/3)*l*lsn**3*cs**2*nu)**Fraction(1, 3)) #for model 3
+# u = cs #assumption in models 1 and 2
 
 #scale height expressions 
 hg = zet*(u**2 + cs**2)/(3*pi*G*sigmatot)
@@ -105,8 +105,8 @@ alphak3 = kalpha*u
 
 turb_expr = hg, rho, nu, u, l, taue, taur, alphak1, alphak2, alphak3
 
-
-with open('turb_exp.pickle', 'wb') as f:
+current_directory = str(os.getcwd())
+with open(current_directory+r'\expressions\turb_exp.pickle', 'wb') as f:
     pickle.dump(turb_expr, f)
 
 print('Solved the turbulence expressions')

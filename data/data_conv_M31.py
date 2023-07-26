@@ -3,12 +3,10 @@ import matplotlib.pyplot as plt
 from sympy import *
 import pickle
 import sys
-
-
 from scipy.interpolate import griddata
+import os
 
-
-
+#conversion factors
 pc_kpc = 1e3  # number of pc in one kpc
 cm_km = 1e5  # number of cm in one km
 s_day = 24*3600  # number of seconds in one day
@@ -29,7 +27,6 @@ cm_pc = cm_kpc/1e+3
 s_Myr = 1e+6*(365*24*60*60)  # megayears to seconds
 
 kpc_D_M31_Plot = 780e0  # distance to M31 used for plots (see Beck+2019)
-
 kpc_D_M31_Chemin = 785e0  # distance to M31 used by Chemin+2009
 kpc_D_M31_TB10 = 780e0  # distance to M31 used by Tabatabaei+Berkhuijsen 2010
 kpc_D_M31_Fletcher = 690e0  # distance to M31 used by Fletcher+2004
@@ -190,10 +187,8 @@ if __name__ == '__main__':
     dat_sigmaH2 = dat_sigma*(1/(1-molfrac))
     T = (0.017*kpc_r + 0.5)*1e+4  #obtained from paper
 
-    # plt.plot(kpc_r, dat_sigmasfr)
-    # plt.show()
-
     data = kpc_r, dat_sigmatot, dat_sigma,dat_sigmaH2, dat_q, dat_omega, dat_sigmasfr, T
-    # kpc_r, dat_sigmatot, dat_sigma, dat_q, dat_omega, dat_sigmasfr, molfrac
-    with open('data_m31.pickle', 'wb') as f:
+
+    current_directory = str(os.getcwd())
+    with open(current_directory+'\data\data_m31.pickle', 'wb') as f:
         pickle.dump(data, f)

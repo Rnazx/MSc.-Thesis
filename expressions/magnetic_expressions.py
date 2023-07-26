@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from sympy import *
 from fractions import Fraction
 import pickle
-import sys
+import os
 
 
 ################## defining symbols#######################################
@@ -47,8 +47,8 @@ Rk = Symbol('R_k')
 
 ##############################################################################################################
 #U_0=0, f_SB=0 assumed
-
-with open('turb_exp.pickle', 'rb') as f:
+current_directory = str(os.getcwd())
+with open(current_directory+r'\expressions\turb_exp.pickle', 'rb') as f:
     hg, rho, nu, u, l, taue, taur, alphak1, alphak2, alphak3 = pickle.load(f)
 
 # 'Rational' class ensures that the number remains in exact fractional form and is not approximated by a decimal.
@@ -83,7 +83,6 @@ tanpb = 1/(1+q*omega*tau)
 
 mag_expr = biso, bani, Bbar, tanpb, tanpB, Beq, eta, cs
 
-
-with open('mag_exp.pickle', 'wb') as f:
+with open(current_directory+ r'\expressions\mag_exp.pickle', 'wb') as f:
     pickle.dump(mag_expr, f)
 print('Solved the magnetic expressions')

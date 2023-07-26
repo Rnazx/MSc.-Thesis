@@ -2,7 +2,6 @@ import numpy as np
 from sympy import *
 import pickle
 import os
-import subprocess
 
 current_directory = str(os.getcwd())
 

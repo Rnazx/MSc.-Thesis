@@ -9,8 +9,7 @@ from matplotlib.ticker import FormatStrFormatter
 import math as m
 from scipy.interpolate import griddata
 
-
-
+#conversion factors
 kpc = 1e+3
 kpcm = 3.086e+21
 pcm = kpcm/1e+3
@@ -31,7 +30,6 @@ arcmin_deg = 60e0
 arcsec_deg = 3600e0
 
 kpc_D_M33_Plot = 840e0 
-
 kpc_D_M33_Tabatabaei = 840e0  #used by Tabatabaei+08 (magnetic field data)
 kpc_D_M33_Kam = 840e0  #used by Kam+2015,2017 -- quote an uncertainty of +/- 40 kpc (HI data)
 kpc_D_M33_Koch = 840e0  #used by Koch+2018a (HI data)
@@ -205,8 +203,8 @@ dat_q=dat_q*(m.cos(m.radians(56))/m.cos(m.radians(52)))
 
 dat_sigmatot = dat_sigma + dat_sigmastar #defining total surface density
 molfrac = dat_sigmah2/(dat_sigmah2 + dat_sigma) #defining molecular fraction
-
-data  = kpc_r, dat_sigmatot, dat_sigma, dat_q, dat_omega, dat_sigmasfr, molfrac
+T=np.array([10**4]*len(kpc_r))
+data  = kpc_r, dat_sigmatot, dat_sigma,dat_sigmah2, dat_q, dat_omega, dat_sigmasfr, T
 
 #to remove nan values for points whr interpolation is impossible
 nan_max = np.argmax([np.sum(np.isnan(d)) for d in data])
@@ -219,7 +217,8 @@ for i,d in enumerate(data):
 
 nandeleted_data = tuple(nandeleted_data)
 
-with open('data_m33.pickle', 'wb') as f:
+current_directory = str(os.getcwd())
+with open(current_directory+'\data\data_m33.pickle', 'wb') as f:
     pickle.dump(nandeleted_data, f)
 
 #used to create csv files of data lists used in this code

@@ -33,5 +33,5 @@ range2=[1.5,5.5,8.5]
 #rmrange = np.arange(7.5, 12, 1) #radial ranges where RM is used, given in table 4, Beck+19
 
 #scale height data
-kpc_dat_r = np.array([7, 9, 11, 13])
-pc_dat_h = np.array([316.4, 371.9, 437.1, 513.7])
+kpc_dat_r = np.array([3.01,9.02,13.02])
+pc_dat_h = np.array([259.2,564.92,923.81])

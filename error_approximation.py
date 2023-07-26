@@ -12,11 +12,11 @@ from helper_functions import scal_finder
 
 current_directory = str(os.getcwd())
 #kpc_r, h_f, l_f, u_f, cs_f, alphak_f, tau_f, biso_f, bani_f, Bbar_f, tanpB_f, tanpb_f
-with open(current_directory+'\MSc.-Thesis\mag_observables.pickle', 'rb') as f:
+with open(current_directory+'\mag_observables.pickle', 'rb') as f:
     model_f = pickle.load(f)
 
-os.chdir(current_directory + '\MSc.-Thesis\data')
-with open('zip_data_M51.pickle', 'rb') as f:
+os.chdir(current_directory + '\data')
+with open('zip_data.pickle', 'rb') as f:
     kpc_r, data_pass = pickle.load(f)
 
 r = kpc_r.size
