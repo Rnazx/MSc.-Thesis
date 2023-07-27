@@ -178,13 +178,6 @@ dat_sigma = griddata(kpc_r_kam, Msunpc2_SigmaHI_Kam*g_Msun/(pcm)**2, kpc_r, meth
 dat_sigmah2 = griddata(kpc_r_SigmaH2, Msunpc2_SigmaH2 *g_Msun/(pcm)**2, kpc_r, method='linear', fill_value=nan, rescale=False)
 dat_sigmasfr = Msunpc2Gyr_Sigma_SFR*g_Msun/((10**9*365*24*60*60)*(pcm)**2)
 
-#correction for inclination angle, chosen angle = 56 deg 
-#numerator has the chosen value 
-dat_sigmastar = dat_sigmastar*(m.cos(m.radians(56))/m.cos(m.radians(52))) 
-dat_sigma=dat_sigma*(m.cos(m.radians(56))/m.cos(m.radians(52))) 
-dat_sigmah2 = dat_sigmah2*(m.cos(m.radians(56))/m.cos(m.radians(52)))
-dat_sigmasfr=dat_sigmasfr*(m.cos(m.radians(56))/m.cos(m.radians(54)))
-
 #defining omega and changing units
 kmskpc_Om = kms_vcirc_Kam /kpc_r_kam
 dat_omega = kmskpc_Om*1e+5/kpcm
@@ -197,14 +190,22 @@ dat_omega = griddata(kpc_r_kam, dat_omega, kpc_r, method='linear', fill_value=na
 dat_q = griddata(kpc_r_kam, dat_q, kpc_r, method='linear', fill_value=nan, rescale=False)
 dat_sigmasfr = griddata(kpc_r_SFR, dat_sigmasfr, kpc_r, method='linear', fill_value=nan, rescale=False)
 
-#correction for inclination angle, chosen angle = 56 deg
+#interpolation for velocity dispersion
+dat_v_disp=griddata(kpc_r_kam,kms_sigmaLOS_Kam,kpc_r,method='linear', fill_value=nan, rescale=False)
+
+#correction for inclination angle, chosen angle = 56 deg 
+#numerator has the chosen value 
+dat_sigmastar = dat_sigmastar*(m.cos(m.radians(56))/m.cos(m.radians(52))) 
+dat_sigma=dat_sigma*(m.cos(m.radians(56))/m.cos(m.radians(52))) 
+dat_sigmah2 = dat_sigmah2*(m.cos(m.radians(56))/m.cos(m.radians(52)))
+dat_sigmasfr=dat_sigmasfr*(m.cos(m.radians(56))/m.cos(m.radians(54)))
 dat_omega=dat_omega*(m.cos(m.radians(56))/m.cos(m.radians(52)))
 dat_q=dat_q*(m.cos(m.radians(56))/m.cos(m.radians(52)))
 
 dat_sigmatot = dat_sigma + dat_sigmastar #defining total surface density
 molfrac = dat_sigmah2/(dat_sigmah2 + dat_sigma) #defining molecular fraction
 T=np.array([10**4]*len(kpc_r))
-data  = kpc_r, dat_sigmatot, dat_sigma,dat_sigmah2, dat_q, dat_omega, dat_sigmasfr, T
+data  = kpc_r, dat_sigmatot, dat_sigma,dat_sigmah2, dat_q, dat_omega, dat_sigmasfr, T,dat_v_disp
 
 #to remove nan values for points whr interpolation is impossible
 nan_max = np.argmax([np.sum(np.isnan(d)) for d in data])
@@ -214,7 +215,10 @@ nan_mask = ~np.isnan(nan_max_data)
 nandeleted_data = []
 for i,d in enumerate(data):
     nandeleted_data.append(d[nan_mask])
+data_v_disp=nandeleted_data[-1]
 
+print(kpc_r)
+del nandeleted_data[-1]
 nandeleted_data = tuple(nandeleted_data)
 
 current_directory = str(os.getcwd())
