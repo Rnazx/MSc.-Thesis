@@ -71,19 +71,18 @@ rho = sigma/(2*h) #gas density, eq 35
 n = rho/(mu*mh) #converting mass density rho to number density n, eq 22
 
 #model 2
-# lsn = psi*cl*h #lsn= driving scale of isolated SNe, psi=fixed parameter used since u isnt same as velocity dispersion
-# l = lsn
+lsn = psi*cl*h #lsn= driving scale of isolated SNe, psi=fixed parameter used since u isnt same as velocity dispersion
+l = lsn
 
 #model 3
-lsn = psi*0.14*cm_kpc*(E51)**Fraction(16, 51) * \
-    (n/0.1)**Fraction(-19, 51)*(cs/(cm_km*10))**Fraction(-1, 3)
-l = ((Gamma-1)/Gamma)*cl*lsn
-
+# lsn = psi*0.14*cm_kpc*(E51)**Fraction(16, 51) * \
+#     (n/0.1)**Fraction(-19, 51)*(cs/(cm_km*10))**Fraction(-1, 3)
+# l = ((Gamma-1)/Gamma)*cl*lsn
 l = simplify(l)
 
 nu = (delta*sigmasfr)/(2*h*mstar)
-u = simplify(((4*pi/3)*l*lsn**3*cs**2*nu)**Fraction(1, 3)) #for model 3
-# u = cs #assumption in models 1 and 2
+# u = simplify(((4*pi/3)*l*lsn**3*cs**2*nu)**Fraction(1, 3)) #for model 3
+u = cs #assumption in models 1 and 2
 
 #scale height expressions 
 hg = zet*(u**2 + cs**2)/(3*pi*G*sigmatot)

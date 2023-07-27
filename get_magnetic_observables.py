@@ -8,7 +8,7 @@ import os
 current_directory = str(os.getcwd())
 os.chdir(current_directory + '\data')
 
-with open('zip_data.pickle', 'rb') as f: #change name of pickle file to be used here
+with open('zip_data.pickle', 'rb') as f: # there is only 1 zip_data file. dont change name of pickle file to be used here
     kpc_r, data_pass = pickle.load(f) 
 ########################################################################################################
 
@@ -32,12 +32,12 @@ except:
     print('*************************************************************************************')
     print('Please change the value of the initial guess')
     print('*************************************************************************************')
-l_f = datamaker(l, data_pass, h_f)
+l_f = datamaker(l, data_pass, h_f) #subscript f stand for final
 u_f = datamaker(u, data_pass, h_f)
 taue_f = datamaker(taue, data_pass, h_f)
 taur_f = datamaker(taur, data_pass, h_f)
 tau_f = np.minimum(taue_f, taur_f)
-print(u_f, cs_f)
+
 omega = Symbol('\Omega')
 kalpha = Symbol('K_alpha')
 calpha = Symbol('C_alpha')
@@ -67,6 +67,6 @@ tanpB_f = datamaker(tanpB, data_pass, h_f, tau_f)
 tanpb_f = datamaker(tanpb, data_pass, h_f, tau_f)
 
 mag_obs = kpc_r, h_f, l_f, u_f, cs_f, alphak_f, tau_f, biso_f, bani_f, Bbar_f, tanpB_f, tanpb_f
-with open('mag_observables_m51.pickle', 'wb') as f:
+with open('mag_observables_m33.pickle', 'wb') as f:
     pickle.dump(mag_obs, f)
 ########################################################################################################

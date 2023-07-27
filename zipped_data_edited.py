@@ -38,7 +38,7 @@ with open(current_directory+'\switches.in', 'r') as FH:
 print('Succesfully read the parameters and switches')
 
 #choose galaxy name in the next line to choose the galaxy
-with open(current_directory+ '\data\data_m51.pickle', 'rb') as f:
+with open(current_directory+ '\data\data_m33.pickle', 'rb') as f:
     data = pickle.load(f)
 
 kpc_r, dat_sigmatot, dat_sigmaHI,dat_sigmaH2, dat_q, dat_omega, dat_sigmasfr, T= data
