@@ -106,7 +106,7 @@ alphak3 = kalpha*u
 turb_expr = hg, rho, nu, u, l, taue, taur, alphak1, alphak2, alphak3
 
 current_directory = str(os.getcwd())
-with open(current_directory+r'\expressions\turb_exp.pickle', 'wb') as f:
+with open(current_directory+r'\turb_exp.pickle', 'wb') as f:
     pickle.dump(turb_expr, f)
 
 print('Solved the turbulence expressions')
