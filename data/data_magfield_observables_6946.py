@@ -26,11 +26,12 @@ rm_errdat_tanpo_range2 = 1/(np.cos(err_RM_dat_po_range2))**2
 # m_errdat_tanpb = 1/(np.cos(err_M_dat_pb))**2
 
 #radial ranges #discontinuous ranges in Beck+19
-range1=[0,6,12,18]
-range2=[1.5,5.5,8.5]
-# mrange_endps = np.array([]) #lower limit of radial ranges where M is used, given in table 4, Beck+19
-# mrange = (mrange_endps[1:] + mrange_endps[:-1])/2 #average of each of the intervals given in above array. contains 1 less point than above array
+range1=np.array([0,6,12,18])
+range2=np.array([1.5,5.5,8.5])
+mrange_endps = np.array([0,4.7,9.4]) #lower limit of radial ranges where M is used, given in table 4, Beck+19
+mrange = (mrange_endps[1:] + mrange_endps[:-1])/2 #average of each of the intervals given in above array. contains 1 less point than above array
 #rmrange = np.arange(7.5, 12, 1) #radial ranges where RM is used, given in table 4, Beck+19
+
 
 #scale height data
 kpc_dat_r = np.array([3.01,9.02,13.02])

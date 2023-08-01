@@ -45,7 +45,7 @@ def interpolation(list1,list2,standard):
     return extrapolated_data
 ###########################################################################################################################################
     
-file_names=['smdf','HI 6946','H2 6946','HI+H2 6946','q_values6946sofue+18','omega_sofue+18',
+file_names=['smdf','HI 6946','H2 6946','q_values6946sofue+18','omega_sofue+18',
             'SFR_Halpha24 6946','SFR_FUV24 6946','electron temp','velocity disp.']
 dataframe_list=file_reader(file_names)
 
@@ -53,7 +53,7 @@ dataframe_list=file_reader(file_names)
 radius_list=[np.array(dataframe_list[i]['r']) for i in range(len(dataframe_list))]
 
 #obtain arrays of quantities
-col_names=['smdf','sigma_HI','sigma_H2','sigma_gas','q','omega',
+col_names=['smdf','sigma_HI','sigma_H2','q','omega',
            'sigma_sfr','sigma_sfr_fuv','temp','vel disp']
 conv_factors=[(g_Msun/(cm_pc**2) ),g_Msun/(cm_pc**2),g_Msun/(cm_pc**2),1,
               cm_km/cm_kpc,g_Msun/((s_Myr*10**(-6))*(cm_kpc**2)),g_Msun/((s_Myr*10**(-6))*(cm_kpc**2)),1,1,cm_km]
