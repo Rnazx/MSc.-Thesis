@@ -13,4 +13,4 @@ python get_magnetic_observables.py
 #python scale_exponents.py
 
 #Error aprroximation
-#python error_approximation.py
+python error_approximation.py

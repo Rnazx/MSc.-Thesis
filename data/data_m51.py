@@ -71,15 +71,6 @@ else: #chose FUV data
 quant_list=[np.array(dataframe_list[i][col_names[i]]) for i in range(len(dataframe_list))]
 quant_list=[quant_list[i]*conv_factors[i] for i in range(len(quant_list))] #list with 9 elements including vel disp 
 
-#to load errors if any given in the dat files
-#this assumes that in all files, the error columns are named as 'quant_error'
-error_list=[]
-for i in dataframe_list:
-    if 'quant_error' in i.columns:
-        error_list.append(np.array(i['quant_error']))
-    else:
-        continue
-
 #find array with least length and correct it for radius
 #if vel disp data is the smallest one, remove that and repeat the process
 array_with_least_length = min(radius_list, key=len) #this shows that temp data has least number of points
@@ -108,6 +99,21 @@ nandeleted_data = tuple(nandeleted_data)
 #nandeleted_data follows same order of arrays as M31 and M33 data
 with open(current_directory+'\data\data_{}.pickle'.format('m51'), 'wb') as f:
     pickle.dump(nandeleted_data, f)
+
+########################################################################################################################################
+                                                      #ERROR DATA#
+########################################################################################################################################
+
+#to load errors if any given in the dat files
+#this assumes that in all files, the error columns are named as 'quant_error'
+error_list=[]
+for i in dataframe_list:
+    if 'quant_error' in i.columns:
+        error_list.append(np.array(i['quant_error']))
+    else:
+        continue
+RC_error=np.array([15*(cm_km/cm_kpc)]*len(radius_list[4]))
+error_list.append(RC_error)
 
 
 

@@ -67,6 +67,6 @@ tanpB_f = datamaker(tanpB, data_pass, h_f, tau_f)
 tanpb_f = datamaker(tanpb, data_pass, h_f, tau_f)
 
 mag_obs = kpc_r, h_f, l_f, u_f, cs_f, alphak_f, tau_f, biso_f, bani_f, Bbar_f, tanpB_f, tanpb_f
-with open('mag_observables_6946.pickle', 'wb') as f:
+with open('mag_observables_m51.pickle', 'wb') as f:
     pickle.dump(mag_obs, f)
 ########################################################################################################

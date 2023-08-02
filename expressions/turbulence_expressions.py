@@ -69,10 +69,37 @@ h = Symbol('h')
 cs = (gamma*boltz*T/(mu*mh))**Rational(1/2) #sound speed, eq 36
 rho = sigma/(2*h) #gas density, eq 35
 n = rho/(mu*mh) #converting mass density rho to number density n, eq 22
+nu = (delta*sigmasfr)/(2*h*mstar)
+
+def model_choose(nos): #n is the model number- 2 or 3
+    l = Symbol('l')
+    u = Symbol('u')
+    tau = Symbol('tau')
+    h = Symbol('h')
+
+    cs = (gamma*boltz*T/(mu*mh))**Rational(1/2) #sound speed, eq 36
+    rho = sigma/(2*h) #gas density, eq 35
+    n = rho/(mu*mh) #converting mass density rho to number density n, eq 22
+    nu = (delta*sigmasfr)/(2*h*mstar)
+    
+    if nos==2:
+        lsn = psi*cl*h #lsn= driving scale of isolated SNe, psi=fixed parameter used since u isnt same as velocity dispersion
+        l = lsn
+        u = cs
+    elif nos==int(3):
+        lsn = psi*0.14*cm_kpc*(E51)**Fraction(16, 51) * (n/0.1)**Fraction(-19, 51)*(cs/(cm_km*10))**Fraction(-1, 3)
+        l = ((Gamma-1)/Gamma)*cl*lsn
+        u = simplify(((4*pi/3)*l*lsn**3*cs**2*nu)**Fraction(1, 3))
+    else:
+        print('enter 2 or 3 as model number')
+    l = simplify(l)
+    return u,l
+
+u,l=model_choose(3)
 
 #model 2
-lsn = psi*cl*h #lsn= driving scale of isolated SNe, psi=fixed parameter used since u isnt same as velocity dispersion
-l = lsn
+# lsn = psi*cl*h #lsn= driving scale of isolated SNe, psi=fixed parameter used since u isnt same as velocity dispersion
+# l = lsn
 
 #model 3
 # lsn = psi*0.14*cm_kpc*(E51)**Fraction(16, 51) * \
@@ -80,15 +107,13 @@ l = lsn
 # l = ((Gamma-1)/Gamma)*cl*lsn
 # l = simplify(l)
 
-nu = (delta*sigmasfr)/(2*h*mstar)
 # u = simplify(((4*pi/3)*l*lsn**3*cs**2*nu)**Fraction(1, 3)) #for model 3
-u = cs #assumption in models 1 and 2
+# u = cs #assumption in models 1 and 2
 
 #scale height expressions 
 hg = zet*(u**2 + cs**2)/(3*pi*G*sigmatot)
 hsub = zet*(cs**2)/(3*pi*G*sigmatot)
 hsup = zet*(u**2)/(3*pi*G*sigmatot)
-
 
 rho = sigma/(2*h)
 n = rho/((14/11)*mh)
@@ -100,7 +125,6 @@ taur = simplify(6.8*s_Myr*(1/4)*(nu*cm_kpc**3*s_Myr/50)**(-1)*(E51)
 alphak1 = calpha*tau**2*u**2*omega/h
 alphak2 = calpha*tau*u**2/h
 alphak3 = kalpha*u
-
 
 turb_expr = hg, rho, nu, u, l, taue, taur, alphak1, alphak2, alphak3
 
