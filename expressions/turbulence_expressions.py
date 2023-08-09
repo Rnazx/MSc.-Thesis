@@ -12,15 +12,15 @@ s_min = 60  # number of seconds in one hour
 s_hr = 3600  # number of seconds in one hour
 cm_Rsun = 6.957e10  # solar radius in cm
 g_Msun = 1.989e33  # solar mass in g
-cgs_G = 6.674e-8
-cms_c = 2.998e10
-g_mH = 1.6736e-24
-g_me = 9.10938e-28
-cgs_h = 6.626e-27
-deg_rad = 180e0/np.pi
-arcmin_deg = 60e0
-arcsec_deg = 3600e0
-cm_kpc = 3.086e+21  # number of ccentimeters in one parsec
+cgs_G = 6.674e-8   # Gravitational constant in cgs units
+cms_c = 2.998e10   #  speed of light in cm/s
+g_mH = 1.6736e-24   #  mass of hydrogen atom in grams
+g_me = 9.10938e-28  #  mass of electron in grams
+cgs_h = 6.626e-27   #   planck constant in cgs units
+deg_rad = 180e0/np.pi  #radians to degree conversion
+arcmin_deg = 60e0     #degrees to arcmin
+arcsec_deg = 3600e0   ##degrees to arcsec
+cm_kpc = 3.086e+21  # number of centimeters in one parsec
 s_Myr = 1e+6*(365*24*60*60)  # megayears to seconds
 
 
@@ -70,7 +70,7 @@ cs = (gamma*boltz*T/(mu*mh))**Rational(1/2)
 
 rho = sigma/(2*h)
 n = rho/(mu*mh)
-#model 2
+#model 1 and 2
 lsn = psi*cl*h
 l = lsn
 #model 3
@@ -82,6 +82,7 @@ l = simplify(l)
 
 nu = (delta*sigmasfr)/(2*h*mstar)
 # u = simplify(((4*pi/3)*l*lsn**3*cs**2*nu)**Fraction(1, 3))
+#model 1
 u = cs
 
 hg = zet*(u**2 + cs**2)/(3*pi*G*sigmatot)

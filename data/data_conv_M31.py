@@ -183,7 +183,7 @@ if __name__ == '__main__':
     dat_omega = griddata(kpc_r_f, dat_omega, kpc_r,
                         method='linear', fill_value=nan, rescale=False)
 
-    dat_sigmasfr = griddata(kpc_r_SFR, Msunpc2Gyr_Sigma_SFR*g_Msun/((10**9*365*24*60*60)
+    dat_sigmasfr = griddata(kpc_r_SFR, Msunpc2Gyr_Sigma_SFR*g_Msun/((1e+3*s_Myr)
                             * (cm_pc)**2), kpc_r, method='linear', fill_value=nan, rescale=False)
     molfrac = griddata(kpc_r_molfrac, MolFrac, kpc_r,
                     method='linear', fill_value=nan, rescale=False)

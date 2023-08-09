@@ -78,10 +78,11 @@ def retrieve_name(var):
 
 ###############################################################################################################
 
-
+# Function which takes the expression and the data to be substituted
 def exp_analytical_data(express, data_pass):
+    # Substitute the constants in the given expression
     express = express.subs(const).simplify(force=True)
-
+    # Substitute the data for the observables as well as the parameters for each radii
     exp = np.array([express.evalf(subs={sigmatot: sigt, sigma: sig, sigmasfr: sigsfr, q: qs, omega: oms, zet: zets, T: t,
                    psi: ps, bet: b, calpha: ca, Rk: rk, mu: m}) for sigt, sig, sigsfr, qs, oms, zets, t, ps, b, ca, rk, m in data_pass])
 
@@ -103,19 +104,25 @@ def datamaker(quan, data_pass, h_f, tau_f=None, alphak_f=None):
 
 
 ##############################################################################################################################################
-
+# Function which takes the RHS of the expression of h as input (h_val). h_init is the initial guess for the solution in cgs units
 def root_finder(h_val, h_init=7e+25):
+    #define an empty array
     h_f = []
     for hv in h_val:
+        # Function to find the root for
         def func(x): 
-            #print(x)
+            # h is an expression. hv is the RHS of the expression for h for a particular radii
             return np.array(
             [np.float64((h-hv).evalf(subs={h: i})) for i in x])
+        # Derivative of the function
         def dfunc(x): 
             return np.array(
-            [np.float64(diff((h-hv), h).evalf(subs={h: i})) for i in x])
+            [np.float64(diff((h-hv), h).evalf(subs={h: i})) for i in x])# diff is a symbolic derivative
+        # solve for the function using the fsolve routine. First element of this array is the solution
         h_solution = fsolve(func, h_init, fprime=dfunc )
+        # append the solution in an array.
         h_f.append(h_solution[0])
+    # Convert array to numpy
     h_f = np.array(h_f)
     return h_f
 
