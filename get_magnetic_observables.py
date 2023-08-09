@@ -26,19 +26,20 @@ with open('turb_exp.pickle', 'rb') as f:
     hg, rho, nu, u, l, taue, taur, alphak1, alphak2, alphak3 = pickle.load(f)
 
 with open('mag_exp.pickle', 'rb') as f:
-    biso, bani, Bbar, tanpb, tanpB, Beq, eta, cs = pickle.load(f)
+    biso, bani, Bbar, tanpb, tanpB, Beq, eta_t, cs = pickle.load(f)
 
 os.chdir(current_directory)
 
 cs_f = exp_analytical_data(cs, data_pass).astype(np.float64)
 #print(exp_analytical_data(hg, data_pass))
 try:
-    h_f = root_finder(exp_analytical_data(hg, data_pass), 1e+15)
+    h_f = root_finder(exp_analytical_data(hg, data_pass), 1e+25)
     print('Root found succesfully')
 except:
     print('*************************************************************************************')
     print('Please change the value of the initial guess')
     print('*************************************************************************************')
+#print(h_f)
 l_f = datamaker(l, data_pass, h_f)
 u_f = datamaker(u, data_pass, h_f)
 taue_f = datamaker(taue, data_pass, h_f)

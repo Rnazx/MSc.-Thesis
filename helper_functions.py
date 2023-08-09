@@ -35,6 +35,11 @@ kalpha = Symbol('K_alpha')
 bet = Symbol('beta')
 alphak = Symbol('alpha_k')
 Gamma = Symbol('Gamma')
+Nsb = Symbol('N_SB')#number of SNR in a SB
+eta = Symbol('eta')#fractionof SB that is mechanical
+xi = Symbol('xi')#SB horizontal radius at blowout as fraction of H
+fsb = Symbol('f_SB')
+Uo = Symbol('U_0') #outflow speed
 
 
 # Defining the general parameters
@@ -56,10 +61,16 @@ gval, clval, xioval, mstarval, deltaval, e51val, kaval, Gammaval = tuple(
     np.genfromtxt('constants.in', delimiter='=', dtype=np.float64)[:, -1])
 
 const = [(boltz, cgs_kB), (mh, g_mH), (G, cgs_G), (gamma, gval),
-         (cl, clval), (xio, xioval), (mstar, mstarval*g_Msun), (delta, deltaval), (E51, e51val), (kalpha, kaval), (Gamma, Gammaval)]
+         (cl, clval), (xio, xioval), (mstar, mstarval*g_Msun), (delta, deltaval), (E51, e51val), 
+         (kalpha, kaval), (Gamma, Gammaval), (Nsb, 100), (eta, 0.1), (xi, 1), (fsb, 0.75), (Uo, 0)]
 
 ######################################################################################################################
 
+Nsb = Symbol('N_SB')#number of SNR in a SB
+eta = Symbol('eta')#fractionof SB that is mechanical
+xi = Symbol('xi')#SB horizontal radius at blowout as fraction of H
+fsb = Symbol('f_SB')
+Uo = Symbol('U_0') #outflow speed
 
 def power_law(x, a, b):
     return a*np.power(x, b) 
@@ -100,6 +111,7 @@ def datamaker(quan, data_pass, h_f, tau_f=None, alphak_f=None):
     else:
         Bbar_in = np.array([quan_val[i].evalf(subs={h: hf, tau: tauf, alphak: alphakf}) for i, (
             hf, tauf, alphakf) in enumerate(zip(h_f, tau_f, alphak_f))])
+        #print(Bbar_in)
         return np.float64(Bbar_in*(np.float64(Bbar_in*Bbar_in > 0)))
 
 

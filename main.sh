@@ -1,7 +1,7 @@
 #Solve all the expressions in terms of the scale height h
 cd expressions
-python turbulence_expressions.py
-python magnetic_expressions.py
+# python turbulence_expressions.py
+# python magnetic_expressions.py
 
 cd ..
 #Change the data into the preffered format for Sympy
@@ -13,4 +13,4 @@ python get_magnetic_observables.py
 #python scale_exponents.py
 
 #Error aprroximation
-python error_approximation.py
+#python error_approximation.py

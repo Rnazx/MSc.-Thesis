@@ -55,7 +55,10 @@ kalpha = Symbol('K_alpha')
 bet = Symbol('beta')
 alphak = Symbol('alpha_k')
 Gamma = Symbol('Gamma')
-
+Nsb = Symbol('N_SB')#number of SNR in a SB
+eta = Symbol('eta')#fractionof SB that is mechanical
+xi = Symbol('xi')#SB horizontal radius at blowout as fraction of H
+fsb = Symbol('f_SB')
 
 # Defining the general parameters
 u = Symbol('u')
@@ -66,24 +69,39 @@ h = Symbol('h')
 ##############################################################################################################
 
 # Defining the expressions
-cs = (gamma*boltz*T/(mu*mh))**Rational(1/2)
 
-rho = sigma/(2*h)
-n = rho/(mu*mh)
-#model 1 and 2
-lsn = psi*cl*h
-l = lsn
-#model 3
-# lsn = psi*0.14*cm_kpc*(E51)**Fraction(16, 51) * \
-#     (n/0.1)**Fraction(-19, 51)*(cs/(cm_km*10))**Fraction(-1, 3)
-# l = ((Gamma-1)/Gamma)*cl*lsn
-
-l = simplify(l)
-
+cs = (gamma*boltz*T/(mu*mh))**Rational(1/2) #sound speed, eq 36
+rho = sigma/(2*h) #gas density, eq 35
+n = rho/(mu*mh) #converting mass density rho to number density n, eq 22
 nu = (delta*sigmasfr)/(2*h*mstar)
-# u = simplify(((4*pi/3)*l*lsn**3*cs**2*nu)**Fraction(1, 3))
-#model 1
-u = cs
+
+nos = 3 #nos is the model number- 1, 2 or 3
+
+if nos==1:
+    lsn = psi*cl*h #lsn= driving scale of isolated SNe, psi=fixed parameter used since u isnt same as velocity dispersion
+    l = lsn
+    u = cs
+elif nos==2:
+    lsn = psi*cl*h #lsn= driving scale of isolated SNe, psi=fixed parameter used since u isnt same as velocity dispersion
+    l = lsn
+    u = simplify(((4*pi/3)*l*lsn**3*cs**2*nu)**Fraction(1, 3))
+#include superbubbles: full expression for l
+elif nos==3:
+    lsn = 0.14*cm_kpc*(E51)**Fraction(16, 51)*(n/0.1)**Fraction(-19, 51)*(cs/(cm_km*10))**Fraction(-1, 3)
+    #Eqn 10 Chamandy and Sukurov (2020)
+    Rsb = 0.53*cm_kpc*(eta/0.1)**Fraction(1, 3)*(Nsb/100)**Fraction(1, 3)*(E51)**Fraction(1, 3)*(n/0.1)**Fraction(-1, 3)*(cs/(cm_km*10))**Fraction(-2, 3)
+    lsb = Min(Rsb, xi*h)
+    nu_sn = (1-fsb)*nu
+    nu_sb = fsb*nu/Nsb
+    #Eqn 19 Chamandy and Sukurov (2020)
+    _Esn_Esb = (lsn**3*nu_sn)/(lsb**3*nu_sb)
+    #Eqn 29 Chamandy and Sukurov (2020)
+    l = psi*((Gamma-1)/Gamma)*cl*lsb*((1+(lsn/lsb)*_Esn_Esb)/(1+_Esn_Esb))
+    #Eqn 33 Chamandy and Sukurov (2020)
+    u = simplify(((4*pi/3)*l*(cs**2)*(nu_sn*(lsn**3) + nu_sb*(lsb**3)))**Fraction(1, 3))
+else:
+    print('enter 1, 2 or 3 as model number')
+l = simplify(l)
 
 hg = zet*(u**2 + cs**2)/(3*pi*G*sigmatot)
 hsub = zet*(cs**2)/(3*pi*G*sigmatot)
@@ -92,8 +110,10 @@ hsup = zet*(u**2)/(3*pi*G*sigmatot)
 rho = sigma/(2*h)
 n = rho/((14/11)*mh)
 taue = simplify(l/u)
-taur = simplify(6.8*s_Myr*(1/4)*(nu*cm_kpc**3*s_Myr/50)**(-1)*(E51)
-                ** Fraction(-16, 17) * (n/0.1)**Fraction(19, 17)*(cs/(cm_km*10)))
+#eqn 36 
+taur_sn = simplify((4/3)*pi*nu_sn*(lsn**3))
+taur_sb = simplify((4/3)*pi*nu_sb*(lsb**3))
+taur = ((1/taur_sn)+(1/taur_sb))**(-1)
 
 alphak1 = calpha*tau**2*u**2*omega/h
 alphak2 = calpha*tau*u**2/h
