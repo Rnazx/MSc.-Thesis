@@ -120,7 +120,7 @@ alphak2 = calpha*tau*u**2/h
 alphak3 = kalpha*u
 
 
-turb_expr = hg, rho, nu, u, l, taue, taur, alphak1, alphak2, alphak3
+turb_expr = hg, rho, nu, u, l, taue, taur, alphak1, alphak2, alphak3, Rsb
 
 
 with open('turb_exp.pickle', 'wb') as f:
