@@ -111,8 +111,8 @@ rho = sigma/(2*h)
 n = rho/((14/11)*mh)
 taue = simplify(l/u)
 #eqn 36 
-taur_sn = simplify((4/3)*pi*nu_sn*(lsn**3))
-taur_sb = simplify((4/3)*pi*nu_sb*(lsb**3))
+taur_sn = simplify(((4/3)*pi*nu_sn*(lsn**3))**(-1))
+taur_sb = simplify(((4/3)*pi*nu_sb*(lsb**3))**(-1))
 taur = ((1/taur_sn)+(1/taur_sb))**(-1)
 
 alphak1 = calpha*tau**2*u**2*omega/h
