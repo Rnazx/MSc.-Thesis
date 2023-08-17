@@ -3,8 +3,12 @@ import numpy as np
 from sympy import *
 import pickle
 import os
-
+import time
 import subprocess
+from multiprocessing import Pool
+
+start_time = time.time()
+
 
 current_directory = str(os.getcwd())
 
@@ -30,58 +34,63 @@ with open('mag_exp.pickle', 'rb') as f:
 
 os.chdir(current_directory)
 
-cs_f = exp_analytical_data(cs, data_pass).astype(np.float64)
-#print(exp_analytical_data(hg, data_pass))
-try:
-    h_f = root_finder(exp_analytical_data(hg, data_pass), 1e+25)
-    print('Root found succesfully')
-except:
-    print('*************************************************************************************')
-    print('Please change the value of the initial guess')
-    print('*************************************************************************************')
-#print(h_f)
-l_f = datamaker(l, data_pass, h_f)
-Rsb_f = datamaker(Rsb, data_pass, h_f)
-print(Rsb_f/h_f)
+def paralel_find(data_pass):
+        cs_f = exp_analytical_data(cs, data_pass).astype(np.float64)
+        #print(exp_analytical_data(hg, data_pass))
+        try:
+            h_f = root_finder(exp_analytical_data(hg, data_pass), 1e+25)
+            print('Root found succesfully')
+        except:
+            print('*************************************************************************************')
+            print('Please change the value of the initial guess')
+            print('*************************************************************************************')
+        #print(h_f)
+        l_f = datamaker(l, data_pass, h_f)
+        Rsb_f = datamaker(Rsb, data_pass, h_f)
+        print(Rsb_f/h_f)
 
-u_f = datamaker(u, data_pass, h_f)
-taue_f = datamaker(taue, data_pass, h_f)
-taur_f = datamaker(taur, data_pass, h_f)
-tau_f = np.minimum(taue_f, taur_f)
+        u_f = datamaker(u, data_pass, h_f)
+        taue_f = datamaker(taue, data_pass, h_f)
+        taur_f = datamaker(taur, data_pass, h_f)
+        tau_f = np.minimum(taue_f, taur_f)
 
-omega = Symbol('\Omega')
-kalpha = Symbol('K_alpha')
-calpha = Symbol('C_alpha')
+        omega = Symbol('\Omega')
+        kalpha = Symbol('K_alpha')
+        calpha = Symbol('C_alpha')
 
-omt = datamaker(omega, data_pass, h_f, tau_f)*tau_f
-kah = datamaker(kalpha/calpha, data_pass, h_f, tau_f)*(h_f/(tau_f*u_f))
+        omt = datamaker(omega, data_pass, h_f, tau_f)*tau_f
+        kah = datamaker(kalpha/calpha, data_pass, h_f, tau_f)*(h_f/(tau_f*u_f))
 
-alphak_f = []
+        alphak_f = []
 
-for i in range(len(omt)):
-    if min(1, kah[i]) >= omt[i]:
-        alpha_k = alphak1
-    elif min(omt[i], kah[i]) >= 1:
-        alpha_k = alphak2
-    else:
-        alpha_k = alphak3
-    alphak_f.append(datamaker(alpha_k, [data_pass[i]], np.array(
-        [h_f[i]]), np.array([tau_f[i]]))[0])
+        for i in range(len(omt)):
+            if min(1, kah[i]) >= omt[i]:
+                alpha_k = alphak1
+            elif min(omt[i], kah[i]) >= 1:
+                alpha_k = alphak2
+            else:
+                alpha_k = alphak3
+            alphak_f.append(datamaker(alpha_k, [data_pass[i]], np.array(
+                [h_f[i]]), np.array([tau_f[i]]))[0])
 
-alphak_f = np.array(alphak_f)
+        alphak_f = np.array(alphak_f)
 
 
-biso_f = datamaker(biso, data_pass, h_f, tau_f)
-bani_f = datamaker(bani, data_pass, h_f, tau_f)
+        biso_f = datamaker(biso, data_pass, h_f, tau_f)
+        bani_f = datamaker(bani, data_pass, h_f, tau_f)
 
-Bbar_f = datamaker(Bbar, data_pass, h_f, tau_f, alphak_f)
+        Bbar_f = datamaker(Bbar, data_pass, h_f, tau_f, alphak_f)
 
-tanpB_f = datamaker(tanpB, data_pass, h_f, tau_f)
-tanpb_f = datamaker(tanpb, data_pass, h_f, tau_f)
+        tanpB_f = datamaker(tanpB, data_pass, h_f, tau_f)
+        tanpb_f = datamaker(tanpb, data_pass, h_f, tau_f)
+        return h_f[0], l_f[0], u_f[0], cs_f[0], alphak_f[0], tau_f[0], biso_f[0], bani_f[0], Bbar_f[0], tanpB_f[0], tanpb_f[0]
 
-mag_obs = kpc_r, h_f, l_f, u_f, cs_f, alphak_f, tau_f, biso_f, bani_f, Bbar_f, tanpB_f, tanpb_f
-
-os.chdir(current_directory)
-
-with open('mag_observables.pickle', 'wb') as f:
-    pickle.dump(mag_obs, f)
+if __name__ == "__main__":  
+    def fn(data_pass):
+        with Pool(5) as p:
+            return p.map(paralel_find, data_pass)
+    mag_obs = tuple(kpc_r)+tuple(fn(data_pass))
+    os.chdir(current_directory)
+    print("--- %s seconds ---" % (time.time() - start_time))
+    with open('mag_observables.pickle', 'wb') as f:
+        pickle.dump(mag_obs, f)
