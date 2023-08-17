@@ -62,7 +62,7 @@ gval, clval, xioval, mstarval, deltaval, e51val, kaval, Gammaval = tuple(
 
 const = [(boltz, cgs_kB), (mh, g_mH), (G, cgs_G), (gamma, gval),
          (cl, clval), (xio, xioval), (mstar, mstarval*g_Msun), (delta, deltaval), (E51, e51val), 
-         (kalpha, kaval), (Gamma, Gammaval), (Nsb, 100), (eta, 0.1), (xi, 1), (fsb, 0.99), (Uo, 0)]
+         (kalpha, kaval), (Gamma, Gammaval), (Nsb, 10), (eta, 0.1), (xi, 1), (fsb, 0.99), (Uo, 0)]
 
 ######################################################################################################################
 

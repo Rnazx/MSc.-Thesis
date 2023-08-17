@@ -42,7 +42,7 @@ except:
 #print(h_f)
 l_f = datamaker(l, data_pass, h_f)
 Rsb_f = datamaker(Rsb, data_pass, h_f)
-print(Rsb_f/h_f)
+print('R_sb/h = ',Rsb_f/h_f)
 
 u_f = datamaker(u, data_pass, h_f)
 taue_f = datamaker(taue, data_pass, h_f)
