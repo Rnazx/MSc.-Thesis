@@ -70,20 +70,34 @@ cs = (gamma*boltz*T/(mu*mh))**Rational(1/2)
 
 rho = sigma/(2*h)
 n = rho/(mu*mh)
-#model 1 and 2
-lsn = psi*cl*h
-l = lsn
+nu = (delta*sigmasfr)/(2*h*mstar)
 #model 3
 # lsn = psi*0.14*cm_kpc*(E51)**Fraction(16, 51) * \
 #     (n/0.1)**Fraction(-19, 51)*(cs/(cm_km*10))**Fraction(-1, 3)
 # l = ((Gamma-1)/Gamma)*cl*lsn
+nos = 3 #nos is the model number- 1, 2 or 3
 
+if nos==1:
+    lsn = psi*cl*h #lsn= driving scale of isolated SNe, psi=fixed parameter used since u isnt same as velocity dispersion
+    l = lsn
+    u = cs
+elif nos==2:
+    lsn = psi*cl*h #lsn= driving scale of isolated SNe, psi=fixed parameter used since u isnt same as velocity dispersion
+    l = lsn
+    u = simplify(((4*pi/3)*l*lsn**3*cs**2*nu)**Fraction(1, 3))
+#include superbubbles: full expression for l
+elif nos==3:
+    lsn = 0.14*cm_kpc*(E51)**Fraction(16, 51)*(n/0.1)**Fraction(-19, 51)*(cs/(cm_km*10))**Fraction(-1, 3)
+    #Eqn 29 Chamandy and Sukurov (2020)
+    l = psi*((Gamma-1)/Gamma)*cl*lsn# lsb*((1+(lsn/lsb)*_Esn_Esb)/(1+_Esn_Esb))
+    #Eqn 33 Chamandy and Sukurov (2020)
+    u = simplify(((4*pi/3)*l*lsn**3*cs**2*nu)**Fraction(1, 3))
+else:
+    print('enter 1, 2 or 3 as model number')
 l = simplify(l)
 
-nu = (delta*sigmasfr)/(2*h*mstar)
-# u = simplify(((4*pi/3)*l*lsn**3*cs**2*nu)**Fraction(1, 3))
-#model 1
-u = cs
+
+
 
 hg = zet*(u**2 + cs**2)/(3*pi*G*sigmatot)
 hsub = zet*(cs**2)/(3*pi*G*sigmatot)

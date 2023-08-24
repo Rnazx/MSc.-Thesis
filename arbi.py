@@ -3,6 +3,7 @@ from sympy import *
 import pickle
 import os
 import subprocess
+import sys
 
 current_directory = str(os.getcwd())  # store the path of the current directory
 
@@ -44,9 +45,11 @@ if switch['chem_or_claude'] is 'Chemin':
     c_or_cl = 1
 else:
     c_or_cl = 0
-
-dat_sigmatot, dat_sigmaHI, dat_q, dat_omega, dat_sigmasfr, molfrac = (np.array([5]),np.array([5]),np.array([5]),np.array([5]),np.array([5]),np.array([0.1]))
-
+#args = sys.argv[1:]
+args = np.float64(np.array([float(s) for s in sys.argv[1:]]))
+print('The value for the Observables are sigmatot, sigmaHI, q, omega, sigmasfr\n', args)
+obs_array = [np.array([arg]) for arg in args]
+dat_sigmatot, dat_sigmaHI, dat_q, dat_omega, dat_sigmasfr, molfrac = tuple(obs_array)
 kpc_r = np.ones(1)
 r = kpc_r.size  # common radius of the interpolated data
 
