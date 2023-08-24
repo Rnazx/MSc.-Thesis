@@ -47,7 +47,7 @@ def paralel_find(data_pass):
         #print(h_f)
         l_f = datamaker(l, data_pass, h_f)
         Rsb_f = datamaker(Rsb, data_pass, h_f)
-        print(Rsb_f/h_f)
+        #print(Rsb_f/h_f)
 
         u_f = datamaker(u, data_pass, h_f)
         taue_f = datamaker(taue, data_pass, h_f)
@@ -83,14 +83,19 @@ def paralel_find(data_pass):
 
         tanpB_f = datamaker(tanpB, data_pass, h_f, tau_f)
         tanpb_f = datamaker(tanpb, data_pass, h_f, tau_f)
-        return h_f[0], l_f[0], u_f[0], cs_f[0], alphak_f[0], tau_f[0], biso_f[0], bani_f[0], Bbar_f[0], tanpB_f[0], tanpb_f[0]
+        return h_f, l_f, u_f, cs_f, alphak_f, tau_f, biso_f, bani_f, Bbar_f, tanpB_f, tanpb_f
 
 if __name__ == "__main__":  
     def fn(data_pass):
         with Pool(5) as p:
-            return p.map(paralel_find, data_pass)
-    mag_obs = tuple(kpc_r)+tuple(fn(data_pass))
+            return p.map(paralel_find, [[data_pass[i]] for i in range(len(data_pass))])
+    final_mag = (np.array(fn(data_pass))).flatten()
+    final_mag = (np.reshape(final_mag, (-1,len(kpc_r)))).T
+    print(final_mag)
+    mag_obs = np.concatenate((np.array([kpc_r]), final_mag),  axis=0)
+    mag_obs = tuple(mag_obs)
+    print(mag_obs)
     os.chdir(current_directory)
-    print("--- %s seconds ---" % (time.time() - start_time))
     with open('mag_observables.pickle', 'wb') as f:
         pickle.dump(mag_obs, f)
+    print("--- %s seconds ---" % (time.time() - start_time))
