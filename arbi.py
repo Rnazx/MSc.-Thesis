@@ -45,13 +45,9 @@ if switch['chem_or_claude'] is 'Chemin':
 else:
     c_or_cl = 0
 
-#subprocess.run(["python", "data_conv_M31.py", str(int(c_or_cl))])
+dat_sigmatot, dat_sigmaHI, dat_q, dat_omega, dat_sigmasfr, molfrac = (np.array([5]),np.array([5]),np.array([5]),np.array([5]),np.array([5]),np.array([0.1]))
 
-with open('data_m31.pickle', 'rb') as f:
-    data = pickle.load(f)
-
-kpc_r, dat_sigmatot, dat_sigmaHI, dat_q, dat_omega, dat_sigmasfr, molfrac = data
-
+kpc_r = np.ones(1)
 r = kpc_r.size  # common radius of the interpolated data
 
 dat_sigmaH2 = dat_sigmaHI*(1/(1-molfrac))
@@ -86,12 +82,12 @@ T = T_tb  # 1e+4*np.ones(r)
 ca = params[r'C_\alpha']*np.ones(r)
 rk = params['R_\kappa']*np.ones(r)
 mu = params['mu']*np.ones(r)
-data_pass = kpc_r, list(zip(dat_sigmatot, dat_sigma, dat_sigmasfr,
+data_pass = list(zip(dat_sigmatot, dat_sigma, dat_sigmasfr,
                  dat_q, dat_omega, zet, T, psi, bet, ca, rk, mu))
 
 
 os.chdir(current_directory + '\data')
 print('Succesfully zipped the data and the parameters')
 
-with open('zip_data.pickle', 'wb') as f:
+with open('arb_data.pickle', 'wb') as f:
     pickle.dump(data_pass, f)
