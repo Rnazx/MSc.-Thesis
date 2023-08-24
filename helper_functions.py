@@ -57,12 +57,15 @@ cgs_G = 6.674e-8  # gravitational constant in cgs units
 g_mH = 1.6736e-24  # mass of hydrogen atom in grams
 cgs_kB = 1.3807e-16  # boltzmann constant in cgs units
 
-gval, clval, xioval, mstarval, deltaval, e51val, kaval, Gammaval = tuple(
+gval, clval, xioval, mstarval, deltaval, e51val, kaval, Gammaval, Nsbval, etaval, xival, fsbval, Uoval = tuple(
     np.genfromtxt('constants.in', delimiter='=', dtype=np.float64)[:, -1])
+
+if fsbval == 0:
+    fsbval += 1e-90
 
 const = [(boltz, cgs_kB), (mh, g_mH), (G, cgs_G), (gamma, gval),
          (cl, clval), (xio, xioval), (mstar, mstarval*g_Msun), (delta, deltaval), (E51, e51val), 
-         (kalpha, kaval), (Gamma, Gammaval), (Nsb, 10), (eta, 0.1), (xi, 1), (fsb, 0.99), (Uo, 0)]
+         (kalpha, kaval), (Gamma, Gammaval), (Nsb, Nsbval), (eta, etaval), (xi, xival), (fsb, fsbval), (Uo, Uoval)]
 
 ######################################################################################################################
 
