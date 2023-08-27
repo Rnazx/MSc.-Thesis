@@ -1,7 +1,6 @@
 echo "Input the value of \Sigmatot"
 read dat_sigmatot
 echo "Input the value of \SigmaHI"
-
 read dat_sigmaHI
 echo "Input the value of q"
 read dat_q
