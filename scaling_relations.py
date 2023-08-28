@@ -43,7 +43,7 @@ r = kpc_r.size
 # import turbulence_expressions as t
 
 observable = sigma
-quantity = l
+quantity = u
 
 def scal_plotter(h_exp, quantity, observable, h_regime):
     zr, quan_f, coeff= scal_finder(h_exp, quantity, observable, data_pass, taue, alphak1, np.linspace(1,5000,25), 1e+25)
@@ -60,10 +60,10 @@ scal_plotter(hsup, quantity, observable, 'supersonic')
 
 plt.xlabel(r'$'+str(latex(observable))+r'$')
 plt.ylabel(r'$u(km/s)$', size='large')
-plt.grid(True, which="both", ls="--")
 plt.title('Scaling relation convergence') #at T = '+ "{:e}".format((round(t[0],2))))
 # plt.yscale('log')
 # plt.xscale('log')
+plt.grid(True, which="both", ls="--")
 plt.legend()
 # plt.savefig('t_'+str(t[0])+'.png')
 
