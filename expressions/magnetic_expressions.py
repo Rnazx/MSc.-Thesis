@@ -51,7 +51,7 @@ h = Symbol('h')
 
 ##############################################################################################################
 with open('turb_exp.pickle', 'rb') as f:
-    hg, rho, nu, u, l, taue, taur, alphak1, alphak2, alphak3, Rsb = pickle.load(f)
+    hg, rho, nu, u, l, lsn, lsb,_Esn_Esb, taue, taur, alphak1, alphak2, alphak3, Rsb = pickle.load(f)
 cs = (gamma*boltz*T/(mu*mh))**Rational(1/2)
 
 

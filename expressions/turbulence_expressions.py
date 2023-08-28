@@ -87,16 +87,16 @@ elif nos==2:
     u = simplify(((4*pi/3)*l*lsn**3*cs**2*nu)**Fraction(1, 3))
 #include superbubbles: full expression for l
 elif nos==3:
-    lsn = 0.14*cm_kpc*(E51)**Fraction(16, 51)*(n/0.1)**Fraction(-19, 51)*(cs/(cm_km*10))**Fraction(-1, 3)
+    lsn = psi*0.14*cm_kpc*(E51)**Fraction(16, 51)*(n/0.1)**Fraction(-19, 51)*(cs/(cm_km*10))**Fraction(-1, 3)
     #Eqn 10 Chamandy and Sukurov (2020)
     Rsb = 0.53*cm_kpc*(eta/0.1)**Fraction(1, 3)*(Nsb/100)**Fraction(1, 3)*(E51)**Fraction(1, 3)*(n/0.1)**Fraction(-1, 3)*(cs/(cm_km*10))**Fraction(-2, 3)
-    lsb = Min(Rsb, xi*h)
+    lsb = psi*Min(Rsb, xi*h)
     nu_sn = (1-fsb)*nu
     nu_sb = fsb*nu/Nsb
     #Eqn 19 Chamandy and Sukurov (2020)
     _Esn_Esb = (lsn**3*nu_sn)/(lsb**3*nu_sb)
     #Eqn 29 Chamandy and Sukurov (2020)
-    l = psi*((Gamma-1)/Gamma)*cl*lsb*((1+(lsn/lsb)*_Esn_Esb)/(1+_Esn_Esb))
+    l = ((Gamma-1)/Gamma)*cl*lsb*((1+(lsn/lsb)*_Esn_Esb)/(1+_Esn_Esb))
     #Eqn 33 Chamandy and Sukurov (2020)
     u = simplify(((4*pi/3)*l*(cs**2)*(nu_sn*(lsn**3) + nu_sb*(lsb**3)))**Fraction(1, 3))
 else:
@@ -120,7 +120,7 @@ alphak2 = calpha*tau*u**2/h
 alphak3 = kalpha*u
 
 
-turb_expr = hg, rho, nu, u, l, taue, taur, alphak1, alphak2, alphak3, Rsb
+turb_expr = hg, rho, nu, u, l, lsn, lsb,_Esn_Esb, taue, taur, alphak1, alphak2, alphak3, Rsb
 
 
 with open('turb_exp.pickle', 'wb') as f:

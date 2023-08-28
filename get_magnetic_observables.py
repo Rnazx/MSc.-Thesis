@@ -23,7 +23,7 @@ os.chdir(current_directory + '\expressions')
 
 
 with open('turb_exp.pickle', 'rb') as f:
-    hg, rho, nu, u, l, taue, taur, alphak1, alphak2, alphak3, Rsb = pickle.load(f)
+    hg, rho, nu, u, l, lsn, lsb,_Esn_Esb, taue, taur, alphak1, alphak2, alphak3, Rsb = pickle.load(f)
 
 with open('mag_exp.pickle', 'rb') as f:
     biso, bani, Bbar, tanpb, tanpB, Beq, eta_t, cs = pickle.load(f)
@@ -42,7 +42,18 @@ except:
 #print(h_f)
 l_f = datamaker(l, data_pass, h_f)
 Rsb_f = datamaker(Rsb, data_pass, h_f)
-print('R_sb/h = ',Rsb_f/h_f)
+lsn_f = datamaker(lsn, data_pass, h_f)
+lsb_f = datamaker(lsb, data_pass, h_f)
+#print('R_sb/h = ',Rsb_f/h_f)
+
+# print('lsn = ',lsn_f)
+# print('lsb = ',lsb_f)
+print('l/lsn = ',l_f/lsn_f)
+print('l/lsb = ',l_f/lsb_f)
+
+
+
+
 
 u_f = datamaker(u, data_pass, h_f)
 taue_f = datamaker(taue, data_pass, h_f)
