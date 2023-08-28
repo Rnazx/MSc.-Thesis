@@ -87,9 +87,9 @@ elif nos==2:
     u = simplify(((4*pi/3)*l*lsn**3*cs**2*nu)**Fraction(1, 3))
 #include superbubbles: full expression for l
 elif nos==3:
-    lsn = 0.14*cm_kpc*(E51)**Fraction(16, 51)*(n/0.1)**Fraction(-19, 51)*(cs/(cm_km*10))**Fraction(-1, 3)
+    lsn = psi*0.14*cm_kpc*(E51)**Fraction(16, 51)*(n/0.1)**Fraction(-19, 51)*(cs/(cm_km*10))**Fraction(-1, 3)
     #Eqn 29 Chamandy and Sukurov (2020)
-    l = psi*((Gamma-1)/Gamma)*cl*lsn# lsb*((1+(lsn/lsb)*_Esn_Esb)/(1+_Esn_Esb))
+    l = ((Gamma-1)/Gamma)*cl*lsn# lsb*((1+(lsn/lsb)*_Esn_Esb)/(1+_Esn_Esb))
     #Eqn 33 Chamandy and Sukurov (2020)
     u = simplify(((4*pi/3)*l*lsn**3*cs**2*nu)**Fraction(1, 3))
 else:
