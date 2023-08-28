@@ -43,7 +43,7 @@ r = kpc_r.size
 # import turbulence_expressions as t
 
 observable = sigma
-quantity = u
+quantity = Rsb/hsup
 
 def scal_plotter(h_exp, quantity, observable, h_regime):
     zr, quan_f, coeff= scal_finder(h_exp, quantity, observable, data_pass, taue, alphak1, np.linspace(1,5000,25), 1e+25)

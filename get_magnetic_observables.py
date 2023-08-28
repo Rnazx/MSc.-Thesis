@@ -33,7 +33,7 @@ os.chdir(current_directory)
 cs_f = exp_analytical_data(cs, data_pass).astype(np.float64)
 #print(exp_analytical_data(hg, data_pass))
 try:
-    h_f = root_finder(exp_analytical_data(hg, data_pass), 1e+25)
+    h_f = root_finder(exp_analytical_data(hg, data_pass), 1e+35)
     print('Root found succesfully')
 except:
     print('*************************************************************************************')

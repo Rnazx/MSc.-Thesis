@@ -9,5 +9,5 @@ Gamma = 1.6667
 N_SB = 10
 eta = 0.1
 xi = 1
-fsb = 0.99
+fsb = 0
 Uo = 0
