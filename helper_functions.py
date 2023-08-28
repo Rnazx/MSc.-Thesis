@@ -150,8 +150,8 @@ def scal_helper(express, data_pass, observable=zet, _range=np.linspace(1, 5000, 
     val_subs = {sigmatot: sigt, sigma: sig, sigmasfr: sigsfr, q: qs,
                 omega: oms, zet: zets, T: t, psi: ps, bet: b, calpha: ca, Rk: rk, mu: m}
     try:
-        #val_subs.pop(observable)
-        obs_val = (val_subs.pop(observable))*_range
+        val_subs.pop(observable)
+        obs_val = _range#(val_subs.pop(observable))*
     except ValueError:
         print('Observable does not exist!')
     exp = express.evalf(subs=val_subs)
