@@ -28,6 +28,7 @@ cgs_h = 6.626e-27
 deg_rad = 180e0/np.pi
 arcmin_deg = 60e0
 arcsec_deg = 3600e0
+cm_kpc = 3.086e+21  # number of ccentimeters in one parsec
 
 kpc_D_M33_Plot = 840e0 
 kpc_D_M33_Tabatabaei = 840e0  #used by Tabatabaei+08 (magnetic field data)
@@ -204,7 +205,13 @@ dat_q=dat_q*(m.cos(m.radians(56))/m.cos(m.radians(52)))
 
 dat_sigmatot = dat_sigma + dat_sigmastar #defining total surface density
 molfrac = dat_sigmah2/(dat_sigmah2 + dat_sigma) #defining molecular fraction
-T=np.array([10**4]*len(kpc_r))
+
+#Temp data from Lin+17
+# T_OIII=8398+(2243/7.203)*kpc_r
+T_OIII=0*kpc_r
+
+T_NII=7756+(3520/7.203)*kpc_r
+T=(T_OIII+T_NII)/2
 data  = kpc_r, dat_sigmatot, dat_sigma,dat_sigmah2, dat_q, dat_omega, dat_sigmasfr, T,dat_v_disp
 
 #to remove nan values for points whr interpolation is impossible
@@ -217,7 +224,6 @@ for i,d in enumerate(data):
     nandeleted_data.append(d[nan_mask])
 data_v_disp=nandeleted_data[-1]
 
-print(kpc_r)
 del nandeleted_data[-1]
 nandeleted_data = tuple(nandeleted_data)
 

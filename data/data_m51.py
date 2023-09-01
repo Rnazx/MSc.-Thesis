@@ -44,8 +44,10 @@ def interpolation(list1,list2,standard):
     return extrapolated_data
 ###########################################################################################################################################
     
+# file_names=['smdf','HI m51..','H2 m51.','q_valuesM51sofue+18','omega_sofue+18',
+#             'SFR_Halpha24 m51.','SFR_FUV24 m51.','temperature','CO vel dispersion schuster.']
 file_names=['smdf','HI m51..','H2 m51.','q_valuesM51sofue+18','omega_sofue+18',
-            'SFR_Halpha24 m51.','SFR_FUV24 m51.','temperature','CO vel dispersion schuster.']
+            'SFR_Halpha24 m51.','SFR_FUV24 m51.','CO vel dispersion schuster.']
 
 dataframe_list=file_reader(file_names)
 
@@ -54,9 +56,9 @@ radius_list=[np.array(dataframe_list[i]['r']) for i in range(len(dataframe_list)
 
 #obtain arrays of quantities
 col_names=['smdf','sigma_HI','sigma_H2','q','omega',
-           'sigma_sfr','sigma_sfr_fuv','temp','vel disp']
-conv_factors=[(g_Msun/(cm_pc**2) ),g_Msun/(cm_pc**2),g_Msun/(cm_pc**2),1,
-              cm_km/cm_kpc,g_Msun/((s_Myr*10**(-6))*(cm_kpc**2)),g_Msun/((s_Myr*10**(-6))*(cm_kpc**2)),1,1,cm_km]
+           'sigma_sfr','sigma_sfr_fuv','vel disp']
+conv_factors=[(g_Msun/(cm_pc**2) ), g_Msun/(cm_pc**2), g_Msun/(cm_pc**2), 1,
+              cm_km/cm_kpc, g_Msun/((s_Myr*10**(-6))*(cm_kpc**2)), g_Msun/((s_Myr*10**(-6))*(cm_kpc**2)), (3**0.5)]
 
 #to switch between fuv and h_alpha data for sfr
 sfr_val=0
@@ -68,17 +70,27 @@ else: #chose FUV data
     for i in range(len(tbd)):
         del tbd[i][5]
 
+col_names=tbd[0]
+dataframe_list=tbd[1]
+conv_factors=tbd[2]
+radius_list=tbd[3]
+
 quant_list=[np.array(dataframe_list[i][col_names[i]]) for i in range(len(dataframe_list))]
-quant_list=[quant_list[i]*conv_factors[i] for i in range(len(quant_list))] #list with 9 elements including vel disp 
+quant_list=[quant_list[i]*conv_factors[i] for i in range(len(quant_list))] #list with 8 elements including vel disp 
 
 #find array with least length and correct it for radius
 #if vel disp data is the smallest one, remove that and repeat the process
-array_with_least_length = min(radius_list, key=len) #this shows that temp data has least number of points
-corrected_radius=array_with_least_length*(8.5/7.6) #using known correction for temperature data
+array_with_least_length = min(radius_list, key=len) 
+corrected_radius=array_with_least_length*(8.5/8.2) #using known correction for distance for HI data
+
+#temp data
+T=np.array([((280.2*r)+4794.9) for r in corrected_radius])
+error_temp=np.std(T)
 
 #interpolating the data and appending the common radius list 
 #interpolated arrays has an _ip ending
 quant_list_ip=[interpolation(radius_list[i],quant_list[i],corrected_radius) for i in range(len(col_names))]
+quant_list_ip.insert(len(quant_list_ip)-1,T)
 quant_list_ip.insert(0,corrected_radius)
 
 #removing nan values for points whr interpolation is impossible
@@ -107,13 +119,14 @@ with open(current_directory+'\data\data_{}.pickle'.format('m51'), 'wb') as f:
 #to load errors if any given in the dat files
 #this assumes that in all files, the error columns are named as 'quant_error'
 error_list=[]
-for i in dataframe_list:
-    if 'quant_error' in i.columns:
-        error_list.append(np.array(i['quant_error']))
-    else:
-        continue
+
+temp_error=np.array([error_temp]*len(radius_list[4]))
+error_list.append(temp_error)
+
 RC_error=np.array([15*(cm_km/cm_kpc)]*len(radius_list[4]))
 error_list.append(RC_error)
+
+
 
 
 

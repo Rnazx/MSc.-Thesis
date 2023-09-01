@@ -25,6 +25,7 @@ with open('mag_exp.pickle', 'rb') as f:
 os.chdir(current_directory)
 
 cs_f = exp_analytical_data(cs, data_pass).astype(np.float64)
+
 try:
     h_f = root_finder(exp_analytical_data(hg, data_pass), 1e+27) #1e+15 is initial guess, can be changed if its not converging
     print('Root found succesfully')
@@ -67,6 +68,6 @@ tanpB_f = datamaker(tanpB, data_pass, h_f, tau_f)
 tanpb_f = datamaker(tanpb, data_pass, h_f, tau_f)
 
 mag_obs = kpc_r, h_f, l_f, u_f, cs_f, alphak_f, tau_f, biso_f, bani_f, Bbar_f, tanpB_f, tanpb_f
-with open('mag_observables_m51.pickle', 'wb') as f:
+with open('mag_observables_m33.pickle', 'wb') as f:
     pickle.dump(mag_obs, f)
 ########################################################################################################

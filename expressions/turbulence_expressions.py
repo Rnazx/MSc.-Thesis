@@ -74,7 +74,6 @@ nu = (delta*sigmasfr)/(2*h*mstar)
 def model_choose(nos): #n is the model number- 2 or 3
     l = Symbol('l')
     u = Symbol('u')
-    tau = Symbol('tau')
     h = Symbol('h')
 
     cs = (gamma*boltz*T/(mu*mh))**Rational(1/2) #sound speed, eq 36
@@ -82,16 +81,20 @@ def model_choose(nos): #n is the model number- 2 or 3
     n = rho/(mu*mh) #converting mass density rho to number density n, eq 22
     nu = (delta*sigmasfr)/(2*h*mstar)
     
-    if nos==2:
+    if nos==1:
         lsn = psi*cl*h #lsn= driving scale of isolated SNe, psi=fixed parameter used since u isnt same as velocity dispersion
         l = lsn
         u = cs
-    elif nos==int(3):
+    elif nos==2:
+        lsn = psi*cl*h #lsn= driving scale of isolated SNe, psi=fixed parameter used since u isnt same as velocity dispersion
+        l = lsn
+        u = simplify(((4*pi/3)*l*lsn**3*cs**2*nu)**Fraction(1, 3))
+    elif nos==3:
         lsn = psi*0.14*cm_kpc*(E51)**Fraction(16, 51) * (n/0.1)**Fraction(-19, 51)*(cs/(cm_km*10))**Fraction(-1, 3)
         l = ((Gamma-1)/Gamma)*cl*lsn
         u = simplify(((4*pi/3)*l*lsn**3*cs**2*nu)**Fraction(1, 3))
     else:
-        print('enter 2 or 3 as model number')
+        print('enter 1, 2 or 3 as model number')
     l = simplify(l)
     return u,l
 

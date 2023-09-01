@@ -265,7 +265,7 @@ r3=np.array(omega3_6946['r']*(7.72/5.5))
 omega3=np.array(omega3_6946['omega'])
 
 # plt.plot(r1,omega1,label='SPARC data')
-plt.errorbar(r1, omega1, yerr=error,label='SPARC data', fmt='.', capsize=2) #to be used when there are rror bars
+plt.errorbar(r1, omega1, yerr=error,label='SPARC data', fmt='.', capsize=2) #to be used when there are error bars
 plt.plot(r2,omega2,label='Sofue+18')
 plt.plot(r3,omega3,label='Sofue+99')
 plt.title('NGC 6946 '+Omega)

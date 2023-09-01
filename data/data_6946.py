@@ -46,7 +46,7 @@ def interpolation(list1,list2,standard):
 ###########################################################################################################################################
     
 file_names=['smdf','HI 6946','H2 6946','q_values6946sofue+18','omega_sofue+18',
-            'SFR_Halpha24 6946','SFR_FUV24 6946','electron temp','velocity disp.']
+            'SFR_Halpha24 6946','SFR_FUV24 6946','velocity disp.']
 dataframe_list=file_reader(file_names)
 
 #to obtain radius data from every df
@@ -54,9 +54,9 @@ radius_list=[np.array(dataframe_list[i]['r']) for i in range(len(dataframe_list)
 
 #obtain arrays of quantities
 col_names=['smdf','sigma_HI','sigma_H2','q','omega',
-           'sigma_sfr','sigma_sfr_fuv','temp','vel disp']
+           'sigma_sfr','sigma_sfr_fuv','vel disp']
 conv_factors=[(g_Msun/(cm_pc**2) ),g_Msun/(cm_pc**2),g_Msun/(cm_pc**2),1,
-              cm_km/cm_kpc,g_Msun/((s_Myr*10**(-6))*(cm_kpc**2)),g_Msun/((s_Myr*10**(-6))*(cm_kpc**2)),1,1,cm_km]
+              cm_km/cm_kpc,g_Msun/((s_Myr*10**(-6))*(cm_kpc**2)),g_Msun/((s_Myr*10**(-6))*(cm_kpc**2)),(3**0.5)]
 
 #to switch between fuv and h_alpha data for sfr
 sfr_val=0
@@ -69,29 +69,27 @@ else: #chose FUV data
         del tbd[i][5]
 
 #inclination correction for quantities
-inclinations=[20,20,20,20,20,20,20,20,39,38]
+inclinations=[20,20,20,20,20,20,20,38]
 i_6946=30 #in degrees
 quant_list=[np.array(dataframe_list[i][col_names[i]])*(m.cos(m.radians(i_6946))/m.cos(m.radians(inclinations[i]))) 
                      for i in range(len(dataframe_list))] #corrected for different inclination angles
 quant_list=[quant_list[i]*conv_factors[i] for i in range(len(quant_list))] #list with 9 elements including vel disp 
-
-#to load errors if any given in the dat files
-#this assumes that in all files, the error columns are named as 'quant_error'
-error_list=[]
-for i in dataframe_list:
-    if 'quant_error' in i.columns:
-        error_list.append(np.array(i['quant_error']))
-    else:
-        continue
 
 #find array with least length and correct it for radius
 #if vel disp data is the smallest one, remove that and repeat the process
 array_with_least_length = min(radius_list, key=len) #this shows that temp data has least number of points
 corrected_radius=array_with_least_length*(7.72/8.2) #using known correction listed in overleaf file
 
+# radius_list.insert(-2,corrected_radius)
+
+#temperature fit
+T=np.array([(266.3*r)+5749.8 for r in corrected_radius])*(m.cos(m.radians(i_6946))/m.cos(m.radians(39)))
+error_temp=np.std(T)
+
 #interpolating the data and appending the common radius list 
 #interpolated arrays has an _ip ending
 quant_list_ip=[interpolation(radius_list[i],quant_list[i],corrected_radius) for i in range(len(dataframe_list))]
+quant_list_ip.insert(len(quant_list_ip)-1,T)
 quant_list_ip.insert(0,(corrected_radius))
 
 #removing nan values for points whr interpolation is impossible
@@ -112,6 +110,23 @@ nandeleted_data = tuple(nandeleted_data)
 #nandeleted_data follows same order of arrays as M31 and M33 data
 with open(current_directory+'\data\data_{}.pickle'.format('6946'), 'wb') as f:
     pickle.dump(nandeleted_data, f)
+
+########################################################################################################################################
+                                                      #ERROR DATA#
+########################################################################################################################################
+
+#to load errors if any given in the dat files
+#this assumes that in all files, the error columns are named as 'quant_error'
+error_list=[]
+
+#temp error
+temp_error=np.array([error_temp]*len(radius_list[4]))
+error_list.append(temp_error)
+
+#RC error
+RC_error=np.array([15*(cm_km/cm_kpc)]*len(radius_list[4]))
+error_list.append(RC_error)
+
 
 
 

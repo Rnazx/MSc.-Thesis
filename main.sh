@@ -10,7 +10,7 @@ python zipped_data_edited.py
 python get_magnetic_observables.py
 
 #If there is a change in the model run this to fing new scaling relations
-#python scale_exponents.py
+# python scale_exponents.py
 
 #Error aprroximation
 python error_approximation.py

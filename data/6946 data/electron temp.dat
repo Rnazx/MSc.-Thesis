@@ -1,4 +1,4 @@
-HIIregions,r/R25,r,t_NS,temp,error,error_kelvin
+HIIregions,r/R25,r,t_NS,temp,error,quant_error
 34,0.16,2.1248,0.66,6600,0.01,100
 8a,0.17,2.2576,0.69,6900,0.01,100
 8b,0.17,2.2576,0.72,7200,0.01,100
