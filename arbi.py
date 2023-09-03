@@ -47,7 +47,7 @@ else:
     c_or_cl = 0
 #args = sys.argv[1:]
 args = np.float64(np.array([float(s) for s in sys.argv[1:]]))
-print('The value for the Observables are sigmatot, sigmaHI, q, omega, sigmasfr\n', args)
+print('The value for the Observables are sigmatot, sigmaHI, q, omega, sigmasfr, molfraction = \n', args)
 obs_array = [np.array([arg]) for arg in args]
 dat_sigmatot, dat_sigmaHI, dat_q, dat_omega, dat_sigmasfr, molfrac = tuple(obs_array)
 kpc_r = np.ones(1)
