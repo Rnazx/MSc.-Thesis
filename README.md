@@ -10,7 +10,7 @@ In order to estimate the magnetic fields, we use six observable quantities.These
 * numpy
 * scipy
 * matplotlib
-## Structure of the code
+## Framework of the code
 The entire code consists of three steps
 ### Step 1: Obtaining turbulence parameters as a function of h
 <img src = "https://github.com/Rnazx/MSc.-Thesis/assets/42196798/d5ec16c7-b3fb-4663-b640-8b08df38630b" width ="900" height = "450" alt = "flowchart_step1" />
@@ -29,6 +29,8 @@ The expression for $u$ as a function of h obtained in Step 1 is used in equation
 ### Step 3: Use the solution to obtain results for galactic magnetic fields
 <img src = "https://github.com/Rnazx/MSc.-Thesis/assets/42196798/1cefb2ad-9e8a-4c87-9c7e-d14e7a77fbc7" width ="900" height = "450" alt = "flowchart_step3" />
 
-These observables-dependent turbulence parameters along with the observables themselves are used to model the magnetic equi-partition field and the Reynold's numbers given in chapter \ref{chap:intro}. The turbulence correlation time is chosen to be the minimum between the eddy-turnover time and the supernovae renovation time. While modelling the dynamo number $D_k$ the regime for $\alpha_k$ is chosen according to equation \ref{alphak} and an appropriate expression is selected based on the criterion. These quantities are further used as input to the magnetic field model described in chapter \ref{chap:intro}. Thus the mean and random components of the magnetic fields are modelled along with their pitch angles. These quantities are further analysed to obtain magnetic observables which can be compared with the direct inferences of magnetic fields through observational data.
-This whole framework is described in Figure \ref{step3}. We introduce three new parameters in this step. The parameter $\beta$ acts as a scaling factor to $B_{eq}$. It also accounts for uncertainty in the observational determination of the magnetic field strength. We also choose $C_\alpha$ to be a varying parameter which arises from the expression for $D_k$. To vary the mean magnetic field, we also vary $R_\kappa$ in equation \ref{Bbar} to change the mean magnetic field to desired values.
+These observables-dependent turbulence parameters along with the observables themselves are used to model the magnetic equi-partition field and the Reynold's numbers. The turbulence correlation time is chosen to be the minimum between the eddy-turnover time and the supernovae renovation time. While modelling the dynamo number $D_k$ the regime for $\alpha_k$ is chosen and an appropriate expression is selected based on the criterion. These quantities are further used as input to the magnetic field model described in chapter \ref{chap:intro}. Thus the mean and random components of the magnetic fields are modelled along with their pitch angles. These quantities are further analysed to obtain magnetic observables which can be compared with the direct inferences of magnetic fields through observational data. We introduce three new parameters in this step. The parameter $\beta$ acts as a scaling factor to $B_{eq}$. It also accounts for uncertainty in the observational determination of the magnetic field strength. We also choose $C_\alpha$ to be a varying parameter which arises from the expression for $D_k$. To vary the mean magnetic field, we also vary $R_\kappa$ to change the mean magnetic field to desired values.
+## Instructions to run the code
+### Solving the expressions
+
 
