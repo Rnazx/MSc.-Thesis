@@ -1,7 +1,7 @@
 # Estimating Galactic Magnetic Fields from Observable Inputs: A Comprehensive Python Code for Semi-analytical Solutions
 A generalised framework to estimate galactic magnetic fields using observational inputs.
 
-<img src = "https://github.com/Rnazx/MSc.-Thesis/assets/42196798/9cc608a8-89d9-4c36-9f5d-330ed0c3cb59" width ="900" height = "500" alt = "flowchart_conceptual" />
+<img src = "https://github.com/Rnazx/MSc.-Thesis/assets/42196798/9cc608a8-89d9-4c36-9f5d-330ed0c3cb59" width ="900" height = "400" alt = "flowchart_conceptual" />
 
 ### Dependencies
 * sympy
