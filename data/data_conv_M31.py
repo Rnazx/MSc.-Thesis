@@ -130,6 +130,32 @@ arcmin_r_MolFrac = np.array([5.710, 6.744, 7.711, 8.698, 9.688, 10.69, 11.70, 12
 MolFrac = np.array([0.1084, 0.3376, 0.1946, 0.1561, 0.1423, 0.2400, 0.3307, 0.3500, 0.3576, 0.3107, 0.2238, 0.2415, 0.2569, 0.2723, 0.3061, 0.2830, 0.2984, 0.2761, 0.2846, 0.3692, 0.4200, 0.3869, 0.2853, 0.2292, 0.1953, 0.1453, 0.1461, 0.1307, 0.1576, 0.1615, 0.1630, 0.1446, 0.1361, 0.1653, 0.1569, 0.1530, 0.1715, 0.1892, 0.2061,
                    0.2169, 0.2107, 0.2046, 0.2084, 0.2107, 0.2023, 0.1930, 0.1846, 0.1838, 0.1746, 0.1684, 0.1507, 0.1292, 0.1069, 0.08923, 0.07384, 0.06538, 0.06307, 0.06000, 0.05000, 0.04307, 0.03615, 0.03461, 0.03384, 0.03615, 0.03384, 0.03230, 0.03230, 0.02846, 0.02384, 0.02153, 0.01230, 0.009230, 0.008461, 0.01846, 0.01615, 0.01307])
 
+#used to create csv files of data lists used in this code
+###################################################################################################################################################################
+
+# import csv
+# import os.path as osp
+
+# # Combine the data using the zip function
+# # data = zip(kpc_r_kam, kms_vcirc_Kam, kms_vcirc_error_Kam, arcsec_r_Koch, kms_vcirc_Koch, kms_vcirc_error_Koch)
+# data = zip(arcsec_r, kms_sigmaLOS,kms_sigmaLOS_warp)
+
+# file_name='vdisp_M31.csv'
+# # Specify the CSV file path
+# csv_file_path = r'D:\Documents\Gayathri_college\MSc project\data\m31\{}'.format(file_name)
+
+# # Write the data to the CSV file
+# with open(csv_file_path, 'w', newline='') as csv_file:
+#     writer = csv.writer(csv_file)
+#     writer.writerow(['r arcsec', 'vdisp kms no_warp','vdisp kms warp'])  # Write header row
+#     writer.writerows(data)  # Write data rows
+
+# print("CSV file created successfully.")
+
+###################################################################################################################################################################
+
+
+
 # Values used in Van Eck+15/Chamandy+16
 Msunpc2Gyr_Sigma_SFR_Vaneck = np.array([0.443, 0.621, 0.794, 0.227])
 
@@ -141,11 +167,9 @@ kpc_r_molfrac = arcmin_r_MolFrac / arcmin_deg / deg_rad * kpc_D_M31_Plot
 kpc_r_cl = kpc_r_Claude * kpc_D_M31_Plot / kpc_D_M31_Chemin
 
 kpc_r_Chemin_orig = arcmin_r_Chemin / arcmin_deg / deg_rad * kpc_D_M31_Chemin
-kpc_r_Chemin = kpc_r_Chemin_orig * kpc_D_M31_Plot / \
-    kpc_D_M31_Chemin  # correct to distance used for our plots
+kpc_r_Chemin = kpc_r_Chemin_orig * kpc_D_M31_Plot / kpc_D_M31_Chemin  # correct to distance used for our plots
 
-kpc_r_SFR = kpc_r_SFR_TB10 * kpc_D_M31_Plot / \
-    kpc_D_M31_TB10  # correct to distance used for our plots
+kpc_r_SFR = kpc_r_SFR_TB10 * kpc_D_M31_Plot / kpc_D_M31_TB10  # correct to distance used for our plots
 
 if __name__ == '__main__':
     # Select which data to use for sigma, q and omega
@@ -185,6 +209,7 @@ if __name__ == '__main__':
     molfrac = griddata(kpc_r_molfrac, MolFrac, kpc_r,
                     method='linear', fill_value=nan, rescale=False)
     dat_sigmaH2 = dat_sigma*(1/(1-molfrac))
+
     T = (0.017*kpc_r + 0.5)*1e+4  #obtained from paper
 
     data = kpc_r, dat_sigmatot, dat_sigma,dat_sigmaH2, dat_q, dat_omega, dat_sigmasfr, T
@@ -192,3 +217,12 @@ if __name__ == '__main__':
     current_directory = str(os.getcwd())
     with open(current_directory+'\data\data_m31.pickle', 'wb') as f:
         pickle.dump(data, f)
+
+rad_data = [kpc_r_cl, kpc_r_Chemin, kpc_r_SFR, kpc_r_molfrac]
+kpc_r = rad_data[np.argmin(np.array([d.size for d in rad_data]))]
+kpc_gal_dist = 780e0  # from Beck et al
+kpc_radius = kpc_gal_dist*arcsec_r/(arcsec_deg*deg_rad)
+# dat_u = griddata(kpc_radius, np.sqrt(3)*kms_sigmaLOS, kpc_r, method='linear',fill_value=nan, rescale=False)*1e+5
+# dat_u_warp = griddata(kpc_radius, np.sqrt(3)*kms_sigmaLOS_warp, kpc_r, method='linear',fill_value=nan, rescale=False)*1e+5
+dat_u = griddata(kpc_radius, np.sqrt(3)*kms_sigmaLOS, kpc_r, method='linear',fill_value=nan, rescale=False)
+dat_u_warp = griddata(kpc_radius, np.sqrt(3)*kms_sigmaLOS_warp, kpc_r, method='linear',fill_value=nan, rescale=False)

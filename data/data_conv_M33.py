@@ -211,6 +211,8 @@ molfrac = dat_sigmah2/(dat_sigmah2 + dat_sigma) #defining molecular fraction
 T_OIII=0*kpc_r
 
 T_NII=7756+(3520/7.203)*kpc_r
+# T_NII=0*kpc_r
+
 T=(T_OIII+T_NII)/2
 data  = kpc_r, dat_sigmatot, dat_sigma,dat_sigmah2, dat_q, dat_omega, dat_sigmasfr, T,dat_v_disp
 

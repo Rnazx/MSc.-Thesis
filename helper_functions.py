@@ -2,8 +2,9 @@ import numpy as np
 from sympy import *
 import inspect
 from scipy.optimize import curve_fit, fsolve, root
+import os
 
-current_directory=r'D:\Documents\Gayathri_college\MSc project\codes\MSc.-Thesis'
+current_directory= str(os.getcwd())
 ############################################################################################################################
 # Defining the Observables
 q = Symbol('q')
