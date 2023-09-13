@@ -47,12 +47,10 @@ For each galaxy, the data for the different observables are compiled from differ
 This interpolated data is then used in [zipped_data.py](zipped_data.py), where the values for the parameters and switches are read from the [parameters.in](parameters.in) and [switches.in](switches.in) input files respectively. The parameters and the interpolated data are then formatted into the desired format and saved as a pickle file.
 
 ### 3. Using the data in the solved expressions
-This pickle file is further used in the [get_magnetic_observables.py](get_magnetic_observables.py) script. In this script, we numerically solve for the magnetic observables and turbulence parameters using a bunch of functions from the [helper_functions.py](helper_functions.py) script. The _datamaker_ function in [helper_functions.py](helper_functions.py#L22)
-#### i) Solving for h numerically
-We use Scipy's fsolve routine to find the root of the polynomial equation in h. 
-#### ii) Substituting for this solution in the other expressions
-
-
+This pickle file is further used in the [get_magnetic_observables.py](get_magnetic_observables.py) script. In this script, we numerically solve for the magnetic observables and turbulence parameters using a bunch of functions from the [helper_functions.py](helper_functions.py) script.
+**Solving for h numerically:** The [_exp_analytical_data()_](helper_functions.py#L82) is used to substitute in the values of the observables and the physical constants in the solved expression for h. We then use Scipy's fsolve routine to find the root of the polynomial equation in h. 
+**Substituting for this solution in the other expressions:** This numerical solution is then used to obtain the turbulence and the magnetic field quantities using the [_datamaker()_](helper_functions.py#L94) function.
+These solutions obtained are again stored in a pickle file which is used in [plots.ipynb](plots.ipynb) to plot the desired outputs.
 
 
 
