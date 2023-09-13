@@ -10,6 +10,28 @@ In order to estimate the magnetic fields, we use six observable quantities. Thes
 * NumPy
 * Scipy
 * Matplotlib
+
+## Instructions to run the code
+There are different scripts involved in finding the magnetic fields and pitch angles. The outputs from these scripts are saved as a [pickle](https://docs.python.org/3/library/pickle.html) file. The order in which to run the scripts is as follows:
+### 1. Solving the expressions
+
+We solve for the magnetic fields and turbulence using [Sympy](https://www.sympy.org/en/index.html). The code for solving the expressions can be found in the [expressions](expressions) directory. The [turbulence_expressions.py](expressions/turbulence_expressions.py) script solves for the turbulence parameters in terms of the observables. Subsequently, the [magnetic_expressions.py](expressions/magnetic_expressions.py) script uses this solution to find the expressions for the magnetic fields and pitch angles.
+
+### 2. Cleaning and formatting the data
+For each galaxy, the data for the different observables are compiled from different sources and used in the Python files in the [data](data) directory. As this data is compiled from different sources, the radial range involved for each observable can be different. Hence, an interpolation method is implemented where the coarsest radial range is chosen, and the other observables are interpolated for this radial range. A depiction of this interpolation method is shown:
+
+<img src = "https://github.com/Rnazx/MSc.-Thesis/assets/42196798/edec171d-9f47-4877-b9ec-7e1c19892d9c" width ="500" height = "350" alt = "interpolation" />
+
+**Note:** There are various switches in the scripts to choose the source from which the data is taken from.
+
+This interpolated data is then used in [zipped_data.py](zipped_data.py), where the values for the parameters and switches are read from the [parameters.in](parameters.in) and [switches.in](switches.in) input files respectively. The parameters and the interpolated data are then formatted into the desired format and saved as a pickle file.
+
+### 3. Using the data in the solved expressions
+This pickle file is further used in the [get_magnetic_observables.py](get_magnetic_observables.py) script. In this script, we numerically solve for the magnetic observables and turbulence parameters using a bunch of functions from the [helper_functions.py](helper_functions.py) script.
+#### i) Solving for h numerically
+#### ii) Substituting for this solution in the other expressions
+
+
 ## Framework of the code
 The entire code consists of three steps
 ### Step 1: Obtaining turbulence parameters as a function of h
@@ -30,16 +52,5 @@ The expression for $u$ as a function of h obtained in Step 1 is used in the equa
 <img src = "https://github.com/Rnazx/MSc.-Thesis/assets/42196798/1cefb2ad-9e8a-4c87-9c7e-d14e7a77fbc7" width ="900" height = "450" alt = "flowchart_step3" />
 
 These observables-dependent turbulence parameters and the observables themselves are used to model the magnetic equipartition field and Reynold's numbers. The turbulence correlation time is chosen to be the minimum between the eddy-turnover time and the supernovae renovation time. While modelling the dynamo number $D_k$, the regime for $\alpha_k$ is chosen, and an appropriate expression is selected based on the criterion. These quantities are further used as input to the magnetic field model. Thus, the mean and random components of the magnetic fields are modelled along with their pitch angles. These quantities are further analysed to obtain magnetic observables, which can be compared with the direct inferences of magnetic fields through observational data. We introduce three new parameters in this step. The parameter $\beta$ is a scaling factor to $B_{eq}$. It also accounts for uncertainty in the observational determination of the magnetic field strength. We also choose $C_\alpha$ to be a varying parameter which arises from the expression for $D_k$. To vary the mean magnetic field, we also vary $R_\kappa$ to change the mean magnetic field to desired values.
-## Instructions to run the code
-There are different scripts involved in finding the magnetic fields and pitch angles. The outputs from these scripts are saved as a [pickle](https://docs.python.org/3/library/pickle.html) file. The order in which to run the scripts is as follows:
-### 1. Solving the expressions
 
-We solve for the magnetic fields and turbulence using [Sympy](https://www.sympy.org/en/index.html). The code for solving the expressions can be found in the [expressions](expressions) directory. The [turbulence_expressions.py](expressions/turbulence_expressions.py) script solves for the turbulence parameters in terms of the observables. Subsequently, the [magnetic_expressions.py](expressions/magnetic_expressions.py) script uses this solution to find the expressions for the magnetic fields and pitch angles.
-
-### 2. Cleaning and formatting the data
-For each galaxy, the data for the different observables are compiled from different sources and used in the Python files in the [data](data) directory. As this data is compiled from different sources, the radial range involved for each observable can be different. Hence, an interpolation method is implemented where the coarsest radial range is chosen, and the other observables are interpolated for this radial range. A depiction of this interpolation method is shown:
-
-<img src = "https://github.com/Rnazx/MSc.-Thesis/assets/42196798/edec171d-9f47-4877-b9ec-7e1c19892d9c" width ="500" height = "350" alt = "interpolation" />
-
-### 3. Using the data in the solved expressions
 
