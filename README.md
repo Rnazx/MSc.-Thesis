@@ -31,11 +31,15 @@ The expression for $u$ as a function of h obtained in Step 1 is used in the equa
 
 These observables-dependent turbulence parameters and the observables themselves are used to model the magnetic equipartition field and Reynold's numbers. The turbulence correlation time is chosen to be the minimum between the eddy-turnover time and the supernovae renovation time. While modelling the dynamo number $D_k$, the regime for $\alpha_k$ is chosen, and an appropriate expression is selected based on the criterion. These quantities are further used as input to the magnetic field model. Thus, the mean and random components of the magnetic fields are modelled along with their pitch angles. These quantities are further analysed to obtain magnetic observables, which can be compared with the direct inferences of magnetic fields through observational data. We introduce three new parameters in this step. The parameter $\beta$ is a scaling factor to $B_{eq}$. It also accounts for uncertainty in the observational determination of the magnetic field strength. We also choose $C_\alpha$ to be a varying parameter which arises from the expression for $D_k$. To vary the mean magnetic field, we also vary $R_\kappa$ to change the mean magnetic field to desired values.
 ## Instructions to run the code
-### Solving the expressions
+There are different scripts involved in finding the magnetic fields and pitch angles. The outputs from these scripts are saved as a [pickle](https://docs.python.org/3/library/pickle.html) file. The order in which to run the scripts is as follows:
+### 1. Solving the expressions
+
+We solve for the magnetic fields and turbulence using [Sympy](https://www.sympy.org/en/index.html). The code for solving the expressions can be found in the [expressions](expressions) directory. The [turbulence_expressions.py](expressions/turbulence_expressions.py) script solves for the turbulence parameters in terms of the observables. Subsequently, the [magnetic_expressions.py](expressions/magnetic_expressions.py) script uses this solution to find the expressions for the magnetic fields and pitch angles.
+
+### 2. Cleaning and formatting the data
 For each galaxy, the data for the different observables are compiled from different sources and used in the Python files in the [data](data) directory. As this data is compiled from different sources, the radial range involved for each observable can be different. Hence, an interpolation method is implemented where the coarsest radial range is chosen, and the other observables are interpolated for this radial range. A depiction of this interpolation method is shown:
 
 <img src = "https://github.com/Rnazx/MSc.-Thesis/assets/42196798/edec171d-9f47-4877-b9ec-7e1c19892d9c" width ="500" height = "350" alt = "interpolation" />
 
-
-We solve for the magnetic fields and turbulence using [Sympy](https://www.sympy.org/en/index.html). The code for solving the expressions can be found in the [expressions](expressions) directory. The [turbulence_expressions.py](turbulence_expressions.py) file solves for the turbulence parameters in terms of the observables. Then the [magnetic_expressions.py](magnetic_expressions.py)
+### 3. Using the data in the solved expressions
 
