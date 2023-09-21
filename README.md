@@ -10,7 +10,10 @@ In order to estimate the magnetic fields, we use six observable quantities. Thes
 * NumPy
 * Scipy
 * Matplotlib
-
+If these packages are not available in your Python interpreter, you can run
+```
+pip install -r requirements.txt
+```
 A description of the code framework is available in [this](framework.md) file.
 ## Instructions to run the code
 There are different scripts involved in finding the magnetic fields and pitch angles. The outputs from these scripts are saved as a [pickle](https://docs.python.org/3/library/pickle.html) file. In order to run the relevant files, one can run the script.
