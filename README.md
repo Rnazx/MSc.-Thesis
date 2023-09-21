@@ -3,7 +3,9 @@ A generalised framework to estimate galactic magnetic fields using observational
 
 <img src = "https://github.com/Rnazx/MSc.-Thesis/assets/42196798/9cc608a8-89d9-4c36-9f5d-330ed0c3cb59" width ="900" height = "450" alt = "flowchart_conceptual" />
 
-In order to estimate the magnetic fields, we use six observable quantities. These observables include the gas angular velocity about the galactic centre $\Omega$, the radial shear parameter $q=-d\ln\Omega/d\ln r$, the stellar surface density $\Sigma_*$, the gas surface density $\Sigma$, the star formation rate surface density $\Sigma_\mathrm{SFR}$, and the gas temperature $T$. Using these observables, the turbulent root-mean-square velocity $u$, the turbulent correlation time $\tau$ and length $l$ are found. These parameters describe the timescale and length scale over which the turbulence is correlated. Three different models for the turbulence are included in the code. The scale height of the gaseous galactic disk $h$ is another important parameter characterizing turbulence. These equations are then used to obtain an expression for the mean and random component of the magnetic field, along with the pitch angles.
+In order to estimate the magnetic fields, we use six observable quantities. These observables include the gas angular velocity about the galactic centre $\Omega$, the radial shear parameter $q=-d\ln\Omega/d\ln r$, the stellar surface density $\Sigma_*$, the gas surface density $\Sigma$, the star formation rate surface density $\Sigma_\mathrm{SFR}$, and the gas temperature $T$. Using these observables, the turbulent root-mean-square velocity $u$, the turbulent correlation time $\tau$ and length $l$ are found. These parameters describe the timescale and length scale over which the turbulence is correlated. Three different models for the turbulence are included in the code. The scale height of the gaseous galactic disk $h$ is another important parameter characterizing turbulence. 
+
+These equations are then used to obtain an expression for the mean and random component of the magnetic field, along with the pitch angles.
 
 ### Dependencies
 * Sympy
@@ -11,6 +13,10 @@ In order to estimate the magnetic fields, we use six observable quantities. Thes
 * Scipy
 * Matplotlib
 
+If these packages are not available in your Python interpreter, you can run
+```
+pip install -r requirements.txt
+```
 A description of the code framework is available in [this](framework.md) file.
 ## Instructions to run the code
 There are different scripts involved in finding the magnetic fields and pitch angles. The outputs from these scripts are saved as a [pickle](https://docs.python.org/3/library/pickle.html) file. In order to run the relevant files, one can run the script.
