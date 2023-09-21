@@ -99,7 +99,7 @@ l = simplify(l)
 
 
 
-hg = zet*(u**2 + cs**2)/(3*pi*G*sigmatot)
+hg = (u**2 + 2*cs**2)/(3*pi*G*(sigma + (sigmatot/zet)))
 hsub = zet*(cs**2)/(3*pi*G*sigmatot)
 hsup = zet*(u**2)/(3*pi*G*sigmatot)
 

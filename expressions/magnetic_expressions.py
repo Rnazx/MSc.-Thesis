@@ -79,7 +79,7 @@ tanpB = simplify(tanpB)
 
 tanpb = 1/(1+q*omega*tau)
 
-mag_expr = biso, bani, Bbar, tanpb, tanpB, Beq, eta, cs
+mag_expr = biso, bani, Bbar, tanpb, tanpB, Beq, eta, cs, Dk, Dc
 
 
 with open('mag_exp.pickle', 'wb') as f:
