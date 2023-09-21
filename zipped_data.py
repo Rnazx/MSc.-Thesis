@@ -40,7 +40,7 @@ print('Succesfully read the parameters and switches')
 
 # data extraction for galaxy
 os.chdir(current_directory + '\data')
-if switch['chem_or_claude'] is 'Chemin':
+if switch['chem_or_claude'] == 'Chemin':
     c_or_cl = 1
 else:
     c_or_cl = 0
@@ -58,19 +58,19 @@ dat_sigmaH2 = dat_sigmaHI*(1/(1-molfrac))
 
 T_tb = (0.017*kpc_r + 0.5)*1e+4
 
-if switch['incl_moldat'] is 'Yes':
+if switch['incl_moldat'] == 'Yes':
     dat_sigma = dat_sigmaHI + dat_sigmaH2
 else:
     dat_sigma = dat_sigmaHI
 
-dat_sigma = params['mu']*dat_sigma
+dat_sigma = (params['mu'])*dat_sigma#/(2-params['mu'])
 
 ks_exp = params['ks_exp']
 ks_const = (dat_sigmasfr/(dat_sigma)**(ks_exp)).mean()
 
 ks_split = switch['force_kennicut_scmidt'].split()
-if ks_split[0] is 'Yes':
-    if ks_split[1] is 'sigmasfrdata':
+if ks_split[0] == 'Yes':
+    if ks_split[1] == 'sigmasfrdata':
         dat_sigma = (dat_sigmasfr/ks_const)**(1/ks_exp)
     else:
         dat_sigmasfr = ks_const*(dat_sigma)**(ks_exp)
