@@ -11,9 +11,13 @@ In order to estimate the magnetic fields, we use six observable quantities. Thes
 * Scipy
 * Matplotlib
 
-
+A description of the code framework is available in [this](framework.md) file.
 ## Instructions to run the code
-There are different scripts involved in finding the magnetic fields and pitch angles. The outputs from these scripts are saved as a [pickle](https://docs.python.org/3/library/pickle.html) file. The order in which to run the scripts is as follows:
+There are different scripts involved in finding the magnetic fields and pitch angles. The outputs from these scripts are saved as a [pickle](https://docs.python.org/3/library/pickle.html) file. In order to run the relevant files, one can run the script.
+```
+./main.sh
+```
+This runs all the necessary scripts, from algebraically solving the expressions to finding the solutions numerically. The order in which to run the scripts is as follows:
 ### 1. Solving the expressions
 
 We solve for the magnetic fields and turbulence using [Sympy](https://www.sympy.org/en/index.html). The code for solving the expressions can be found in the [expressions](expressions) directory. The [turbulence_expressions.py](expressions/turbulence_expressions.py) script solves for the turbulence parameters in terms of the observables. Subsequently, the [magnetic_expressions.py](expressions/magnetic_expressions.py) script uses this solution to find the expressions for the magnetic fields and pitch angles.
