@@ -31,7 +31,7 @@ r = kpc_r.size
 
 observables = [q ,omega ,sigma,sigmatot,sigmasfr,T]
 quantities = [hg, l, u, cs, alphak1, taue, biso, bani, Bbar, tanpB, tanpb]
-
+#kpc_r, h_f, l_f, u_f, cs_f, alphak_f, tau_f, taue_f, taur_f, biso_f, bani_f, Bbar_f, tanpB_f, tanpb_f, dkdc_f, alpham_f, omt, kah
 exps = []
 for i,quan in enumerate(quantities):
     exps_quan = np.array([scal_finder(hg, quan, obs, data_pass, taue, alphak1, np.linspace(1,5000,100), 1e+15)[2] for obs in observables])

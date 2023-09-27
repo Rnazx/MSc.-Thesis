@@ -31,9 +31,9 @@ with open('mag_exp.pickle', 'rb') as f:
 os.chdir(current_directory)
 
 cs_f = exp_analytical_data(cs, data_pass).astype(np.float64)
-h = Symbol('h')
+# h = Symbol('h')
 #print(exp_analytical_data(hg, data_pass)[0].subs(h,1), cs_f)
-h_init_trys = [1, float(exp_analytical_data(hg, data_pass)[0].subs(h,1)), 1e+15]
+h_init_trys = [1e+15, 1e+25, 1e+35]
 for i,hi in enumerate(h_init_trys):
     try:
         print('Try {} for initial guess of h as {:e} cm'.format(i,np.round(hi)))

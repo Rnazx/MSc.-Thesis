@@ -54,7 +54,7 @@ kpc_r, dat_sigmatot, dat_sigmaHI, dat_q, dat_omega, dat_sigmasfr, molfrac = data
 
 r = kpc_r.size  # common radius of the interpolated data
 
-dat_sigmaH2 = dat_sigmaHI*(1/(1-molfrac))
+dat_sigmaH2 = dat_sigmaHI*(molfrac/((1-molfrac)))
 
 T_tb = (0.017*kpc_r + 0.5)*1e+4
 
@@ -63,7 +63,7 @@ if switch['incl_moldat'] == 'Yes':
 else:
     dat_sigma = dat_sigmaHI
 
-dat_sigma = (params['mu'])*dat_sigma#/(2-params['mu'])
+dat_sigma = (3*params['mu'])*dat_sigma/(4-params['mu'])
 
 ks_exp = params['ks_exp']
 ks_const = (dat_sigmasfr/(dat_sigma)**(ks_exp)).mean()

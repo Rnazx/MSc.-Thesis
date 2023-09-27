@@ -11,7 +11,7 @@ from helper_functions import scal_finder
 
 
 current_directory = str(os.getcwd())
-#kpc_r, h_f, l_f, u_f, cs_f, alphak_f, tau_f, biso_f, bani_f, Bbar_f, tanpB_f, tanpb_f
+#kpc_r, h_f, l_f, u_f, cs_f, alphak_f, tau_f, taue_f, taur_f, biso_f, bani_f, Bbar_f, tanpB_f, tanpb_f, dkdc_f, alpham_f, omt, kah
 with open('mag_observables.pickle', 'rb') as f:
     model_f = pickle.load(
         f)
