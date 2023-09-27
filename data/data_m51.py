@@ -40,58 +40,61 @@ def file_reader(list_of_file_names):
 
 #extrapolation
 def interpolation(list1,list2,standard):
-    extrapolated_data = griddata(list1, list2, standard, method='linear', fill_value=nan, rescale=False)
-    return extrapolated_data
+    interpolated_data = griddata(list1, list2, standard, method='linear', fill_value=nan, rescale=False)
+    return interpolated_data
 ###########################################################################################################################################
-    
+
 # file_names=['smdf','HI m51..','H2 m51.','q_valuesM51sofue+18','omega_sofue+18',
-#             'SFR_Halpha24 m51.','SFR_FUV24 m51.','temperature','CO vel dispersion schuster.']
-file_names=['smdf','HI m51..','H2 m51.','q_valuesM51sofue+18','omega_sofue+18',
+#             'SFR_Halpha24 m51.','SFR_FUV24 m51.','CO vel dispersion schuster.']
+file_names=['smdf','HI+H2 m51.','q_valuesM51sofue+18','omega_sofue+18',
             'SFR_Halpha24 m51.','SFR_FUV24 m51.','CO vel dispersion schuster.']
 
 dataframe_list=file_reader(file_names)
 
 #to obtain radius data from every df
+distance_m51= 8.5 #Mpc
+distances_Mpc=[9.6,7.6,9.6,9.6,7.6,7.6,8.4]
 radius_list=[np.array(dataframe_list[i]['r']) for i in range(len(dataframe_list))]
+radius_list=[radius_list[i]*(distance_m51/distances_Mpc[i]) for i in range(len(radius_list))] #applying distance corrections
 
 #obtain arrays of quantities
-col_names=['smdf','sigma_HI','sigma_H2','q','omega',
+col_names=['smdf','sigma_gas','q','omega',
            'sigma_sfr','sigma_sfr_fuv','vel disp']
-conv_factors=[(g_Msun/(cm_pc**2) ), g_Msun/(cm_pc**2), g_Msun/(cm_pc**2), 1,
-              cm_km/cm_kpc, g_Msun/((s_Myr*10**(-6))*(cm_kpc**2)), g_Msun/((s_Myr*10**(-6))*(cm_kpc**2)), (3**0.5)]
+conv_factors=[(g_Msun/(cm_pc**2) ), g_Msun/(cm_pc**2), 1,
+              cm_km/cm_kpc, g_Msun/((s_Myr*10**(-6))*(cm_kpc**2)), g_Msun/((s_Myr*10**(-6))*(cm_kpc**2)), (3**0.5)] #last term to make 3D vdisp
 
 #to switch between fuv and h_alpha data for sfr
 sfr_val=0
 tbd=[col_names,dataframe_list,conv_factors,radius_list]
 if sfr_val==0: #choosing H_alpha data
     for i in range(len(tbd)):
-        del tbd[i][6]
+        del tbd[i][5]
 else: #chose FUV data
     for i in range(len(tbd)):
-        del tbd[i][5]
+        del tbd[i][4]
 
 col_names=tbd[0]
 dataframe_list=tbd[1]
 conv_factors=tbd[2]
 radius_list=tbd[3]
 
+# get the quantities and convert to cgs units
 quant_list=[np.array(dataframe_list[i][col_names[i]]) for i in range(len(dataframe_list))]
 quant_list=[quant_list[i]*conv_factors[i] for i in range(len(quant_list))] #list with 8 elements including vel disp 
 
 #find array with least length and correct it for radius
 #if vel disp data is the smallest one, remove that and repeat the process
-array_with_least_length = min(radius_list, key=len) 
-corrected_radius=array_with_least_length*(8.5/8.2) #using known correction for distance for HI data
+kpc_r = min(radius_list, key=len) 
 
-#temp data
-T=np.array([((280.2*r)+4794.9) for r in corrected_radius])
+#temp data #fit obtained using scipy.stats.linregress in temperature fitting.py
+T=np.array([((280.1606531283593*r)+4794.905648749489) for r in kpc_r])
 error_temp=np.std(T)
 
 #interpolating the data and appending the common radius list 
 #interpolated arrays has an _ip ending
-quant_list_ip=[interpolation(radius_list[i],quant_list[i],corrected_radius) for i in range(len(col_names))]
+quant_list_ip=[interpolation(radius_list[i],quant_list[i],kpc_r) for i in range(len(col_names))]
 quant_list_ip.insert(len(quant_list_ip)-1,T)
-quant_list_ip.insert(0,corrected_radius)
+quant_list_ip.insert(0,kpc_r)
 
 #removing nan values for points whr interpolation is impossible
 nan_max = np.argmax([np.sum(np.isnan(d)) for d in quant_list_ip])
@@ -109,6 +112,7 @@ nandeleted_data = tuple(nandeleted_data)
 
 #storing that in a pickle file
 #nandeleted_data follows same order of arrays as M31 and M33 data
+#kpc_r, dat_sigmatot, dat_sigmaHI,dat_sigmaH2, dat_q, dat_omega, dat_sigmasfr, T= data
 with open(current_directory+'\data\data_{}.pickle'.format('m51'), 'wb') as f:
     pickle.dump(nandeleted_data, f)
 
@@ -120,10 +124,10 @@ with open(current_directory+'\data\data_{}.pickle'.format('m51'), 'wb') as f:
 #this assumes that in all files, the error columns are named as 'quant_error'
 error_list=[]
 
-temp_error=np.array([error_temp]*len(radius_list[4]))
+temp_error=np.array([error_temp]*len(kpc_r))
 error_list.append(temp_error)
 
-RC_error=np.array([15*(cm_km/cm_kpc)]*len(radius_list[4]))
+RC_error=np.array([15*(cm_km/cm_kpc)]*len(kpc_r))
 error_list.append(RC_error)
 
 

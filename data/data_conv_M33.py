@@ -165,13 +165,17 @@ Msunpc2_Sigma_star = np.zeros((nR,nU))
 for j in range(nU):
     Msunpc2_Sigma_star[:,j] = s(kpc_R,MsunLsun_Ups[j])
 
+#defining these to find sigma_total for difference upsilon values
+Msunpc2_Sigma_star_up72=np.array([Msunpc2_Sigma_star[i][0] for i in range(len(Msunpc2_Sigma_star))])
+Msunpc2_Sigma_star_up52=np.array([Msunpc2_Sigma_star[i][1] for i in range(len(Msunpc2_Sigma_star))])
 
 #converting radius for vcirc from arcmin to kpc for Kam data
 kpc_r_kam = arcmin_r_Kam / arcmin_deg / deg_rad * kpc_D_M33_Kam
 
 rad_data = [kpc_r_kam, kpc_r_SFR, kpc_r_SigmaH2]
+
 #finding the radius list to interpolate
-kpc_r = rad_data[np.argmin(np.array([d.size for d in rad_data]))]
+kpc_r = rad_data[np.argmin(np.array([d.size for d in rad_data]))] #minimum size is for kpc_r_SigmaH2
 
 #kpc_r- radius for which we wanna interpolate
 dat_sigmastar = griddata(kpc_R, Msunpc2_Sigma_star[:,0]*g_Msun/(pcm)**2, kpc_r, method='linear', fill_value=nan, rescale=False)
@@ -194,27 +198,54 @@ dat_sigmasfr = griddata(kpc_r_SFR, dat_sigmasfr, kpc_r, method='linear', fill_va
 #interpolation for velocity dispersion
 dat_v_disp=griddata(kpc_r_kam,kms_sigmaLOS_Kam,kpc_r,method='linear', fill_value=nan, rescale=False)
 
+#no distance correction needed. chosen D= 0.84 Mpc
 #correction for inclination angle, chosen angle = 56 deg 
 #numerator has the chosen value 
-dat_sigmastar = dat_sigmastar*(m.cos(m.radians(56))/m.cos(m.radians(52))) 
-dat_sigma=dat_sigma*(m.cos(m.radians(56))/m.cos(m.radians(52))) 
-dat_sigmah2 = dat_sigmah2*(m.cos(m.radians(56))/m.cos(m.radians(52)))
-dat_sigmasfr=dat_sigmasfr*(m.cos(m.radians(56))/m.cos(m.radians(54)))
-dat_omega=dat_omega*(m.cos(m.radians(56))/m.cos(m.radians(52)))
-dat_q=dat_q*(m.cos(m.radians(56))/m.cos(m.radians(52)))
+i_m33= m.radians(56)
+dat_sigmastar = dat_sigmastar*(m.cos(i_m33)/m.cos(m.radians(52))) 
+dat_sigma     = dat_sigma*(m.cos(i_m33)/m.cos(m.radians(52))) 
+dat_sigmah2   = dat_sigmah2*(m.cos(i_m33)/m.cos(m.radians(52)))
+dat_sigmasfr  = dat_sigmasfr*(m.cos(i_m33)/m.cos(m.radians(54)))
+dat_omega     = dat_omega*(m.cos(i_m33)/m.cos(m.radians(52)))
+dat_q         = dat_q*(m.cos(i_m33)/m.cos(m.radians(52)))
 
 dat_sigmatot = dat_sigma + dat_sigmastar #defining total surface density
 molfrac = dat_sigmah2/(dat_sigmah2 + dat_sigma) #defining molecular fraction
 
 #Temp data from Lin+17
 # T_OIII=8398+(2243/7.203)*kpc_r
-T_OIII=0*kpc_r
-
-T_NII=7756+(3520/7.203)*kpc_r
 # T_NII=0*kpc_r
-
+T_OIII=0*kpc_r
+T_NII=7756+(3520/7.203)*kpc_r
 T=(T_OIII+T_NII)/2
+
+
 data  = kpc_r, dat_sigmatot, dat_sigma,dat_sigmah2, dat_q, dat_omega, dat_sigmasfr, T,dat_v_disp
+
+# mu=14/11
+# f_mu=mu/(2-mu)
+# r=kpc_r
+# sigma_sigmaHI=dat_sigmatot/(dat_sigma*f_mu)
+# sigma_sigmaH2=dat_sigmatot/(dat_sigmah2*f_mu)
+# sigma_sigmagas=dat_sigmatot/((dat_sigma+dat_sigmah2)*f_mu)
+
+# import matplotlib.pyplot as plt
+# import unicodedata
+# Sigma=unicodedata.lookup('GREEK CAPITAL LETTER SIGMA')
+
+# plt.semilogy(r,sigma_sigmaHI,label=Sigma+'/'+Sigma+'HI')
+# plt.semilogy(r,sigma_sigmaH2,label=Sigma+'/'+Sigma+'H2')
+# plt.semilogy(r,sigma_sigmagas,label=Sigma+'/'+Sigma+'gas')
+# plt.xlabel('r (kpc)')
+# plt.ylabel('ratio')
+# plt.title('M 33')
+# plt.legend()
+# plt.show()
+
+# for i in range(len(r)):
+#     print(sigma_sigmaHI[i],sigma_sigmaH2[i],sigma_sigmagas[i])
+# for i in range(len(r)):
+#     print(r[i])
 
 #to remove nan values for points whr interpolation is impossible
 nan_max = np.argmax([np.sum(np.isnan(d)) for d in data])
@@ -241,16 +272,16 @@ with open(current_directory+'\data\data_m33.pickle', 'wb') as f:
 
 # # Combine the data using the zip function
 # # data = zip(kpc_r_kam, kms_vcirc_Kam, kms_vcirc_error_Kam, arcsec_r_Koch, kms_vcirc_Koch, kms_vcirc_error_Koch)
-# data = zip(kpc_r_kam, dat_sigma,dat_sigmah2)
+# data = zip(kpc_R, Msunpc2_Sigma_star_up52)
 
-# file_name='sigma_gas_M33.csv'
+# file_name='sigmatot_up52_M33.csv'
 # # Specify the CSV file path
 # csv_file_path = r'D:\Documents\Gayathri_college\MSc project\data\m33\{}'.format(file_name)
 
 # # Write the data to the CSV file
 # with open(csv_file_path, 'w', newline='') as csv_file:
 #     writer = csv.writer(csv_file)
-#     writer.writerow(['r kpc', 'sigma HI','sigma H2'])  # Write header row
+#     writer.writerow(['r kpc', 'sigma tot'])  # Write header row
 #     writer.writerows(data)  # Write data rows
 
 # print("CSV file created successfully.")

@@ -76,10 +76,10 @@ def model_choose(nos): #n is the model number- 2 or 3
     u = Symbol('u')
     h = Symbol('h')
 
-    cs = (gamma*boltz*T/(mu*mh))**Rational(1/2) #sound speed, eq 36
-    rho = sigma/(2*h) #gas density, eq 35
-    n = rho/(mu*mh) #converting mass density rho to number density n, eq 22
-    nu = (delta*sigmasfr)/(2*h*mstar)
+    # cs = (gamma*boltz*T/(mu*mh))**Rational(1/2) #sound speed, eq 36
+    # rho = sigma/(2*h) #gas density, eq 35
+    # n = rho/(mu*mh) #converting mass density rho to number density n, eq 22
+    # nu = (delta*sigmasfr)/(2*h*mstar)
     
     if nos==1:
         lsn = psi*cl*h #lsn= driving scale of isolated SNe, psi=fixed parameter used since u isnt same as velocity dispersion
@@ -102,6 +102,8 @@ u,l=model_choose(3)
 
 #scale height expressions 
 hg = zet*(u**2 + cs**2)/(3*pi*G*sigmatot)
+
+# introduced to check asymptotic solutions
 hsub = zet*(cs**2)/(3*pi*G*sigmatot)
 hsup = zet*(u**2)/(3*pi*G*sigmatot)
 

@@ -6,6 +6,7 @@ from scipy.interpolate import griddata
 import pandas as pd
 import math as m #for inclination angle correction
 import os
+import math as m
 
 current_directory = str(os.getcwd())
 
@@ -45,17 +46,22 @@ def interpolation(list1,list2,standard):
     return extrapolated_data
 ###########################################################################################################################################
     
-file_names=['smdf','HI 6946','H2 6946','q_values6946sofue+18','omega_sofue+18',
+# file_names=['smdf','HI 6946','H2 6946','q_values6946sofue+18','omega_sofue+18',
+#             'SFR_Halpha24 6946','SFR_FUV24 6946','velocity disp.']
+file_names=['smdf','HI+H2 6946','q_values6946sofue+18','omega_sofue+18',
             'SFR_Halpha24 6946','SFR_FUV24 6946','velocity disp.']
 dataframe_list=file_reader(file_names)
 
 #to obtain radius data from every df
+distance_6946= 7.72 #Mpc
+distances_Mpc=[5.5,6.8,5.52,5.52,6.8,6.8,6]
 radius_list=[np.array(dataframe_list[i]['r']) for i in range(len(dataframe_list))]
+radius_list=[radius_list[i]*(distance_6946/distances_Mpc[i]) for i in range(len(radius_list))] #applying distance corrections
 
 #obtain arrays of quantities
-col_names=['smdf','sigma_HI','sigma_H2','q','omega',
+col_names=['smdf','sigma_gas','q','omega',
            'sigma_sfr','sigma_sfr_fuv','vel disp']
-conv_factors=[(g_Msun/(cm_pc**2) ),g_Msun/(cm_pc**2),g_Msun/(cm_pc**2),1,
+conv_factors=[(g_Msun/(cm_pc**2) ),g_Msun/(cm_pc**2),1,
               cm_km/cm_kpc,g_Msun/((s_Myr*10**(-6))*(cm_kpc**2)),g_Msun/((s_Myr*10**(-6))*(cm_kpc**2)),(3**0.5)]
 
 #to switch between fuv and h_alpha data for sfr
@@ -63,34 +69,31 @@ sfr_val=0
 tbd=[col_names,dataframe_list,conv_factors,radius_list]
 if sfr_val==0: #choosing H_alpha data
     for i in range(len(tbd)):
-        del tbd[i][6]
+        del tbd[i][5]
 else: #chose FUV data
     for i in range(len(tbd)):
-        del tbd[i][5]
+        del tbd[i][4]
 
 #inclination correction for quantities
-inclinations=[20,20,20,20,20,20,20,38]
-i_6946=30 #in degrees
-quant_list=[np.array(dataframe_list[i][col_names[i]])*(m.cos(m.radians(i_6946))/m.cos(m.radians(inclinations[i]))) 
+inclinations=[20,20,20,20,20,20,38]
+i_6946=m.radians(38) #in radians
+quant_list=[np.array(dataframe_list[i][col_names[i]])*(m.cos(i_6946)/m.cos(m.radians(inclinations[i]))) 
                      for i in range(len(dataframe_list))] #corrected for different inclination angles
 quant_list=[quant_list[i]*conv_factors[i] for i in range(len(quant_list))] #list with 9 elements including vel disp 
 
 #find array with least length and correct it for radius
 #if vel disp data is the smallest one, remove that and repeat the process
-array_with_least_length = min(radius_list, key=len) #this shows that temp data has least number of points
-corrected_radius=array_with_least_length*(7.72/8.2) #using known correction listed in overleaf file
+kpc_r = min(radius_list, key=len) #this shows that temp data has least number of points
 
-# radius_list.insert(-2,corrected_radius)
-
-#temperature fit
-T=np.array([(266.3*r)+5749.8 for r in corrected_radius])*(m.cos(m.radians(i_6946))/m.cos(m.radians(39)))
+#temperature fit #fit obtained using scipy.stats.linregress in temperature fitting.py
+T=np.array([(266.33525528933166*r)+5749.778318143174 for r in kpc_r])*(m.cos(m.radians(i_6946))/m.cos(m.radians(39)))
 error_temp=np.std(T)
 
 #interpolating the data and appending the common radius list 
 #interpolated arrays has an _ip ending
-quant_list_ip=[interpolation(radius_list[i],quant_list[i],corrected_radius) for i in range(len(dataframe_list))]
+quant_list_ip=[interpolation(radius_list[i],quant_list[i],kpc_r) for i in range(len(dataframe_list))]
 quant_list_ip.insert(len(quant_list_ip)-1,T)
-quant_list_ip.insert(0,(corrected_radius))
+quant_list_ip.insert(0,(kpc_r))
 
 #removing nan values for points whr interpolation is impossible
 nan_max = np.argmax([np.sum(np.isnan(d)) for d in quant_list_ip])
@@ -120,11 +123,11 @@ with open(current_directory+'\data\data_{}.pickle'.format('6946'), 'wb') as f:
 error_list=[]
 
 #temp error
-temp_error=np.array([error_temp]*len(radius_list[4]))
+temp_error=np.array([error_temp]*len(kpc_r))
 error_list.append(temp_error)
 
 #RC error
-RC_error=np.array([15*(cm_km/cm_kpc)]*len(radius_list[4]))
+RC_error=np.array([15*(cm_km/cm_kpc)]*len(kpc_r))
 error_list.append(RC_error)
 
 

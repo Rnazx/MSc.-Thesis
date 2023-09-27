@@ -41,18 +41,25 @@ print('Succesfully read the parameters and switches')
 with open(current_directory+ '\data\data_m31.pickle', 'rb') as f:
     data = pickle.load(f)
 
+#use this for m31 and m33
 kpc_r, dat_sigmatot, dat_sigmaHI,dat_sigmaH2, dat_q, dat_omega, dat_sigmasfr, T= data
-r = kpc_r.size  # common radius of the interpolated data
-
-#####################################################################################################################
-#finding total gas density
-#adds HI and H2 data based on switch 
+# finding total gas density
+# adds HI and H2 data based on switch 
 if switch['incl_moldat'] == 'Yes': #this is set to 'NO' in switches.in file
     dat_sigma = dat_sigmaHI + dat_sigmaH2
 else:
     dat_sigma = dat_sigmaHI
 
+#use this for m51 and 6946
+#difference as here we have to mandatorily consider molecular gas density
+# kpc_r, dat_sigmatot, dat_sigma, dat_q, dat_omega, dat_sigmasfr, T= data
+
+r = kpc_r.size  # common radius of the interpolated data
+
 dat_sigmagas = params['mu']*dat_sigma #mu= 14/11 set in parameters.in file
+
+#####################################################################################################################
+
 #####################################################################################################################
 #to apply kennicut-schmidt relation
 ks_exp = params['ks_exp']
