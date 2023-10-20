@@ -55,7 +55,7 @@ kalpha = Symbol('K_alpha')
 bet = Symbol('beta')
 alphak = Symbol('alpha_k')
 Gamma = Symbol('Gamma')
-
+A = Symbol('A')
 
 # Defining the general parameters
 u = Symbol('u')
@@ -100,12 +100,15 @@ def model_choose(nos): #n is the model number- 2 or 3
 
 u,l=model_choose(3)
 
-#scale height expressions 
-hg = zet*(u**2 + cs**2)/(3*pi*G*sigmatot)
+# #scale height expression old
+# hg = zet*(u**2 + cs**2)/(3*pi*G*sigmatot)
 
-# introduced to check asymptotic solutions
+# # introduced to check asymptotic solutions
 hsub = zet*(cs**2)/(3*pi*G*sigmatot)
 hsup = zet*(u**2)/(3*pi*G*sigmatot)
+
+# #scale height expression
+hg = (u**2 + 2*cs**2)/(3*pi*G*(sigma + (sigmatot/zet))) #new formula used
 
 rho = sigma/(2*h)
 n = rho/((14/11)*mh)

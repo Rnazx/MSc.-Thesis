@@ -5,6 +5,7 @@ import pickle
 from scipy.interpolate import griddata
 import pandas as pd
 import os
+import math as m
 
 current_directory = str(os.getcwd())
 
@@ -50,42 +51,26 @@ file_names=['sigmatot_up52_M33','sigmaHI_Kam_M33','sigmaH2_M33','RC_M33_kam','RC
 
 dataframe_list=file_reader(file_names)
 
-#no radius correction needed
-#chosen D=0.84 Mpc
-
 #obtain arrays of quantities
 col_names=['sigma tot','sigma HI','sigma H2','kms_vcirc_Kam','error_Kam',
            'sigma sfr','vel disp kms']
 conv_factors=[(g_Msun/(cm_pc**2)), g_Msun/(cm_pc**2), g_Msun/(cm_pc**2), 1,1,
               g_Msun/((s_Myr*10**(3))*(cm_pc**2)), (3**0.5)] #last term to make 3D vdisp
 
-
-# #to switch between Claude and Chemin data for sigmaHI and vcirc
-# Claude_Chemin_switch=1 #Claude data chosen
-# tbd=[col_names,dataframe_list,conv_factors,distances_Mpc,r_col_names,radius_conv_corr]
-# if Claude_Chemin_switch==0: #choosing Chemin data
-#     for i in range(len(tbd)):
-#         del tbd[i][5] #remove vcirc_Claude
-#         del tbd[i][2] #remove sigmaHI_Claude
-# else: #chose Claude data
-#     for i in range(len(tbd)):
-#         del tbd[i][3] #remove vcirc_Chemin
-#         del tbd[i][1] #remove sigmaHI_Chemin
-
-#redefining the lists without Chemin/Claude data
-# col_names        =tbd[0]
-# dataframe_list   =tbd[1]
-# conv_factors     =tbd[2]
-# distances_Mpc    =tbd[3]
-# r_col_names      =tbd[4]
-# radius_conv_corr =tbd[5]
-
+#no radius correction needed
+#chosen D=0.84 Mpc
 # get the radii
+
 radius_list_kpc=[np.array(dataframe_list[i]['r kpc']) for i in range(len(dataframe_list))]
 
-# get the quantities and convert to cgs units
-quant_list=[np.array(dataframe_list[i][col_names[i]]) for i in range(len(dataframe_list))]
-quant_list=[quant_list[i]*conv_factors[i] for i in range(len(quant_list))]  
+i_m33= m.radians(56) #deg
+inclinations=[52,52,56,52,55,54,56] #last element 56 (not 52 as in original paper) as no inclination correction needed for vel disp
+
+# get the quantities and 
+# quant_list=[np.array(dataframe_list[i][col_names[i]]) for i in range(len(dataframe_list))]
+quant_list=[np.array(dataframe_list[i][col_names[i]])*(m.cos(i_m33)/m.cos(m.radians(inclinations[i]))) 
+                     for i in range(len(dataframe_list))] #corrected for different inclination angles
+quant_list=[quant_list[i]*conv_factors[i] for i in range(len(quant_list))]  #convert to cgs units
 
 #find array with least length
 #if vel disp data is the smallest one, remove that and repeat the process
@@ -122,13 +107,22 @@ quant_list_ip.insert(len(quant_list_ip)-1,T) # -1 because i need v_disp to be at
 quant_list_ip.insert(0,kpc_r)
 
 #removing nan values for points whr interpolation is impossible
-nan_max = np.argmax([np.sum(np.isnan(d)) for d in quant_list_ip])
-nan_max_data = quant_list_ip[nan_max]
-nan_mask = ~np.isnan(nan_max_data)
+# nan_max = np.argmax([np.sum(np.isnan(d)) for d in quant_list_ip])
+# nan_max_data = quant_list_ip[nan_max]
+# nan_mask = ~np.isnan(nan_max_data)
+# nandeleted_data = []
+# for i,d in enumerate(quant_list_ip):
+#     nandeleted_data.append(d[nan_mask])
+
+
+nan_mask = np.zeros(kpc_r.size)
+for d in quant_list_ip:
+    nan_mask += np.isnan(d)
+nan_mask = ~(nan_mask>0)
 nandeleted_data = []
 for i,d in enumerate(quant_list_ip):
     nandeleted_data.append(d[nan_mask])
-
+    
 #separating vel disp data since to maintain uniformity with other galaxies. To be used while plotting
 dat_u= nandeleted_data[-1]
 del nandeleted_data[-1]

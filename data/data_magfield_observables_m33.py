@@ -1,6 +1,7 @@
 import numpy as np
 
 # no RM data for m33
+# no distance correction needed here as we chose d=0.84 Mpc, same as in Beck+19
 
 # Magnetic field data from Beck et. al. 2019 Tables 3 and 4
 G_dat_Bord = np.array([3.1,3.1])

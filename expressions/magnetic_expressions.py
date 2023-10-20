@@ -37,6 +37,7 @@ kalpha = Symbol('K_alpha')
 bet = Symbol('beta')
 alphak = Symbol('alpha_k')
 Gamma = Symbol('Gamma')
+A = Symbol('A')
 
 # Defining the general parameters
 u = Symbol('u')
@@ -56,7 +57,7 @@ cs = (gamma*boltz*T/(mu*mh))**Rational(1/2) #eq 36
 
 Beq = bet*u*(4*pi*rho)**Rational(1/2) #equipartition, eq 2
 
-biso = (Beq*(xio**(1/2)))/Max(1,u/cs) #xio= (b_iso/B_eq)^2, eq 1
+biso = (Beq*(xio**(1/2)))/Max(A,u/cs) #xio= (b_iso/B_eq)^2, eq 1
 biso = simplify(biso)
 biso = biso.powsimp(force=True) #simplify expressions involving powers
 

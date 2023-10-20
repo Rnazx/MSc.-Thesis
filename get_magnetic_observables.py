@@ -4,12 +4,15 @@ from sympy import *
 import pickle
 import os
 
+from zipped_data_edited import save_files_dir, gal
+
 ########################################################################################################
 current_directory = str(os.getcwd())
 os.chdir(current_directory + '\data')
 
 with open('zip_data.pickle', 'rb') as f: # there is only 1 zip_data file. dont change name of pickle file to be used here
     kpc_r, data_pass = pickle.load(f) 
+print(data_pass[-1][:])
 ########################################################################################################
 
 # extracting the expressions
@@ -37,7 +40,11 @@ l_f = datamaker(l, data_pass, h_f) #subscript f stand for final
 u_f = datamaker(u, data_pass, h_f)
 taue_f = datamaker(taue, data_pass, h_f)
 taur_f = datamaker(taur, data_pass, h_f)
-tau_f = np.minimum(taue_f, taur_f)
+
+#17/10/2023
+# include tau_r
+# tau_f = np.minimum(taue_f, taur_f) #to see if results vary significantly for M51 and 6946
+tau_f=taue_f #ignoring tau_r in tau calculation 
 
 omega = Symbol('\Omega')
 kalpha = Symbol('K_alpha')
@@ -68,6 +75,32 @@ tanpB_f = datamaker(tanpB, data_pass, h_f, tau_f)
 tanpb_f = datamaker(tanpb, data_pass, h_f, tau_f)
 
 mag_obs = kpc_r, h_f, l_f, u_f, cs_f, alphak_f, tau_f, biso_f, bani_f, Bbar_f, tanpB_f, tanpb_f
-with open('mag_observables_m33.pickle', 'wb') as f:
+
+with open('mag_observables_{}.pickle'.format(gal), 'wb') as f:
+    pickle.dump(mag_obs, f)
+
+########################################################################################################
+# params to go to folder 
+
+#opening these files and making them into dictionaries
+params = {}
+
+with open(current_directory+'\parameter_file.in', 'r') as FH:
+    for file in FH.readlines():
+        line = file.strip()
+        try:
+            par_name, value = line.split('=')
+        except ValueError:
+            print("Record: ", line)
+            raise Exception(
+                "Failed while unpacking. Not enough arguments to supply.")
+        try:
+            params[par_name] = np.float64(value)
+        except ValueError: #required cz of 14/11 in parameter.in file
+            num, denom = value.split('/')
+            params[par_name] = np.float64(num) / np.float64(denom)
+
+os.chdir(save_files_dir)
+with open(save_files_dir+r'\mag_observables_{}.pickle'.format(gal), 'wb') as f:
     pickle.dump(mag_obs, f)
 ########################################################################################################

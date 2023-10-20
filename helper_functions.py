@@ -36,6 +36,7 @@ kalpha = Symbol('K_alpha')
 bet = Symbol('beta')
 alphak = Symbol('alpha_k')
 Gamma = Symbol('Gamma')
+A = Symbol('A')
 
 
 # Defining the general parameters
@@ -80,11 +81,11 @@ def retrieve_name(var):
 ###############################################################################################################
 
 
-def exp_analytical_data(express, data_pass):
+def exp_analytical_data(express, data_pass): #modified to add parameter A
     express = express.subs(const).simplify(force=True)
 
     exp = np.array([express.evalf(subs={sigmatot: sigt, sigma: sig, sigmasfr: sigsfr, q: qs, omega: oms, zet: zets, T: t,
-                   psi: ps, bet: b, calpha: ca, Rk: rk, mu: m}) for sigt, sig, sigsfr, qs, oms, zets, t, ps, b, ca, rk, m in data_pass])
+                   psi: ps, bet: b, calpha: ca, Rk: rk, mu: m, A: a}) for sigt, sig, sigsfr, qs, oms, zets, t, ps, b, ca, rk, m, a in data_pass])
 
     return exp
 
@@ -124,10 +125,10 @@ def root_finder(h_val, h_init=7e+25):
 
 
 def scal_helper(express, data_pass, observable=zet, _range=np.linspace(1, 5000, 50)):
-    express = express.subs(const).simplify(force=True)
-    sigt, sig, sigsfr, qs, oms, zets, t, ps, b, ca, rk, m = data_pass[0]
+    express = express.subs(const).simplify(force=True) #modified to add parameter A
+    sigt, sig, sigsfr, qs, oms, zets, t, ps, b, ca, rk, m, a = data_pass[0]
     val_subs = {sigmatot: sigt, sigma: sig, sigmasfr: sigsfr, q: qs,
-                omega: oms, zet: zets, T: t, psi: ps, bet: b, calpha: ca, Rk: rk, mu: m}
+                omega: oms, zet: zets, T: t, psi: ps, bet: b, calpha: ca, Rk: rk, mu: m, A: a}
     try:
         #val_subs.pop(observable)
         obs_val = (val_subs.pop(observable))*_range

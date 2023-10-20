@@ -1,5 +1,7 @@
 import numpy as np
 
+#no distance correction needed here as we chose d=0.78 Mpc, same as in Beck+19
+
 # Magnetic field data from Beck et. al. 2019 Tables 3 and 4
 G_dat_Bord = np.array([4.9, 5.2, 4.9, 4.6])
 G_dat_Breg = np.array([1.8, 2.1, 2.6, 2.7])
@@ -22,5 +24,6 @@ rmrange_endps = np.array([7, 8, 9, 10, 11,12]) #radial ranges where RM is used, 
 rmrange = (rmrange_endps[1:] + rmrange_endps[:-1])/2 #radial ranges where RM is used, given in table 4, Beck+19
 
 #scale height data
+#from Chamandy&Shukurov+16
 kpc_dat_r = np.array([7, 9, 11, 13])
 pc_dat_h = np.array([316.4, 371.9, 437.1, 513.7])
