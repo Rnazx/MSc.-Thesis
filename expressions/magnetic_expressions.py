@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from sympy import *
 from fractions import Fraction
 import pickle
-import os
+import sys
 
 
 ################## defining symbols#######################################
@@ -38,52 +38,51 @@ bet = Symbol('beta')
 alphak = Symbol('alpha_k')
 Gamma = Symbol('Gamma')
 A = Symbol('A')
+K = Symbol('K')
 
 # Defining the general parameters
 u = Symbol('u')
 tau = Symbol('tau')
 l = Symbol('l')
 h = Symbol('h')
-Rk = Symbol('R_k')
 
 ##############################################################################################################
-#U_0=0, f_SB=0 assumed
-current_directory = str(os.getcwd())
-with open(current_directory+r'\turb_exp.pickle', 'rb') as f:
+with open('turb_exp.pickle', 'rb') as f:
     hg, rho, nu, u, l, taue, taur, alphak1, alphak2, alphak3 = pickle.load(f)
+cs = (gamma*boltz*T/(mu*mh))**Rational(1/2)
 
-# 'Rational' class ensures that the number remains in exact fractional form and is not approximated by a decimal.
-cs = (gamma*boltz*T/(mu*mh))**Rational(1/2) #eq 36
 
-Beq = bet*u*(4*pi*rho)**Rational(1/2) #equipartition, eq 2
-
-biso = (Beq*(xio**(1/2)))/Max(A,u/cs) #xio= (b_iso/B_eq)^2, eq 1
+Beq = bet*u*(4*pi*rho)**Rational(1/2)
+biso = (Beq*(xio**(1/2)))/Max(1,u/(A*cs))
 biso = simplify(biso)
-biso = biso.powsimp(force=True) #simplify expressions involving powers
+biso = biso.powsimp(force=True)
 
-bani = biso*(Rational(1/3)*2*q*omega*tau*(1+(q*omega*tau)/2))**Rational(1/2)  # eq 46 # + (Uo*tau/l)*(1+1/(1+q*omega*tau)**2)
+
+bani = biso*(Rational(1/3)*2*q*omega*tau*(1+(q*omega*tau)/2))**Rational(1/2)  # + (Uo*tau/l)*(1+1/(1+q*omega*tau)**2)
 bani = simplify(bani)
 bani = bani.powsimp(force=True)
 
-eta = (1/3)*tau*u**2 #eq 9, turbulent diffusivity of vec(B)
+Rk = Symbol('R_k')
+eta = (1/3)*tau*u**2
 
-Ralpha = alphak*h/eta #eq 8
-Romega = -q*omega*h**2/eta #eq 8
-Dk = Ralpha*Romega #eq 10
-Dc = -(pi**5)/32 #eq 12
-Bbar = (pi*Beq*l*(Rk*(Dk/Dc-1))**(0.5))/h #eq 7, 40. #where is xi0?
+Ralpha = alphak*h/eta
+Romega = -q*omega*h**2/eta
+Dk = Ralpha*Romega
+Dc = -(pi**5)/32
+Bbar = (K*pi*Beq*(l/h)*(Rk*(Dk/Dc-1))**(0.5))
 Bbar = simplify(Bbar)
 # Bbar = Bbar.powsimp(force=True)
 
-tanpB = -((pi**2)*tau*(u**2))/(12*q*omega*(h**2)) #eq 41
+tanpB = -((pi**2)*tau*(u**2))/(12*q*omega*(h**2))
 tanpB = simplify(tanpB)
 tanpB = tanpB.subs([(tau, tau), (l, l)])
 tanpB = simplify(tanpB)
 
 tanpb = 1/(1+q*omega*tau)
 
-mag_expr = biso, bani, Bbar, tanpb, tanpB, Beq, eta, cs
+mag_expr = biso, bani, Bbar, tanpb, tanpB, Beq, eta, cs, Dk, Dc
 
-with open(current_directory+ r'\mag_exp.pickle', 'wb') as f:
+
+with open('mag_exp.pickle', 'wb') as f:
     pickle.dump(mag_expr, f)
 print('Solved the magnetic expressions')

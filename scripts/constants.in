@@ -1,0 +1,16 @@
+gamma = 1.5
+C_l = 0.75
+\xi_0 = 0.4
+m_* = 0.85
+\delta = 8e-3
+E_51 = 1
+K_\alpha = 1
+Gamma = 1.6667
+C_\alpha = 1
+R_\kappa = 0.3
+\mu = 1.27
+mach_0 = 1
+g_Msun = 1.989e33  
+cgs_G = 6.674e-8  
+g_mH = 1.6736e-24  
+cgs_kB = 1.3807e-16  
